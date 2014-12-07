@@ -3,15 +3,25 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Project Snowball</title>
-	<style type='text/css'>
-		canvas { border: 1px solid black; }
-	</style>
+	<link rel="stylesheet" type="text/css" href="css/theme.css">
+	<script type="text/javascript" src="javascript/pageAdjust.js"></script>
 	<script type="text/javascript"></script>
 </head>
-<body>
-	<h1>Taben is Bitchin'</h1>
-	<canvas id='canvas' width='800' height='600'></canvas>
+<body onload="windowAdjust()">
+	<div id="banner">
+		<h1 id="title">Snowball</h1>
+	</div>
+	
+	<canvas id='canvas' width='800' height='800'></canvas>
+	
+	<div id="footer">
+		
+	</div>
+	
 	<script type='text/javascript'>
+	document.getElementById('canvas').onmousedown = function(){
+		return false;
+	};
 	
 	//Project Snowball...
 	var can = document.getElementById('canvas');
