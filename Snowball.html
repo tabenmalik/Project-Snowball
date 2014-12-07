@@ -19,8 +19,27 @@
 	var update;
 	var draw;
 	var lastTickTime = 0;
-	var UPDATEINTERVAL = 1000 / 50;
+	var UPDATEINTERVAL = 1000 / 60;
 	var accumulate = 0;
+	
+	//************MAIN MENU FUNCTIONS**********
+	
+	
+	
+	function menuUpdate(){
+		
+	}
+	
+	function menuDraw(){
+		ctx.clearRect(0,0,can.width,can.height);
+	}
+	
+	function menuSetup(){
+		update = menuUpdate;
+		draw = menuDraw;
+	}
+	
+	//**********TICK FUNCTION**********
 	
 	function tick(time){
 		var deltaTime = time - lastTickTime;
@@ -39,7 +58,8 @@
 	}
 	
 	function main(){
-		
+		menuSetup();
+		window.requestAnimationFrame(tick);
 	}
 	
 	main();
