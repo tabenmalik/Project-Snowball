@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Project Snowball</title>
+	<style type='text/css'>
+		canvas { border: 1px solid black; }
+	</style>
+	<script type="text/javascript"></script>
+</head>
+<body>
+	<h1>Kibody, the eco friendly Hero</h1>
+	<canvas id='canvas' width='800' height='600'></canvas>
+	<script type='text/javascript'>
+	
+	//Project Snowball...
+	var can = document.getElementById('canvas');
+	var ctx = can.getContext("2d");
+	var update;
+	var draw;
+	var lastTickTime = 0;
+	var UPDATEINTERVAL = 1000 / 50;
+	var accumulate = 0;
+	
+	function tick(time){
+		var deltaTime = time - lastTickTime;
+		
+		draw();
+		
+		accumulate += deltaTime;
+		
+		while(accumulate >= UPDATEINTERVAL){
+			update(UPDATEINTERVAL);
+			accumulate -= UPDATEINTERVAL;
+		}
+		
+		lastTickTime = time;
+		window.requestAnimationFrame(tick);
+	}
+	
+	function main(){
+		
+	}
+	
+	main();
+	
+	</script>
+</html>
