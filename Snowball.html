@@ -21,17 +21,76 @@
 	var lastTickTime = 0;
 	var UPDATEINTERVAL = 1000 / 60;
 	var accumulate = 0;
+	var mouse = {
+		x: 0,
+		y: 0,
+		clicked: false
+	};
 	
 	//************MAIN MENU FUNCTIONS**********
+	var playButton = {
+		x: 400,
+		y: 400,
+		r: 100,
+	};
 	
+	var playTitle = {
+		x: 100,
+		y: 125,
+		width: 600,
+		height: 100,
+	};
 	
+	var xfrontoffset = 0;
+	var yfrontoffset = 0;
+	var xbackoffset = 0;
+	var ybackoffset = 0;
 	
 	function menuUpdate(){
+		var x = (mouse.x - (can.width * 0.5));
+		var y = (mouse.y - (can.height* 0.5));
 		
+		xfrontoffset = x * 0.125;
+		yfrontoffset = y * 0.125;
+		
+		xbackoffset = x * 0.0625;
+		ybackoffset = y * 0.0625;
+		
+		var ms = {
+			x: mouse.x,
+			y: mouse.y,
+			r: 0
+		};
+		
+		var pb = {
+			x: playButton.x - xbackoffset,
+			y: playButton.y - ybackoffset,
+			r: playButton.r
+		};
+		
+		if(collide(ms,pb) && mouse.clicked){
+			//here we would call playSetup();
+		}
 	}
 	
 	function menuDraw(){
 		ctx.clearRect(0,0,can.width,can.height);
+		
+		ctx.fillStyle = "#5555FF";
+		ctx.beginPath();
+		ctx.arc(playButton.x - xbackoffset, playButton.y - ybackoffset, playButton.r, 0, 2*Math.PI);
+		ctx.closePath();
+		ctx.fill();
+		
+		ctx.fillRect(playTitle.x - xbackoffset, playTitle.y - ybackoffset, playTitle.width, playTitle.height);
+		
+		ctx.fillStyle = "#999999";
+		ctx.font = "bold 60px Verdana";
+		ctx.fillText("Project Snowball",115 - xbackoffset ,200 - ybackoffset );
+		ctx.fillStyle = "#000000";
+		ctx.fillText("Project Snowball",115 - xfrontoffset,200 - yfrontoffset);
+		ctx.font = "30px Verdana";
+		ctx.fillText("PLAY",360 - xfrontoffset, 415 - yfrontoffset);
 	}
 	
 	function menuSetup(){
@@ -51,16 +110,31 @@
 		while(accumulate >= UPDATEINTERVAL){
 			update(UPDATEINTERVAL);
 			accumulate -= UPDATEINTERVAL;
+			mouse.clicked = false;
 		}
 		
 		lastTickTime = time;
 		window.requestAnimationFrame(tick);
 	}
 	
+	function handleClick(evt){
+		setMousePosition(evt);
+		mouse.clicked = true;
+	}
+	
+	function setMousePosition(evt){
+		mouse.x = evt.clientX - canvas.getBoundingClientRect().left;
+		mouse.y = evt.clientY - canvas.getBoundingClientRect().top + 0.875;
+	}
+	
 	function main(){
 		menuSetup();
 		window.requestAnimationFrame(tick);
 	}
+	
+	canvas.addEventListener('click', handleClick);
+	canvas.addEventListener('drag', handleClick);
+	canvas.onmousemove = function(){setMousePosition(event);};
 	
 	main();
 	
