@@ -7,6 +7,7 @@
 		canvas { border: 1px solid black; }
 	</style>
 	<script type="text/javascript" src="RandomFunctions.js"></script>
+	<script type="text/javascript" src="Objects.js"></script>
 </head>
 <body>
 	<h1></h1>
@@ -26,6 +27,9 @@
 		y: 0,
 		clicked: false
 	};
+	
+	var bob = new Ball(200,200,50);
+	var joe = new Ball(400,400,20);
 	
 	//************MAIN MENU FUNCTIONS**********
 	var playButton = {
@@ -71,10 +75,24 @@
 		if(collide(ms,pb) && mouse.clicked){
 			//here we would call playSetup();
 		}
+		
+		bob.moveRandom(10);
+		joe.moveRandom(30);
 	}
 	
 	function menuDraw(){
 		ctx.clearRect(0,0,can.width,can.height);
+		
+		ctx.fillStyle = "#000000";
+		ctx.beginPath();//drawing bob
+		ctx.arc(bob.x,bob.y,bob.r,0,2*Math.PI);
+		ctx.closePath();
+		ctx.fill();
+		
+		ctx.beginPath();//drawing joe
+		ctx.arc( joe.x, joe.y, joe.r, 0, Math.PI * 2);
+		ctx.closePath();
+		ctx.fill();
 		
 		ctx.fillStyle = "#5555FF";
 		ctx.beginPath();
