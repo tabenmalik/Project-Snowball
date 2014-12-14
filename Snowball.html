@@ -7,6 +7,7 @@
 		canvas { border: 1px solid black; }
 	</style>
 	<script type="text/javascript" src="RandomFunctions.js"></script>
+	<script type="text/javascript" src="Objects.js"></script>
 </head>
 <body>
 	<h1>Taben is Bitchin'</h1>
@@ -27,6 +28,31 @@
 		clicked: false
 	};
 	
+	//************PLAY FUNCTIONS***************
+	
+	function playUpdate(time){
+		pl.circle(time, thing.x, thing.y);
+	}
+	
+	function playDraw(){
+		ctx.clearRect(0,0,can.width, can.height);
+	
+		ctx.beginPath();
+		ctx.arc(pl.x, pl.y, pl.r, 0, Math.PI * 2);
+		ctx.closePath();
+		ctx.fill();
+		
+		ctx.beginPath();
+		ctx.arc(thing.x, thing.y, thing.r, 0, Math.PI * 2);
+		ctx.closePath();
+		ctx.fill();
+	}
+	
+	function playSetup(){
+		update = playUpdate;
+		draw = playDraw;
+	}
+	
 	//************MAIN MENU FUNCTIONS**********
 	var playButton = {
 		x: 400,
@@ -46,7 +72,14 @@
 	var xbackoffset = 0;
 	var ybackoffset = 0;
 	
-	function menuUpdate(){
+	var pl = new Ball(100,100,10);
+	var thing = {
+		x: 300,
+		y: 400,
+		r: 50
+	};
+	
+	function menuUpdate(time){
 		var x = (mouse.x - (can.width * 0.5));
 		var y = (mouse.y - (can.height* 0.5));
 		
@@ -69,7 +102,7 @@
 		};
 		
 		if(collide(ms,pb) && mouse.clicked){
-			//here we would call playSetup();
+			playSetup();
 		}
 	}
 	
