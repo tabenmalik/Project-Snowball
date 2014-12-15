@@ -31,7 +31,7 @@ function Ball(a,b,c){//x,y coordinate and radius
 		var coordinates = findIntersect(this.x,this.y,this.angle,xx,yy,tempAng);
 		
 		if(Math.sin(this.angle) == 1 && coordinates[1] > this.y){
-			if(distance < findDistance(this.x,this.y, coordinates[0], coordinates[1]){
+			if(distance < findDistance(this.x,this.y, coordinates[0], coordinates[1])){
 				this.x = Math.cos(this.angle) * distance;
 				this.y = Math.sin(this.angle) * distance;
 				return;
