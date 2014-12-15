@@ -3,16 +3,36 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Project Snowball</title>
-	<style type='text/css'>
-		canvas { border: 1px solid black; }
-	</style>
+	
+	<link rel="stylesheet" type="text/css" href="css/theme.css">
+	
 	<script type="text/javascript" src="RandomFunctions.js"></script>
 	<script type="text/javascript" src="Objects.js"></script>
+	<script type="text/javascript" src="javascript/devFunctions.js"></script>
+	<script type="text/javascript" src="javascript/pageAdjust.js"></script>
+	<script type="text/javascript"></script>
 </head>
 <body>
-	<h1>Taben is Bitchin'</h1>
-	<canvas id='canvas' width='800' height='600'></canvas>
+	<div id="banner">
+		<h1 id="title">Snowball</h1>
+	</div>
+	
+	<canvas id='canvas' width='800' height='800'></canvas>
+	
+	<div id="footer">
+		<div class="container">
+			<ul>
+				<li>Created By: Wolf Pack</li>
+				<li>Last Updated 11 Dec. 2014</li>
+				<li>Source Code at <a href="https://github.com/tabenmalik/Project-Snowball">github.com</a></li>
+			</ul>
+		</div>
+	</div>
+	
 	<script type='text/javascript'>
+	document.getElementById('canvas').onmousedown = function(){
+		return false;
+	};
 	
 	//Project Snowball...
 	var can = document.getElementById('canvas');
