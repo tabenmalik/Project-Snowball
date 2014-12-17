@@ -21,7 +21,7 @@ function Ball(a,b,c){//x,y coordinate and radius
 	}
 	this.move = f;
 	
-	function g(time,xx,yy){//move in a circular motion around point xx,yy
+	this.circle = function(time,xx,yy){//move in a circular motion around point xx,yy
 		var distance = this.speed * time * 0.001;
 		
 		var tempAng = this.angle + ( Math.PI / 2.0 );
@@ -30,73 +30,64 @@ function Ball(a,b,c){//x,y coordinate and radius
 		
 		var coordinates = findIntersect(this.x,this.y,this.angle,xx,yy,tempAng);
 		
-		//everything past here is wrong
+		var moveTowardTanPoint = false; //this is turned true when the code realizes that the object is behind the tangent point, so that it will still move forward for a bit.
 		
-		if(Math.sin(this.angle) == 1 && coordinates[1] > this.y){
-			if(distance < findDistance(this.x,this.y, coordinates[0], coordinates[1])){
+		if(Math.sin(this.angle) == 0){ //this if statement runs when the player is moving completely sideways. (because tan would be undefined, I have to type some special math)
+			if(Math.cos(this.angle) == 1 && this.x < coordinates[0])//moving right and behind tan point.
+				moveTowardTanPoint = true;
+			else if(Math.cos(this.angle) == -1 && this.x > coordinates[0])// moving left and behind tan point
+				moveTowardTanPoint = true;
+		}
+		else if(Math.sin(this.angle) == 1){
+			if(this.y < coordinates[1])//player is moving up and is behind tan point
+				moveTowardTanPoint = true;
+		}
+		else if(Math.sin(this.angle) == -1){
+			if(this.y > coordinates[1])//player is moving down and is behind tan point
+				moveTowardTanPoint = true;
+		}
+		
+		//if "moveTowardTanPoint" is false, it immediately starts circular motion. If it is true, it moves straight toward the tangent point, and then does corcular movement.
+		
+		if(moveTowardTanPoint){
+			if(distance < findDistance(this.x,this.y, coordinates[0], coordinates[1])){//the distance the player needs to move is smaller than the distance to the tan point.
 				this.x = Math.cos(this.angle) * distance;
 				this.y = Math.sin(this.angle) * distance;
-				return;
+				return; //returns because it has ran out of distance.
 			}
-			else{
-				distance -= findDistance(this.x, this.y, coordinates[0], coordinates[1]);
+			else{//sets player to tan point, but subtracts the distance that it took to get there.
+				distance -= findDistance(this.x,this.y, coordinates[0], coordinates[1]);
 				this.x = coordinates[0];
 				this.y = coordinates[1];
 			}
 		}
-		else if(Math.sin(this.angle) == -1 && coordinates[1] < this.y){
-			if(distance < findDistance(this.x,this.y, coordinates[0], coordinates[1])){
-				this.x = Math.cos(this.angle) * distance;
-				this.y = Math.sin(this.angle) * distance;
-				return;
-			}
-			else{
-				distance -= findDistance(this.x, this.y, coordinates[0], coordinates[1]);
-				this.x = coordinates[0];
-				this.y = coordinates[1];
-			}
-		}
-		else if( Math.sin(this.angle) > 0 && this.y < (Math.tan(tempAng) * coordinates[0]) - (Math.tan(tempAng)*xx) + yy - coordinates[1]){
-			if(distance < findDistance(this.x,this.y, coordinates[0], coordinates[1])){
-				this.x = Math.cos(this.angle) * distance;
-				this.y = Math.sin(this.angle) * distance;
-				return;
-			}
-			else{
-				distance -= findDistance(this.x, this.y, coordinates[0], coordinates[1]);
-				this.x = coordinates[0];
-				this.y = coordinates[1];
-			}
-		}
-		else if(Math.sin(this.angle) < 0 && this.y > (Math.tan(tempAng) * coordinates[0]) - (Math.tan(tempAng)*xx) + yy - coordinates[1]){
-			if(distance < findDistance(this.x,this.y, coordinates[0], coordinates[1])){
-				this.x = Math.cos(this.angle) * distance;
-				this.y = Math.sin(this.angle) * distance;
-				return;
-			}
-			else{
-				distance -= findDistance(this.x, this.y, coordinates[0], coordinates[1]);
-				this.x = coordinates[0];
-				this.y = coordinates[1];
-			}
-		}
-		else{
-			console.log("ERROR");
-		}
 		
-		var circleRadius = findDistance(this.x, this.y, xx,yy);
-		var circumfrence = 2 * Math.PI * circleRaduis;
-		while(distance > circumfrence){
-			distance -= circumfrence;
+		//if the function has not returned by this point, it starts circular motion.
+		var radius = findDistance(this.x, this.y, xx, yy);
+		var circAngle = Math.atan2(this.y - yy, this.x - xx); //angle from circle center to player.
+		var direction = this.angle - circAngle;//used to tell the direction of the player - clock wise or counter clock wise.
+		
+		if( direction >= Math.PI / 2){//clockwise
+			circAngle += distance / radius;
+			if(circAngle > Math.PI)
+				circAngle -= 2 * Math.PI;
+			
+			this.x = (Math.cos(circAngle) * radius) + xx;
+			this.y = (Math.sin(circAngle) * radius) + yy;
+			this.angle += circAngle;
 		}
-		
-		this.angle += (distance / circumfrence) * 2 * Math.PI;
-		if(this.angle > Math.PI)
-			this.angle -= 2 * Math.PI;
-		
-		//this is where I am stuck
+		else if( direction <= Math.PI / -2){//counterClockwise
+			circAngle -= distance / radius;
+			if(circAngle < -Math.PI)
+				circAngle += 2 * Math.PI;
+			
+			this.x = (Math.cos(circAngle) * radius) + xx;
+			this.y = (Math.sin(circAngle) * radius) + yy;
+			this.angle += circAngle;
+		}
+		else
+			console.log("There was an error");
 	}
-	this.circle = g;
 	
 	function findIntersect(x,y,a,xx,yy,aa){
 		var tempAng = this.angle + ( Math.PI / 2.0 );
