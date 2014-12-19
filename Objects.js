@@ -1,3 +1,84 @@
+function Game(){
+	this.can = document.getElementById('canvas');
+	this.ctx = can.getContext("2d");
+	this.gamestate = {
+		update = 0,
+		draw = 0,
+	}
+	this.lastTickTime = 0;
+	this.UPDATEINTERVAL = (1000/60);
+	this.accumulate = 0;
+	this.mouse = new Mouse();
+	this.mainMenu = new Menu();
+	
+	this.setup = function(){
+		log("Setting up Game Object");
+		log("Setting up Main Menu");
+		this.menu.setup();
+		
+	}
+}
+
+function Mouse(){
+	this.x = 0;
+	this.y = 0;
+	this.r = 0;
+	this.clicked = false;
+	
+	this.setup = function(can){
+		can.addEventListener('click', handleClick);
+		can.addEventListener('drag', handleClick);
+	}
+	
+	this.handleClick = function(event){
+		setMousePosition(event);
+		this.clicked = true;
+	}
+	
+	this.setMousePosition = function(){
+		if(arguments.length == 1)
+		{
+			this.x = arguments[0].clientX - game.can.getBoundingClientRect().left;
+			this.y = arguments[0].clientY - game.can.getBoundingClientRect().top + 0.875;
+		}
+		else if(arguments.length == 2)
+		{
+			this.x = arguments[0];
+			this.y = arguments[1];
+		}
+	}
+}
+
+function Menu(){
+	this.xFrontOffSet;
+	this.yFrontOffSet;
+	this.xBackOffSet;
+	this.yBackOffSet;
+	
+
+	this.gamestate = {
+		update = this.update;
+		draw = this.draw;
+	}
+	this.setup = function(){
+		
+		game.gamestate = this.gamestate;
+	}
+	
+	this.update = function(time){
+		var x = (game.mouse.x - (game.can.width*0.5));
+		var y = (game.mouse.y - (game.can.height*0.5));
+		
+		
+	}
+}
+
+function PlayButton(){
+
+}
+
+function 
+
 function Ball(a,b,c){//x,y coordinate and radius
 	this.x = a;
 	this.y = b;

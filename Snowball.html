@@ -34,19 +34,6 @@
 		return false;
 	};
 	
-	//Project Snowball...
-	var can = document.getElementById('canvas');
-	var ctx = can.getContext("2d");
-	var update;
-	var draw;
-	var lastTickTime = 0;
-	var UPDATEINTERVAL = 1000 / 60;
-	var accumulate = 0;
-	var mouse = {
-		x: 0,
-		y: 0,
-		clicked: false
-	};
 	
 	//************PLAY FUNCTIONS***************
 	
@@ -170,27 +157,15 @@
 		window.requestAnimationFrame(tick);
 	}
 	
-	function handleClick(evt){
-		setMousePosition(evt);
-		mouse.clicked = true;
-	}
-	
-	function setMousePosition(evt){
-		mouse.x = evt.clientX - canvas.getBoundingClientRect().left;
-		mouse.y = evt.clientY - canvas.getBoundingClientRect().top + 0.875;
-	}
-	
 	function main(){
 		log("Setting up Main Menu");
 		menuSetup();
 		window.requestAnimationFrame(tick);
 	}
 	
-	canvas.addEventListener('click', handleClick);
-	canvas.addEventListener('drag', handleClick);
-	canvas.onmousemove = function(){setMousePosition(event);};
-	
-	main();
+	var game = new Game();
+	game.setup();
+	game.run();
 	
 	</script>
 </html>
