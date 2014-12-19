@@ -1,193 +1,135 @@
-function Game(){
-	this.can = document.getElementById('canvas');
-	this.ctx = can.getContext("2d");
-	this.gamestate = {
-		update = 0,
-		draw = 0,
-	}
-	this.lastTickTime = 0;
-	this.UPDATEINTERVAL = (1000/60);
-	this.accumulate = 0;
-	this.mouse = new Mouse();
-	this.mainMenu = new Menu();
-	
-	this.setup = function(){
-		log("Setting up Game Object");
-		log("Setting up Main Menu");
-		this.menu.setup();
-		
-	}
-}
-
 function Mouse(){
 	this.x = 0;
 	this.y = 0;
 	this.r = 0;
 	this.clicked = false;
 	
-	this.setup = function(can){
+	this.setup = function(){
 		can.addEventListener('click', handleClick);
 		can.addEventListener('drag', handleClick);
-	}
-	
-	this.handleClick = function(event){
-		setMousePosition(event);
-		this.clicked = true;
-	}
+	};
 	
 	this.setMousePosition = function(){
 		if(arguments.length == 1)
 		{
-			this.x = arguments[0].clientX - game.can.getBoundingClientRect().left;
-			this.y = arguments[0].clientY - game.can.getBoundingClientRect().top + 0.875;
+			this.x = arguments[0].clientX - can.getBoundingClientRect().left;
+			this.y = arguments[0].clientY - can.getBoundingClientRect().top + 0.875;
 		}
 		else if(arguments.length == 2)
 		{
 			this.x = arguments[0];
 			this.y = arguments[1];
 		}
-	}
+	};
+}
+
+function PlayGameState(){
+	this.player;
+	this.gamestate = {
+		update:0,
+		draw:0,
+	};
+	
+	this.setup = function(){
+		this.player = new Player(100,100,10,0);
+	};
+	
+	this.changeState = function(){
+		gamestate = this.gamestate;
+	};
+	
+	this.update = function(time){
+		this.player.move(time);
+	};
+	
+	this.draw = function(){
+		ctx.clearRect(0,0,can.width, can.height);
+	
+		ctx.beginPath();
+		ctx.arc(this.player.x, this.player.y, this.player.r, 0, Math.PI * 2);
+		ctx.closePath();
+		ctx.fill();
+	};
+}
+
+function Player(a,b,c,d){
+	this.x = a;
+	this.y = b;
+	this.r = c;
+	this.angle = d;
+	this.speed = 100;
+	
+	this.move = function(time){
+		this.x += Math.cos(this.angle) * this.speed * 0.001 * time;
+		this.y += Math.sin(this.angle) * this.speed * 0.001 * time;
+	};
 }
 
 function Menu(){
-	this.xFrontOffSet;
-	this.yFrontOffSet;
-	this.xBackOffSet;
-	this.yBackOffSet;
+	this.xFrontOffSet = 0;
+	this.yFrontOffSet = 0;
+	this.xBackOffSet = 0;
+	this.yBackOffSet = 0;
+	this.playButton;
+	this.playTitle;
 	
-
-	this.gamestate = {
-		update = this.update;
-		draw = this.draw;
-	}
 	this.setup = function(){
+		this.playButton = new PlayButton(400,400,100);
+		this.playTitle = new PlayTitle(100,125,600,100);
 		
-		game.gamestate = this.gamestate;
-	}
+	};
 	
 	this.update = function(time){
-		var x = (game.mouse.x - (game.can.width*0.5));
-		var y = (game.mouse.y - (game.can.height*0.5));
+		var x = (mouse.x - (can.width*0.5));
+		var y = (mouse.y - (can.height*0.5));
 		
+		this.xFrontOffSet = x * 0.125;
+		this.yFrontOffSet = y * 0.125;
 		
-	}
+		this.xBackOffSet = x * 0.0625;
+		this.yBackOffSet = y * 0.0625;
+		
+		var pb = {
+			x: this.playButton.x - this.xBackOffSet,
+			y: this.playButton.y - this.yBackOffSet,
+			r: this.playButton.r
+		};
+		
+		if(collide(mouse,pb) && mouse.clicked){
+			gamestate = play;
+		}
+	};
+	
+	this.draw = function(){
+		ctx.clearRect(0,0,can.width,can.height);
+		
+		ctx.fillStyle = "#5555FF";
+		ctx.beginPath();
+		ctx.arc(this.playButton.x - this.xBackOffSet, this.playButton.y - this.yBackOffSet, this.playButton.r, 0, 2*Math.PI);
+		ctx.closePath();
+		ctx.fill();
+		
+		ctx.fillRect(this.playTitle.x - this.xBackOffSet, this.playTitle.y - this.yBackOffSet, this.playTitle.width, this.playTitle.height);
+		
+		ctx.fillStyle = "#999999";
+		ctx.font = "bold 60px Verdana";
+		ctx.fillText("Project Snowball",115 - this.xBackOffSet ,200 - this.yBackOffSet );
+		ctx.fillStyle = "#000000";
+		ctx.fillText("Project Snowball",115 - this.xFrontOffSet,200 - this.yFrontOffSet);
+		ctx.font = "30px Verdana";
+		ctx.fillText("PLAY",360 - this.xFrontOffSet, 415 - this.yFrontOffSet);
+	};
 }
 
-function PlayButton(){
-
-}
-
-function 
-
-function Ball(a,b,c){//x,y coordinate and radius
+function PlayButton(a,b,c){
 	this.x = a;
 	this.y = b;
-	this.r = c; //radius
-	this.speed = 100;
-	this.angle = 0;
-	
-	function d(num){
-		this.speed = num;
-	}
-	this.setSpeed = d;
-	
-	function e(num){
-		this.angle = num;
-	}
-	this.setAngle = e;
-	
-	function f(time){
-		this.x += Math.cos(this.angle) * this.speed * 0.001 * time;
-		this.y += Math.sin(this.angle) * this.speed * 0.001 * time;
-	}
-	this.move = f;
-	
-	function g(time,xx,yy){//move in a circular motion around point xx,yy
-		var distance = this.speed * time * 0.001;
-		
-		var tempAng = this.angle + ( Math.PI / 2.0 );
-		if( tempAng > Math.PI)
-			tempAng -= Math.PI;
-		
-		var coordinates = findIntersect(this.x,this.y,this.angle,xx,yy,tempAng);
-		
-		if(Math.sin(this.angle) == 1 && coordinates[1] > this.y){
-			if(distance < findDistance(this.x,this.y, coordinates[0], coordinates[1])){
-				this.x = Math.cos(this.angle) * distance;
-				this.y = Math.sin(this.angle) * distance;
-				return;
-			}
-			else{
-				distance -= findDistance(this.x, this.y, coordinates[0], coordinates[1]);
-				this.x = coordinates[0];
-				this.y = coordinates[1];
-			}
-		}
-		else if(Math.sin(this.angle) == -1 && coordinates[1] < this.y){
-			if(distance < findDistance(this.x,this.y, coordinates[0], coordinates[1])){
-				this.x = Math.cos(this.angle) * distance;
-				this.y = Math.sin(this.angle) * distance;
-				return;
-			}
-			else{
-				distance -= findDistance(this.x, this.y, coordinates[0], coordinates[1]);
-				this.x = coordinates[0];
-				this.y = coordinates[1];
-			}
-		}
-		else if( Math.sin(this.angle) > 0 && this.y < (Math.tan(tempAng) * coordinates[0]) - (Math.tan(tempAng)*xx) + yy - coordinates[1]){
-			if(distance < findDistance(this.x,this.y, coordinates[0], coordinates[1])){
-				this.x = Math.cos(this.angle) * distance;
-				this.y = Math.sin(this.angle) * distance;
-				return;
-			}
-			else{
-				distance -= findDistance(this.x, this.y, coordinates[0], coordinates[1]);
-				this.x = coordinates[0];
-				this.y = coordinates[1];
-			}
-		}
-		else if(Math.sin(this.angle) < 0 && this.y > (Math.tan(tempAng) * coordinates[0]) - (Math.tan(tempAng)*xx) + yy - coordinates[1]){
-			if(distance < findDistance(this.x,this.y, coordinates[0], coordinates[1])){
-				this.x = Math.cos(this.angle) * distance;
-				this.y = Math.sin(this.angle) * distance;
-				return;
-			}
-			else{
-				distance -= findDistance(this.x, this.y, coordinates[0], coordinates[1]);
-				this.x = coordinates[0];
-				this.y = coordinates[1];
-			}
-		}
-		else{
-			console.log("ERROR");
-		}
-		
-		var circleRadius = findDistance(this.x, this.y, xx,yy);
-		var circumfrence = 2 * Math.PI * circleRaduis;
-		while(distance > circumfrence){
-			distance -= circumfrence;
-		}
-		
-		this.angle += (distance / circumfrence) * 2 * Math.PI;
-		if(this.angle > Math.PI)
-			this.angle -= 2 * Math.PI;
-		
-		//this is where I am stuck
-	}
-	this.circle = g;
-	
-	function findIntersect(x,y,a,xx,yy,aa){
-		var tempAng = this.angle + ( Math.PI / 2.0 );
-		if( tempAng > Math.PI)
-			tempAng -= Math.PI;
-		
-		var xxx = ( (Math.tan(this.angle) * this.x) - this.y - (Math.tan(tempAng) * xx) + yy ) / ( Math.tan(this.angle) - Math.tan(tempAng));
-		var yyy = Math.tan(tempAng) * (xxx - xx) + yy;
-		return [xxx,yyy];
-	}
-	
-	function findDistance(x,y,xx,yy){
-		return Math.sqrt(Math.pow( yy - y, 2) + Math.pow( xx - x, 2));
-	}
+	this.r = c;
+}
+
+function PlayTitle(a,b,c,d){
+	this.x = a;
+	this.y = b;
+	this.width = c;
+	this.height = d;
 }
