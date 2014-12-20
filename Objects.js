@@ -25,13 +25,15 @@ function Mouse(){
 
 function PlayGameState(){
 	this.player;
-	this.gamestate = {
-		update:0,
-		draw:0,
-	};
+	this.map;
 	
 	this.setup = function(){
-		this.player = new Player(100,100,10,0);
+		this.player = new Player(425,115,10, 0);
+		this.map = [{
+			x: 300,
+			y: 300,
+			r: 30
+			}];
 	};
 	
 	this.changeState = function(){
@@ -39,7 +41,7 @@ function PlayGameState(){
 	};
 	
 	this.update = function(time){
-		this.player.move(time);
+		this.player.circle(time, this.map[0].x, this.map[0].y);
 	};
 	
 	this.draw = function(){
@@ -49,9 +51,16 @@ function PlayGameState(){
 		ctx.arc(this.player.x, this.player.y, this.player.r, 0, Math.PI * 2);
 		ctx.closePath();
 		ctx.fill();
+		
+		for(var i = 0; i < this.map.length; i++){
+			ctx.beginPath();
+			ctx.arc(this.map[i].x, this.map[i].y, this.map[i].r, 0, 2 * Math.PI);
+			ctx.closePath();
+			ctx.fill();
+		}
 	};
 }
-
+	
 function Player(a,b,c,d){
 	this.x = a;
 	this.y = b;
@@ -64,72 +73,46 @@ function Player(a,b,c,d){
 		this.y += Math.sin(this.angle) * this.speed * 0.001 * time;
 	};
 	
-	
-	this.circle = function(time,xx,yy){//move in a circular motion around point xx,yy
+	this.circle = function(time,postX,postY){//move in a circular motion around point xx,yy
+		var distance = time * 0.001 * this.speed;
 		
-		var distance = this.speed * time * 0.001;
+		intersect = findTanIntersect(this.x, this.y, this.angle, postX, postY);
+		var behindTan = false;
 		
-		var tempAng = this.angle + ( Math.PI / 2.0 );
-		if( tempAng > Math.PI)
-			tempAng -= Math.PI * 2;
-
-		var moveTowardTanPoint = false; //this is turned true when the code realizes that the object is behind the tangent point, so that it will still move forward for a bit.
+		if( this.angle == Math.PI || this.angle == -Math.PI){//special cases
 		
-		if(Math.sin(this.angle) == 0 ){ //this if statement runs when the player is moving completely sideways. (because tan would be undefined, I have to type some special math)
-			if(Math.cos(this.angle) == 1 && this.x < coordinates[0])//moving right and behind tan point.
-				moveTowardTanPoint = true;
-			else if(Math.cos(this.angle) == -1 && this.x > coordinates[0])// moving left and behind tan point
-				moveTowardTanPoint = true;
-		}
-		else if(Math.sin(this.angle) > 0){
-			if(this.y < coordinates[1])//player is moving up and is behind tan point
-				moveTowardTanPoint = true;
-		}
-		else if(Math.sin(this.angle) < 0){
-			if(this.y > coordinates[1])//player is moving down and is behind tan point
-				moveTowardTanPoint = true;
-		}
-		
-		//if "moveTowardTanPoint" is false, it immediately starts circular motion. If it is true, it moves straight toward the tangent point, and then does corcular movement.
-		if(moveTowardTanPoint){
-			if(distance < findDistance(this.x,this.y, coordinates[0], coordinates[1])){//the distance the player needs to move is smaller than the distance to the tan point.
-				this.x += Math.cos(this.angle) * distance;
-				this.y += Math.sin(this.angle) * distance;
-				return; //returns because it has ran out of distance.
+			if( (Math.cos(this.angle) == 1) && (this.x < intersect[0]))
+			{
+				behindTan = true;
 			}
-			else{//sets player to tan point, but subtracts the distance that it took to get there.
-				distance -= findDistance(this.x,this.y, coordinates[0], coordinates[1]);
-				this.x = coordinates[0];
-				this.y = coordinates[1];
+			else if( (Math.cos(this.angle) == -1) && (this.x > intersect[0]))
+			{
+				behindTan = true;
+			}
+				
+		}
+		else if( Math.sin(this.angle) > 0 && this.y < intersect[1])
+			behindTan = true;
+		else if( Math.sin(this.angle) < 0 && this.y > intersect[1])
+			behindTan = true;
+			
+		//this is the end of finding if we are ahead or behind the intersection point.
+		
+		if(behindTan){
+			if(findDistance(this.x, this.y, postX, postY) > distance){//we can't go all the way to the tan point
+				this.move(time);
+				return;
+			}
+			else{
+				this.x = intersect[0];
+				this.y = intersect[1];
 			}
 		}
-		console.log("Position (" + this.x + ", " + this.y + ")");
 		
-		//if the function has not returned by this point, it starts circular motion.
-		var radius = findDistance(this.x, this.y, xx, yy);
-		var circAngle = Math.atan2(this.y - yy, this.x - xx); //angle from circle center to player.
-		var direction = this.angle - circAngle;//used to tell the direction of the player - clock wise or counter clock wise.
+		//work from here.
+		var ang = Math.atan2(postY-this.y, postX-this.x);
+		log(ang);
 		
-		if( direction >= (Math.PI / 2)){//clockwise
-			circAngle += distance / radius;
-			if(circAngle > Math.PI)
-				circAngle -= 2 * Math.PI;
-			
-			this.x = (Math.cos(circAngle) * radius) + xx;
-			this.y = (Math.sin(circAngle) * radius) + yy;
-			this.angle += distance/radius;
-		}
-		else if( direction <= (Math.PI / -2)){//counterClockwise
-			circAngle -= distance / radius;
-			if(circAngle < -Math.PI)
-				circAngle += 2 * Math.PI;
-			
-			this.x = (Math.cos(circAngle) * radius) + xx;
-			this.y = (Math.sin(circAngle) * radius) + yy;
-			this.angle += distance/radius;
-		}
-		else
-			console.log("There was an error");
 	}
 }
 
@@ -200,31 +183,4 @@ function PlayTitle(a,b,c,d){
 	this.y = b;
 	this.width = c;
 	this.height = d;
-}
-
-function findIntersect(x,y,a,xx,yy,aa){
-
-	var xxx = 0;
-	var yyy = 0;
-	
-	if(Math.sin(a) == 1 || Math.sin(a) == -1){
-		xxx = x;
-		yyy = yy;
-	}
-	else if(Math.sin(aa) == 1 || Math.sin(aa) == -1){
-		yyy = y;
-		xxx = xx;
-	}
-	else{
-		xxx = ( (Math.tan(a) * x) - y - (Math.tan(aa) * xx) + yy ) / ( Math.tan(a) - Math.tan(aa));
-		yyy = Math.tan(aa) * (xxx - xx) + yy;
-	}
-	
-	console.log("Tangent at (" + xxx + ", " + yyy + ")");
-	
-	return [xxx,yyy];
-}
-	
-function findDistance(x,y,xx,yy){
-	return Math.sqrt(Math.pow( yy - y, 2) + Math.pow( xx - x, 2));
 }
