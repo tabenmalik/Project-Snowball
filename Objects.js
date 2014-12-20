@@ -28,7 +28,7 @@ function PlayGameState(){
 	this.map;
 	
 	this.setup = function(){
-		this.player = new Player(425,115,10, 0);
+		this.player = new Player(100,700,10,0);
 		this.map = [{
 			x: 300,
 			y: 300,
@@ -73,13 +73,25 @@ function Player(a,b,c,d){
 		this.y += Math.sin(this.angle) * this.speed * 0.001 * time;
 	};
 	
-	this.circle = function(time,postX,postY){//move in a circular motion around point xx,yy
+	/*
+	Method: 	circle(time, postX, postY);
+	Arguments:	time 	= the update time
+				postX 	= the x coordinate of the Post that the player will be circling
+				postY	= the y coordinate of the Post that the player will by circling
+	Returns:	No value, but returns if the player has not reached the tangent intersection
+	Operation:	Determines the tangent intersection between the player and a post to circle around.
+				If the player is behind the tangent intersection then the player continues forward
+				motion. Once it has reached the tangent intersection or past it then the player
+				goes into circular motion around the post.
+	*/
+	this.circle = function(time,postX,postY){
 		var distance = time * 0.001 * this.speed;
 		
 		intersect = findTanIntersect(this.x, this.y, this.angle, postX, postY);
 		var behindTan = false;
 		
-		if( this.angle == Math.PI || this.angle == -Math.PI){//special cases
+		//Determines if the player is behind the tangent intersection
+		if( this.angle == Math.PI || this.angle == -Math.PI || this.angle == 0){
 		
 			if( (Math.cos(this.angle) == 1) && (this.x < intersect[0]))
 			{
@@ -96,10 +108,9 @@ function Player(a,b,c,d){
 		else if( Math.sin(this.angle) < 0 && this.y > intersect[1])
 			behindTan = true;
 			
-		//this is the end of finding if we are ahead or behind the intersection point.
-		
+		//If the player is behind the tanIntersect, checks that it won't pass it, then moves forward and returns
 		if(behindTan){
-			if(findDistance(this.x, this.y, postX, postY) > distance){//we can't go all the way to the tan point
+			if(findDistance(this.x, this.y, postX, postY) > distance){
 				this.move(time);
 				return;
 			}
@@ -109,10 +120,33 @@ function Player(a,b,c,d){
 			}
 		}
 		
-		//work from here.
-		var ang = Math.atan2(postY-this.y, postX-this.x);
-		log(ang);
+		//Once the player is at the tanIntersect, it begins circular motion
+		var radiusToPost = findDistance(this.x, this.y, postX, postY);
+		var angleToPost = Math.atan2(postY-this.y, postX-this.x);
+		var postOnRight = false;
 		
+		if(angleToPost < 0 && (postX-this.x) < 0)
+		{
+			angleToPost += Math.PI;
+		}
+		
+		//figure out which side of the player the post is on
+		if(this.angle == (Math.PI/2) && postX > this.x)
+			postOnRight = true;
+		else if((this.angle == (-Math.PI/2) || this.angle == (3*Math.PI/2)) && postX < this.x)
+			postOnRight = true;
+		else if(this.angle > (Math.PI/2) && this.angle < (3*Math.PI)/2)
+		{
+			if(this.y > postY)
+				postOnRight = true;
+		}
+		else if((this.angle < (Math.PI/2) && this.angle > (-Math.PI/2)) || (this.angle > (3*Math.PI/2) && this.angle < (2*Math.PI)))
+		{
+			if(this.y < postY)
+				postOnRight = true;
+		}
+		
+		log(postOnRight);
 	}
 }
 

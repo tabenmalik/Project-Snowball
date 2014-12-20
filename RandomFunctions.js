@@ -37,8 +37,8 @@ function findTanIntersect(x,y,angle,x2,y2){
 	return findIntersect(x,y,angle,x2,y2,angle2);
 }
 
-function findDistance(x,y,xx,yy){
-	return Math.sqrt(Math.pow( yy - y, 2) + Math.pow( xx - x, 2));
+function findDistance(x,y,x2,y2){
+	return Math.sqrt(Math.pow( y2 - y, 2) + Math.pow( x2 - x, 2));
 }
 
 function getRandomNumber(){
