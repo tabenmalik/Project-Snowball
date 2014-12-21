@@ -6,6 +6,10 @@ function collide(thing1,thing2){
 		return false;
 }
 
+function control2(left,down,right){
+	
+}
+
 function findIntersect(x,y,angle,x2,y2,angle2){
 	
 	var intx = 0;

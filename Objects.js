@@ -28,7 +28,7 @@ function PlayGameState(){
 	this.map;
 	
 	this.setup = function(){
-		this.player = new Player(100,700,10,0);
+		this.player = new Player(100,200,10,0);
 		this.map = [{
 			x: 300,
 			y: 300,
@@ -66,7 +66,7 @@ function Player(a,b,c,d){
 	this.y = b;
 	this.r = c;
 	this.angle = d;
-	this.speed = 100;
+	this.speed = 200;
 	
 	this.move = function(time){
 		this.x += Math.cos(this.angle) * this.speed * 0.001 * time;
@@ -107,16 +107,18 @@ function Player(a,b,c,d){
 			behindTan = true;
 		else if( Math.sin(this.angle) < 0 && this.y > intersect[1])
 			behindTan = true;
-			
+		
 		//If the player is behind the tanIntersect, checks that it won't pass it, then moves forward and returns
 		if(behindTan){
-			if(findDistance(this.x, this.y, postX, postY) > distance){
+			var temp = findDistance(this.x, this.y, postX, postY);
+			if( temp > distance){
 				this.move(time);
 				return;
 			}
 			else{
 				this.x = intersect[0];
 				this.y = intersect[1];
+				distance -= temp;
 			}
 		}
 		
@@ -131,22 +133,52 @@ function Player(a,b,c,d){
 		}
 		
 		//figure out which side of the player the post is on
-		if(this.angle == (Math.PI/2) && postX > this.x)
+		if(this.angle == (Math.PI/2) && postX < this.x)
 			postOnRight = true;
-		else if((this.angle == (-Math.PI/2) || this.angle == (3*Math.PI/2)) && postX < this.x)
+		else if(this.angle == (-Math.PI/2) && postX < this.x)
 			postOnRight = true;
-		else if(this.angle > (Math.PI/2) && this.angle < (3*Math.PI)/2)
-		{
-			if(this.y > postY)
+		else if(this.angle > (Math.PI / 2) || this.angle < (-Math.PI / 2)){
+			if(postY - 4 < this.y)
 				postOnRight = true;
 		}
-		else if((this.angle < (Math.PI/2) && this.angle > (-Math.PI/2)) || (this.angle > (3*Math.PI/2) && this.angle < (2*Math.PI)))
-		{
-			if(this.y < postY)
+		else if(this.angle > (-Math.PI / 2) && this.angle < (Math.PI / 2)){
+			if(postY + 4 > this.y)
 				postOnRight = true;
 		}
 		
 		log(postOnRight);
+		
+		//and last but not least, the official circular motion
+		var radius = findDistance(this.x,this.y, postX, postY);
+		
+		var circAngle = 0;
+		if(postOnRight)
+			circAngle = this.angle - (Math.PI / 2);
+		else if(!postOnRight)
+			circAngle = this.angle + (Math.PI / 2);
+		
+		if(circAngle > Math.PI)
+			circAngle -= 2 * Math.PI;
+		else if(circAngle < -Math.PI)
+			circAngle += 2 * Math.PI;
+		
+		var changeAng = distance / radius;
+		if(!postOnRight)
+			changeAng *= -1;
+			
+		circAngle += changeAng;
+		if(circAngle > Math.PI)
+			circAngle -= 2 * Math.PI;
+		else if(circAngle < -Math.PI)
+			circAngle += 2 * Math.PI;
+		
+		this.x = postX + (Math.cos(circAngle) * radius);
+		this.y = postY + (Math.sin(circAngle) * radius);
+		this.angle += changeAng;
+		if(this.angle > Math.PI)
+			this.angle -= 2 * Math.PI;
+		else if(this.angle < -Math.PI)
+			this.angle += 2 * Math.PI;
 	}
 }
 
