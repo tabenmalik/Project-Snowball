@@ -28,7 +28,7 @@ function PlayGameState(){
 	this.tether = false;
 	
 	this.setup = function(){
-		this.player = new Player(100,200,10,-Math.PI/4);
+		this.player = new Player(100,200,10,0);
 		this.map = [{
 			x: 300,
 			y: 300,
