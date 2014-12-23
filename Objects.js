@@ -203,6 +203,38 @@ function Menu(){
 	};
 }
 
+function Pause(){
+	
+	this.setup = function(){
+		
+	}
+	
+	this.update = function(time){
+	
+	}
+	
+	this.draw = function(){
+	
+	}
+	
+}
+
+function GameOver(){
+	
+	this.setup = function(){
+		
+	}
+	
+	this.update = function(time){
+		
+	}
+	
+	this.draw = function(){
+		
+	}
+	
+}
+
 function PlayButton(a,b,c){
 	this.x = a;
 	this.y = b;
@@ -260,4 +292,18 @@ function Tether(x,y,a,px,py){
 	}
 	else
 		this.radius = findDistance(this.tanX, this.tanY, px,py);
+}
+
+function Enemy(a,b,c,d){//x,y,r,speed
+	this.x = a;
+	this.y = b;
+	this.r = c;
+	this.speed = d;
+	
+	this.run = function(time,px,py){//time, player's x and y
+		var ang = Math.atan2(py - this.y, px - this.x);
+		
+		this.x += Math.cos(ang) * speed * time * 0.001;
+		this.y += Math.sin(ang) * speed * time * 0.001;
+	}
 }
