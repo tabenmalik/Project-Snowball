@@ -5,8 +5,6 @@ function Mouse(){
 	this.clicked = false;
 	
 	this.setup = function(){
-		can.addEventListener('click', handleClick);
-		can.addEventListener('drag', handleClick);
 	};
 	
 	this.setMousePosition = function(){
@@ -30,12 +28,17 @@ function PlayGameState(){
 	this.tether = false;
 	
 	this.setup = function(){
-		this.player = new Player(100,200,10,0);
+		this.player = new Player(100,200,10,-Math.PI/4);
 		this.map = [{
 			x: 300,
 			y: 300,
 			r: 30
-			}];
+		},
+		{
+			x: 600,
+			y: 400,
+			r: 30
+		}];
 	};
 	
 	this.changeState = function(){
@@ -127,34 +130,20 @@ function Player(a,b,c,d){
 	this.circle = function(time,postX,postY,radius,onRight){
 		var distance = time * 0.001 * this.speed;
 		
-		var circAngle = 0;
-		if(onRight)
-			circAngle = this.angle - (Math.PI / 2);
-		else if(!onRight)
-			circAngle = this.angle + (Math.PI / 2);
-		
-		if(circAngle > Math.PI)
-			circAngle -= 2 * Math.PI;
-		else if(circAngle < -Math.PI)
-			circAngle += 2 * Math.PI;
+		var circAngle = Math.atan2(this.y - postY, this.x - postX);
 		
 		var changeAng = distance / radius;
 		if(!onRight)
 			changeAng *= -1;
 			
-		circAngle += changeAng;
-		if(circAngle > Math.PI)
-			circAngle -= 2 * Math.PI;
-		else if(circAngle < -Math.PI)
-			circAngle += 2 * Math.PI;
+		circAngle = addAngles(circAngle,changeAng);
 		
 		this.x = postX + (Math.cos(circAngle) * radius);
 		this.y = postY + (Math.sin(circAngle) * radius);
-		this.angle += changeAng;
-		if(this.angle > Math.PI)
-			this.angle -= 2 * Math.PI;
-		else if(this.angle < -Math.PI)
-			this.angle += 2 * Math.PI;
+		if(onRight)
+			this.angle = addAngles(circAngle,(Math.PI / 2));
+		else
+			this.angle = addAngles(circAngle, -(Math.PI / 2));
 	}
 }
 
@@ -240,8 +229,6 @@ function Tether(x,y,a,px,py){
 	this.tanX = coors[0];
 	this.tanY = coors[1];
 	
-	this.radius = findDistance(this.tanX, this.tanY, px,py);
-	
 	var ang = Math.atan2(py - y, px - x);
 	ang = addAngles(ang, -a);
 	if(ang > 0)
@@ -265,4 +252,12 @@ function Tether(x,y,a,px,py){
 			this.pt = true;
 		return passedTan;
 	}
+	
+	if(this.passedTan(x,y,a)){
+		this.radius = findDistance(x,y,px,py);
+		this.tanX = x;
+		this.tanY = y;
+	}
+	else
+		this.radius = findDistance(this.tanX, this.tanY, px,py);
 }

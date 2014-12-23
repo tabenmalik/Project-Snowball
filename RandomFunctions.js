@@ -34,10 +34,7 @@ function findIntersect(x,y,angle,x2,y2,angle2){
 }
 
 function findTanIntersect(x,y,angle,x2,y2){
-	var angle2 = angle + (Math.PI /2);
-	if(angle2 > Math.PI)
-		angle2 -= (2 * Math.PI);
-	
+	var angle2 = addAngles(angle, (Math.PI / 2));
 	return findIntersect(x,y,angle,x2,y2,angle2);
 }
 

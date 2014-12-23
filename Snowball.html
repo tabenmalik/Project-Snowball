@@ -30,7 +30,11 @@
 	
 	<script type='text/javascript'>
 	document.getElementById('canvas').onmousedown = function(){
+		mouse.clicked = true;
 		return false;
+	};
+	document.getElementById('canvas').onmouseup = function(){
+		mouse.clicked = false;
 	};
 	
 	var can = document.getElementById('canvas');
