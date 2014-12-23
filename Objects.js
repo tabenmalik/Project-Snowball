@@ -26,6 +26,8 @@ function Mouse(){
 function PlayGameState(){
 	this.player;
 	this.map;
+	this.heldClick = false;
+	this.tether = false;
 	
 	this.setup = function(){
 		this.player = new Player(100,200,10,0);
@@ -41,20 +43,57 @@ function PlayGameState(){
 	};
 	
 	this.update = function(time){
-		this.player.circle(time, this.map[0].x, this.map[0].y);
+		if(mouse.clicked == false){
+			this.player.move(time);
+			this.heldClick = false;
+			this.tether = false;
+		}
+		else if(mouse.clicked && this.heldClick == false){
+			this.heldClick = true;
+			
+			var index = -1;
+			var distance = 0;
+			for(var i = 0; i < this.map.length; i++){
+				if(index == -1){
+					index = i;
+					distance = findDistance(this.player.x + mouse.x - 400, this.player.y + mouse.y - 400, this.map[i].x, this.map[i].y);
+				}
+				else{
+					var newDist = findDistance(this.player.x + mouse.x - 400, this.player.y + mouse.y - 400, this.map[i].x, this.map[i].y);
+					if(newDist < distance){
+						distance = newDist;
+						index = i;
+					}
+				}
+			}
+			
+			this.tether = new Tether(this.player.x, this.player.y, this.player.angle, this.map[index].x, this.map[index].y);
+		}
+		
+		if(mouse.clicked){
+			if( this.tether.passedTan(this.player.x, this.player.y, this.player.angle) == false){
+				this.player.move(time);
+			}
+			else{
+				this.player.circle(time, this.tether.postX, this.tether.postY, this.tether.radius, this.tether.onRight);
+			}
+		}
 	};
 	
 	this.draw = function(){
 		ctx.clearRect(0,0,can.width, can.height);
-	
+		
+		var dx = -this.player.x + (can.width * 0.5);
+		var dy = -this.player.y + (can.width * 0.5);
+		
 		ctx.beginPath();
-		ctx.arc(this.player.x, this.player.y, this.player.r, 0, Math.PI * 2);
+		ctx.arc(this.player.x + dx, this.player.y + dy, this.player.r, 0, Math.PI * 2);
 		ctx.closePath();
 		ctx.fill();
 		
 		for(var i = 0; i < this.map.length; i++){
 			ctx.beginPath();
-			ctx.arc(this.map[i].x, this.map[i].y, this.map[i].r, 0, 2 * Math.PI);
+			ctx.arc(this.map[i].x + dx, this.map[i].y + dy, this.map[i].r, 0, 2 * Math.PI);
 			ctx.closePath();
 			ctx.fill();
 		}
@@ -67,6 +106,7 @@ function Player(a,b,c,d){
 	this.r = c;
 	this.angle = d;
 	this.speed = 200;
+	this.tether = false;
 	
 	this.move = function(time){
 		this.x += Math.cos(this.angle) * this.speed * 0.001 * time;
@@ -84,77 +124,13 @@ function Player(a,b,c,d){
 				motion. Once it has reached the tangent intersection or past it then the player
 				goes into circular motion around the post.
 	*/
-	this.circle = function(time,postX,postY){
+	this.circle = function(time,postX,postY,radius,onRight){
 		var distance = time * 0.001 * this.speed;
 		
-		intersect = findTanIntersect(this.x, this.y, this.angle, postX, postY);
-		var behindTan = false;
-		
-		//Determines if the player is behind the tangent intersection
-		if( this.angle == Math.PI || this.angle == -Math.PI || this.angle == 0){
-		
-			if( (Math.cos(this.angle) == 1) && (this.x < intersect[0]))
-			{
-				behindTan = true;
-			}
-			else if( (Math.cos(this.angle) == -1) && (this.x > intersect[0]))
-			{
-				behindTan = true;
-			}
-				
-		}
-		else if( Math.sin(this.angle) > 0 && this.y < intersect[1])
-			behindTan = true;
-		else if( Math.sin(this.angle) < 0 && this.y > intersect[1])
-			behindTan = true;
-		
-		//If the player is behind the tanIntersect, checks that it won't pass it, then moves forward and returns
-		if(behindTan){
-			var temp = findDistance(this.x, this.y, postX, postY);
-			if( temp > distance){
-				this.move(time);
-				return;
-			}
-			else{
-				this.x = intersect[0];
-				this.y = intersect[1];
-				distance -= temp;
-			}
-		}
-		
-		//Once the player is at the tanIntersect, it begins circular motion
-		var radiusToPost = findDistance(this.x, this.y, postX, postY);
-		var angleToPost = Math.atan2(postY-this.y, postX-this.x);
-		var postOnRight = false;
-		
-		if(angleToPost < 0 && (postX-this.x) < 0)
-		{
-			angleToPost += Math.PI;
-		}
-		
-		//figure out which side of the player the post is on
-		if(this.angle == (Math.PI/2) && postX < this.x)
-			postOnRight = true;
-		else if(this.angle == (-Math.PI/2) && postX < this.x)
-			postOnRight = true;
-		else if(this.angle > (Math.PI / 2) || this.angle < (-Math.PI / 2)){
-			if(postY - 4 < this.y)
-				postOnRight = true;
-		}
-		else if(this.angle > (-Math.PI / 2) && this.angle < (Math.PI / 2)){
-			if(postY + 4 > this.y)
-				postOnRight = true;
-		}
-		
-		log(postOnRight);
-		
-		//and last but not least, the official circular motion
-		var radius = findDistance(this.x,this.y, postX, postY);
-		
 		var circAngle = 0;
-		if(postOnRight)
+		if(onRight)
 			circAngle = this.angle - (Math.PI / 2);
-		else if(!postOnRight)
+		else if(!onRight)
 			circAngle = this.angle + (Math.PI / 2);
 		
 		if(circAngle > Math.PI)
@@ -163,7 +139,7 @@ function Player(a,b,c,d){
 			circAngle += 2 * Math.PI;
 		
 		var changeAng = distance / radius;
-		if(!postOnRight)
+		if(!onRight)
 			changeAng *= -1;
 			
 		circAngle += changeAng;
@@ -249,4 +225,44 @@ function PlayTitle(a,b,c,d){
 	this.y = b;
 	this.width = c;
 	this.height = d;
+}
+
+function Tether(x,y,a,px,py){
+	this.postX = px;
+	this.postY = py;
+	this.tanX = 0;
+	this.tanY = 0;
+	this.radius = 0;
+	this.pt = false;
+	this.onRight = false;
+	
+	var coors = findTanIntersect(x,y,a,px,py);
+	this.tanX = coors[0];
+	this.tanY = coors[1];
+	
+	this.radius = findDistance(this.tanX, this.tanY, px,py);
+	
+	var ang = Math.atan2(py - y, px - x);
+	ang = addAngles(ang, -a);
+	if(ang > 0)
+		this.onRight = true;
+		
+	this.passedTan = function(x,y,a){
+		if(this.pt == true)
+			return true;
+		var passedTan = false;
+		
+		if(a == 0 && x > this.tanX)
+			passedTan = true;
+		else if( (a == -Math.PI || a == Math.PI) && x < this.tanX)
+			passedTan = true;
+		else if( a > 0 && y > this.tanY)
+			passedTan = true;
+		else if( a < 0 && y < this.tanY)
+			passedTan = true;
+		
+		if(passedTan == true)
+			this.pt = true;
+		return passedTan;
+	}
 }

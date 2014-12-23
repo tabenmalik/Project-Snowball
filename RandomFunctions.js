@@ -45,6 +45,17 @@ function findDistance(x,y,x2,y2){
 	return Math.sqrt(Math.pow( y2 - y, 2) + Math.pow( x2 - x, 2));
 }
 
+function addAngles(a1,a2){
+	a1 += a2;
+	
+	if(a1 > Math.PI)
+		a1 -= 2 * Math.PI;
+	else if(a1 < -Math.PI)
+		a1 += 2 * Math.PI;
+		
+	return a1;
+}
+
 function getRandomNumber(){
 	return 4;
 }
