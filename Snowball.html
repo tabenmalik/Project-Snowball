@@ -46,6 +46,7 @@
 	var lastTickTime = 0;
 	var mainMenu = 0;
 	var play = 0;
+	var endGame = 0;
 	
 	function main(){
 		mouse = new Mouse();
@@ -57,7 +58,10 @@
 		play = new PlayGameState();
 		play.setup();
 		
-		gamestate = mainMenu;
+		endGame = new GameOver();
+		endGame.setup();
+		
+		gamestate = endGame;
 		can.onmousemove = function(){mouse.setMousePosition(event);};
 		window.requestAnimationFrame(tick);
 	}

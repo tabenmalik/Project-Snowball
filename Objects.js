@@ -319,7 +319,11 @@ Methods:
 	draw()
 */
 function GameOver(){
-	
+	this.xFrontOffSet = 0;
+	this.yFrontOffSet = 0;
+	this.xBackOffSet = 0;
+	this.yBackOffSet = 0;
+	this.endTitle;
 	/*
 	Method: setup()
 	Arguments: N/A
@@ -327,7 +331,7 @@ function GameOver(){
 	Operation: N/A
 	*/
 	this.setup = function(){
-		
+		this.endTitle = new PlayTitle(100,125,600,100);
 	}
 	
 	/*
@@ -337,7 +341,14 @@ function GameOver(){
 	Operation: N/A
 	*/
 	this.update = function(time){
+		var x = (mouse.x - (can.width*0.5));
+		var y = (mouse.y - (can.height*0.5));
 		
+		this.xFrontOffSet = x * 0.125;
+		this.yFrontOffSet = y * 0.125;
+		
+		this.xBackOffSet = x * 0.0625;
+		this.yBackOffSet = y * 0.0625;
 	}
 	
 	/*
@@ -347,7 +358,17 @@ function GameOver(){
 	Operation: N/A
 	*/
 	this.draw = function(){
+		ctx.clearRect(0,0,can.width,can.height);
 		
+		ctx.fillStyle = "#5555FF";
+		
+		ctx.fillRect(this.endTitle.x - this.xBackOffSet, this.endTitle.y - this.yBackOffSet, this.endTitle.width, this.endTitle.height);
+		
+		ctx.fillStyle = "#999999";
+		ctx.font = "bold 60px Verdana";
+		ctx.fillText("GAME OVER",195 - this.xBackOffSet ,200 - this.yBackOffSet );
+		ctx.fillStyle = "#000000";
+		ctx.fillText("GAME OVER",195 - this.xFrontOffSet,200 - this.yFrontOffSet);
 	}
 	
 }
