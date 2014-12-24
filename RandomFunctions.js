@@ -53,7 +53,10 @@ function addAngles(a1,a2){
 function randomizePosts(){
 	var newPosts = [];
 	
-	while(newPosts.length < 35){
+	var failedTries = 0;
+	var skip = false;
+	
+	while(newPosts.length < 20 && skip == false){
 		var ang = (Math.random() * 2 * Math.PI) - Math.PI;
 		var dist = (Math.random() * 800) + 200;
 		var rad = (Math.random() * 40) + 10;
@@ -67,8 +70,13 @@ function randomizePosts(){
 				minDist = findDistance(newX,newY, newPosts[i].x, newPosts[i].y);
 		}
 		
-		if(minDist > 300)
+		if(minDist > 200)
 			newPosts.push(new Post(newX, newY, rad));
+		else{
+			failedTries++;
+			if(failedTries > 100)
+				break;
+		}
 	}
 	
 	return newPosts;
