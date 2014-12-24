@@ -52,11 +52,12 @@ function addAngles(a1,a2){
 
 function randomizePosts(){
 	var newPosts = [];
+	var failedTries = 0;
 	
-	while(newPosts.length < 10){
+	while(newPosts.length < 20){
 		var ang = (Math.random() * 2 * Math.PI) - Math.PI;
 		var dist = (Math.random() * 800) + 200;
-		var rad = (Math.random() * 40) + 10;
+		var rad = (Math.random() * 25) + 5;
 		
 		var newX = Math.cos(ang) * dist;
 		var newY = Math.sin(ang) * dist;
@@ -67,11 +68,40 @@ function randomizePosts(){
 				minDist = findDistance(newX,newY, newPosts[i].x, newPosts[i].y);
 		}
 		
-		if(minDist > 300)
+		if(minDist > 200)
 			newPosts.push(new Post(newX, newY, rad));
+		else{
+			failedTries++;
+			if(failedTries > 100)
+				break;
+		}
 	}
 	
 	return newPosts;
+}
+
+function control1(posts,x,y){
+	if(mouse.clicked == false)
+		return false;
+	
+	var x2 = x + mouse.x - (can.width / 2);
+	var y2 = y + mouse.y - (can.height/ 2);
+	
+	var dist = 0;
+	var index = -1;
+	
+	for(var i = 0; i < posts.length; i++){
+		if(index == -1){
+			index = i;
+			dist = findDistance(x2, y2, posts[i].x, posts[i].y);
+		}
+		else if(findDistance(x2, y2, posts[i].x, posts[i].y) < dist){
+			dist = findDistance(x2, y2, posts[i].x, posts[i].y);
+			index = i;
+		}
+	}
+	
+	return posts[index];
 }
 
 function getRandomNumber(){

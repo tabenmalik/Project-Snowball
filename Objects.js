@@ -74,9 +74,10 @@ Methods:
 function PlayGameState(){
 	this.player;
 	this.posts = [];
-	this.heldClick = false;
 	this.tether = false;
 	this.enemies = [];
+	this.boundry;
+	this.control;
 	
 	/*
 	Method: setup()
@@ -87,8 +88,9 @@ function PlayGameState(){
 	this.setup = function(){
 		this.player = new Player(0,0,10,0);
 		this.posts = randomizePosts();
-		
-		this.enemies.push(new Enemy(-100,-100,10,50));//adds an enemy to the array
+		this.control = control1;//pass in posts and the x and y of the player
+		this.boundry = new Boundry(1000);	
+		//this.enemies.push(new Enemy(-100,-100,10,50));//adds an enemy to the array
 	};
 	
 	/*
@@ -100,44 +102,38 @@ function PlayGameState(){
 				for circular motion around a post
 	*/
 	this.update = function(time){
-		if(mouse.clicked == false){
-			this.player.move(time);
-			this.heldClick = false;
+		if(this.tether == false){
+			var temp = this.control(this.posts, this.player.x, this.player.y);
+			if(temp != false)
+				this.tether = new Tether(this.player.x, this.player.y, this.player.angle, temp.x, temp.y);
+		}
+		else if(this.control(this.posts, this.player.x, this.player.y) == false){
 			this.tether = false;
 		}
-		else if(mouse.clicked && this.heldClick == false){
-			this.heldClick = true;
-			
-			var index = -1;
-			var distance = 0;
-			for(var i = 0; i < this.posts.length; i++){
-				if(index == -1){
-					index = i;
-					distance = findDistance(this.player.x + mouse.x - 400, this.player.y + mouse.y - 400, this.posts[i].x, this.posts[i].y);
-				}
-				else{
-					var newDist = findDistance(this.player.x + mouse.x - 400, this.player.y + mouse.y - 400, this.posts[i].x, this.posts[i].y);
-					if(newDist < distance){
-						distance = newDist;
-						index = i;
-					}
-				}
-			}
-			
-			this.tether = new Tether(this.player.x, this.player.y, this.player.angle, this.posts[index].x, this.posts[index].y);
-		}
 		
-		if(mouse.clicked){
-			if( this.tether.passedTan(this.player.x, this.player.y, this.player.angle) == false){
-				this.player.move(time);
-			}
-			else{
-				this.player.circle(time, this.tether.postX, this.tether.postY, this.tether.radius, this.tether.onRight);
-			}
-		}
+		if(this.tether == false)
+			this.player.move(time);
+		else if(this.tether.passedTan(this.player.x, this.player.y, this.player.angle))
+			this.player.circle(time,this.tether.postX, this.tether.postY, this.tether.radius, this.tether.onRight);
+		else
+			this.player.move(time);
 		
 		for(var i = 0; i < this.enemies.length; i++){
 			this.enemies[i].run(time,this.player.x,this.player.y);
+		}
+		
+		//collision detections
+		
+		for(var i = 0; i < this.posts.length; i++){
+			if(collide(this.posts[i], this.player)){
+				//CODE FOR WHEN PLAYER COLLIDES WITH POST
+				log("Collided with Post");
+			}
+		}
+		
+		if(findDistance(0,0,this.player.x, this.player.y) + this.player.r > this.boundry.r && this.tether == false){
+			//CODE FOR RUNNING OUT OF BOUNDS
+			log("Out of Bounds");
 		}
 	};
 	
@@ -149,10 +145,19 @@ function PlayGameState(){
 	*/
 	this.draw = function(){
 		ctx.clearRect(0,0,can.width, can.height);
+		ctx.fillStyle = "#000000";
+		ctx.fillRect(0,0,can.width, can.height);
 		
 		var dx = -this.player.x + (can.width * 0.5);
 		var dy = -this.player.y + (can.width * 0.5);
 		
+		ctx.fillStyle = "#FFFFFF";
+		ctx.beginPath();
+		ctx.arc( dx, dy, 1000, 0, Math.PI * 2);
+		ctx.closePath();
+		ctx.fill();
+		
+		ctx.fillStyle = "#000000";
 		ctx.beginPath();
 		ctx.arc(this.player.x + dx, this.player.y + dy, this.player.r, 0, Math.PI * 2);
 		ctx.closePath();
@@ -610,4 +615,10 @@ function Post(a,b,c){
 	this.x = a;
 	this.y = b;
 	this.r = c
+}
+
+function Boundry(a){//radius
+	this.x = 0;
+	this.y = 0;
+	this.r = a;
 }
