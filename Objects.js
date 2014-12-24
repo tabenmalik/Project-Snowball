@@ -21,24 +21,27 @@ function Mouse(){
 	};
 }
 
+
+
+//********************GAME STATES********************
+
+
+
 function PlayGameState(){
 	this.player;
-	this.map;
+	this.posts = [];
 	this.heldClick = false;
 	this.tether = false;
+	this.enemies = [];
 	
 	this.setup = function(){
-		this.player = new Player(100,200,10,0);
-		this.map = [{
-			x: 300,
-			y: 300,
-			r: 30
-		},
-		{
-			x: 600,
-			y: 400,
-			r: 30
-		}];
+		this.player = new Player(0,0,10,0);
+		this.posts.push(new Post(200,200,30));
+		this.posts.push(new Post(200,-200,30));
+		this.posts.push(new Post(-200,-200,30));
+		this.posts.push(new Post(-200,200,30));
+		
+		this.enemies.push(new Enemy(-100,-100,10,50));//adds an enemy to the array
 	};
 	
 	this.update = function(time){
@@ -52,13 +55,13 @@ function PlayGameState(){
 			
 			var index = -1;
 			var distance = 0;
-			for(var i = 0; i < this.map.length; i++){
+			for(var i = 0; i < this.posts.length; i++){
 				if(index == -1){
 					index = i;
-					distance = findDistance(this.player.x + mouse.x - 400, this.player.y + mouse.y - 400, this.map[i].x, this.map[i].y);
+					distance = findDistance(this.player.x + mouse.x - 400, this.player.y + mouse.y - 400, this.posts[i].x, this.posts[i].y);
 				}
 				else{
-					var newDist = findDistance(this.player.x + mouse.x - 400, this.player.y + mouse.y - 400, this.map[i].x, this.map[i].y);
+					var newDist = findDistance(this.player.x + mouse.x - 400, this.player.y + mouse.y - 400, this.posts[i].x, this.posts[i].y);
 					if(newDist < distance){
 						distance = newDist;
 						index = i;
@@ -66,7 +69,7 @@ function PlayGameState(){
 				}
 			}
 			
-			this.tether = new Tether(this.player.x, this.player.y, this.player.angle, this.map[index].x, this.map[index].y);
+			this.tether = new Tether(this.player.x, this.player.y, this.player.angle, this.posts[index].x, this.posts[index].y);
 		}
 		
 		if(mouse.clicked){
@@ -76,6 +79,10 @@ function PlayGameState(){
 			else{
 				this.player.circle(time, this.tether.postX, this.tether.postY, this.tether.radius, this.tether.onRight);
 			}
+		}
+		
+		for(var i = 0; i < this.enemies.length; i++){
+			this.enemies[i].run(time,this.player.x,this.player.y);
 		}
 	};
 	
@@ -90,9 +97,16 @@ function PlayGameState(){
 		ctx.closePath();
 		ctx.fill();
 		
-		for(var i = 0; i < this.map.length; i++){
+		for(var i = 0; i < this.posts.length; i++){
 			ctx.beginPath();
-			ctx.arc(this.map[i].x + dx, this.map[i].y + dy, this.map[i].r, 0, 2 * Math.PI);
+			ctx.arc(this.posts[i].x + dx, this.posts[i].y + dy, this.posts[i].r, 0, 2 * Math.PI);
+			ctx.closePath();
+			ctx.fill();
+		}
+		
+		for(var i = 0; i < this.enemies.length; i++){
+			ctx.beginPath();
+			ctx.arc(this.enemies[i].x + dx, this.enemies[i].y + dy, this.enemies[i].r, 0, 2 * Math.PI);
 			ctx.closePath();
 			ctx.fill();
 		}
@@ -231,6 +245,8 @@ function GameOver(){
 	
 }
 
+//********************Random Objects********************
+
 function PlayButton(a,b,c){
 	this.x = a;
 	this.y = b;
@@ -299,7 +315,13 @@ function Enemy(a,b,c,d){//x,y,r,speed
 	this.run = function(time,px,py){//time, player's x and y
 		var ang = Math.atan2(py - this.y, px - this.x);
 		
-		this.x += Math.cos(ang) * speed * time * 0.001;
-		this.y += Math.sin(ang) * speed * time * 0.001;
+		this.x += Math.cos(ang) * this.speed * time * 0.001;
+		this.y += Math.sin(ang) * this.speed * time * 0.001;
 	}
+}
+
+function Post(a,b,c){//x,y,r
+	this.x = a;
+	this.y = b;
+	this.r = c
 }

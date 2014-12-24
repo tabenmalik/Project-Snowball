@@ -6,10 +6,6 @@ function collide(thing1,thing2){
 		return false;
 }
 
-function control2(left,down,right){
-	
-}
-
 function findIntersect(x,y,angle,x2,y2,angle2){
 	
 	var intx = 0;
@@ -28,7 +24,8 @@ function findIntersect(x,y,angle,x2,y2,angle2){
 		inty = Math.tan(angle2) * (intx - x2) + y2;
 	}
 	
-	log("Intersection at ("+intx+", "+inty+")");
+	//used for bug testing
+	//log("Intersection at ("+intx+", "+inty+")");
 	
 	return [intx,inty];
 }
