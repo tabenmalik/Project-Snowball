@@ -41,10 +41,6 @@ function PlayGameState(){
 		}];
 	};
 	
-	this.changeState = function(){
-		gamestate = this.gamestate;
-	};
-	
 	this.update = function(time){
 		if(mouse.clicked == false){
 			this.player.move(time);
