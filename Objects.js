@@ -1,12 +1,40 @@
+/*
+Class: Mouse()
+	controls and keeps track of the positioning of mouse
+Constructor: N/A
+Instances:
+	x: mouse x position
+	y: mouse y position
+	r: mouse radius. Default is zero. Exists for collision detection
+	clicked: default is false. set to true when mouse is clicked
+Methods:
+	setup()
+	setMousePosition()
+*/
+
 function Mouse(){
 	this.x = 0;
 	this.y = 0;
 	this.r = 0;
 	this.clicked = false;
 	
+	/*
+	Method: setup()
+	Arguments: N/A
+	Returns: N/A
+	Operation: N/A
+	*/
 	this.setup = function(){
 	};
 	
+	/*
+	Method: setMousePosition()
+	Arguments: 	1. event
+				2. x, y
+	Returns: N/A
+	Operation: 	If passed event, it sets mouse x and y position to the event's position relative to canvas
+				If passed and x and y, it sets mouse x and y position to those coordinates
+	*/
 	this.setMousePosition = function(){
 		if(arguments.length == 1)
 		{
@@ -26,7 +54,23 @@ function Mouse(){
 //********************GAME STATES********************
 
 
-
+/*
+Class: PlayGameState()
+	contains every object and information for the playing state
+Constructor: N/A
+Instances:
+	player: a player object
+	posts: array of post objects
+	heldClick: default is false. true if player holds mouse down
+	tether: a tether object that holds info for circular motion
+	enemies: array of enemy objects
+Methods:
+	setup()
+	update(time)
+	draw()
+	
+	
+*/
 function PlayGameState(){
 	this.player;
 	this.posts = [];
@@ -34,6 +78,12 @@ function PlayGameState(){
 	this.tether = false;
 	this.enemies = [];
 	
+	/*
+	Method: setup()
+	Arguments: N/A
+	Returns: N/A
+	Operation: Creates player object, map, and enemies etc. for game play
+	*/
 	this.setup = function(){
 		this.player = new Player(0,0,10,0);
 		this.posts = randomizePosts();
@@ -41,6 +91,14 @@ function PlayGameState(){
 		this.enemies.push(new Enemy(-100,-100,10,50));//adds an enemy to the array
 	};
 	
+	/*
+	Method: update(time)
+	Arguments:
+		time: the update time for ticks
+	Returns: N/A
+	Operation:	Updates the player's position. If the mouse is clicked then a tether object is created 
+				for circular motion around a post
+	*/
 	this.update = function(time){
 		if(mouse.clicked == false){
 			this.player.move(time);
@@ -83,6 +141,12 @@ function PlayGameState(){
 		}
 	};
 	
+	/*
+	Method: draw()
+	Arguments: N/A
+	Returns: N/A
+	Operation: Draws the player, posts, enemies etc. for gameplay
+	*/
 	this.draw = function(){
 		ctx.clearRect(0,0,can.width, can.height);
 		
@@ -109,7 +173,203 @@ function PlayGameState(){
 		}
 	};
 }
+
+/*
+Class: Menu()
+Arguments for Constructor: N/A
+Instances: 
+	xFrontOffSet: x position of the front shadow offset
+	yFrontOffSet: y position of the front shadow offset
+	xBackOffSet: x position of the back shadow offset
+	yBackOffSet: y position of the back shadow offset
+	playButton: the play button object
+	playTitle: the play title object
+Methods:
+	setup()
+	update()
+	draw()
+*/
+function Menu(){
+	this.xFrontOffSet = 0;
+	this.yFrontOffSet = 0;
+	this.xBackOffSet = 0;
+	this.yBackOffSet = 0;
+	this.playButton;
+	this.playTitle;
 	
+	
+	/*
+	Methods: setup()
+	Arguments: N/A
+	Returns: N/A
+	Operation: creates a play button object and a play title object
+	*/
+	this.setup = function(){
+		this.playButton = new PlayButton(400,400,100);
+		this.playTitle = new PlayTitle(100,125,600,100);
+		
+	};
+	
+	/*
+	Method: update()
+	Arguments:
+		time: the update time interval
+	Returns: N/A
+	Operation: 	updates the title and play button offsets of the menu
+				if the play button is clicked then the gamestate changes to play
+	*/
+	this.update = function(time){
+		var x = (mouse.x - (can.width*0.5));
+		var y = (mouse.y - (can.height*0.5));
+		
+		this.xFrontOffSet = x * 0.125;
+		this.yFrontOffSet = y * 0.125;
+		
+		this.xBackOffSet = x * 0.0625;
+		this.yBackOffSet = y * 0.0625;
+		
+		var pb = {
+			x: this.playButton.x - this.xBackOffSet,
+			y: this.playButton.y - this.yBackOffSet,
+			r: this.playButton.r
+		};
+		
+		if(collide(mouse,pb) && mouse.clicked){
+			gamestate = play;
+		}
+	};
+	
+	/*
+	Method; draw()
+	Arguments: N/A
+	Returns: N/A
+	Operation: draws the Menu
+	*/
+	this.draw = function(){
+		ctx.clearRect(0,0,can.width,can.height);
+		
+		ctx.fillStyle = "#5555FF";
+		ctx.beginPath();
+		ctx.arc(this.playButton.x - this.xBackOffSet, this.playButton.y - this.yBackOffSet, this.playButton.r, 0, 2*Math.PI);
+		ctx.closePath();
+		ctx.fill();
+		
+		ctx.fillRect(this.playTitle.x - this.xBackOffSet, this.playTitle.y - this.yBackOffSet, this.playTitle.width, this.playTitle.height);
+		
+		ctx.fillStyle = "#999999";
+		ctx.font = "bold 60px Verdana";
+		ctx.fillText("Project Snowball",115 - this.xBackOffSet ,200 - this.yBackOffSet );
+		ctx.fillStyle = "#000000";
+		ctx.fillText("Project Snowball",115 - this.xFrontOffSet,200 - this.yFrontOffSet);
+		ctx.font = "30px Verdana";
+		ctx.fillText("PLAY",360 - this.xFrontOffSet, 415 - this.yFrontOffSet);
+	};
+}
+
+/*
+Class: Pause()
+Arguments for Constructor: N/A
+Instances: N/A
+Methods:
+	setup()
+	update()
+	draw()
+*/
+function Pause(){
+	
+	/*
+	Method: setup()
+	Arguments: N/A
+	Returns: N/A
+	Operation: N/A
+	*/
+	this.setup = function(){
+		
+	}
+	
+	/*
+	Method: update()
+	Arguments: N/A
+	Returns: N/A
+	Operation: N/A
+	*/
+	this.update = function(time){
+	
+	}
+	
+	/*
+	Method: draw()
+	Arguments: N/A
+	Returns: N/A
+	Operation: N/A
+	*/
+	this.draw = function(){
+	
+	}
+	
+}
+
+/*
+Class: GameOver()
+Arguments for Constructor: N/A
+Instances: N/A
+Methods:
+	setup()
+	update()
+	draw()
+*/
+function GameOver(){
+	
+	/*
+	Method: setup()
+	Arguments: N/A
+	Returns: N/A
+	Operation: N/A
+	*/
+	this.setup = function(){
+		
+	}
+	
+	/*
+	Method: update()
+	Arguments: N/A
+	Returns: N/A
+	Operation: N/A
+	*/
+	this.update = function(time){
+		
+	}
+	
+	/*
+	Method: draw()
+	Arguments: N/A
+	Returns: N/A
+	Operation: N/A
+	*/
+	this.draw = function(){
+		
+	}
+	
+}
+
+//********************Random Objects********************
+
+
+/*
+Class: Player(startX, startY, radius, startAng)
+Arguments for Constructor:
+	startX: starting x position of player
+	startY: starting y position of player
+	radius: radius of player. used for collision detection
+	startAng: the starting angle of direction of player
+Instances:
+	x: the x coordinate of player
+	y: the y coordinate of player
+	r: the radius of player
+	angle: the angle of direction of player
+	speed: speed of player
+	tether: an object created when circling around a post
+*/
 function Player(a,b,c,d){
 	this.x = a;
 	this.y = b;
@@ -118,6 +378,13 @@ function Player(a,b,c,d){
 	this.speed = 200;
 	this.tether = false;
 	
+	/*
+	Method: move()
+	Arguments:
+		time: the update time of game play
+	Returns: N/A
+	Operation:	moves the player according to the update time and the player's speed
+	*/
 	this.move = function(time){
 		this.x += Math.cos(this.angle) * this.speed * 0.001 * time;
 		this.y += Math.sin(this.angle) * this.speed * 0.001 * time;
@@ -154,102 +421,38 @@ function Player(a,b,c,d){
 	}
 }
 
-function Menu(){
-	this.xFrontOffSet = 0;
-	this.yFrontOffSet = 0;
-	this.xBackOffSet = 0;
-	this.yBackOffSet = 0;
-	this.playButton;
-	this.playTitle;
-	
-	this.setup = function(){
-		this.playButton = new PlayButton(400,400,100);
-		this.playTitle = new PlayTitle(100,125,600,100);
-		
-	};
-	
-	this.update = function(time){
-		var x = (mouse.x - (can.width*0.5));
-		var y = (mouse.y - (can.height*0.5));
-		
-		this.xFrontOffSet = x * 0.125;
-		this.yFrontOffSet = y * 0.125;
-		
-		this.xBackOffSet = x * 0.0625;
-		this.yBackOffSet = y * 0.0625;
-		
-		var pb = {
-			x: this.playButton.x - this.xBackOffSet,
-			y: this.playButton.y - this.yBackOffSet,
-			r: this.playButton.r
-		};
-		
-		if(collide(mouse,pb) && mouse.clicked){
-			gamestate = play;
-		}
-	};
-	
-	this.draw = function(){
-		ctx.clearRect(0,0,can.width,can.height);
-		
-		ctx.fillStyle = "#5555FF";
-		ctx.beginPath();
-		ctx.arc(this.playButton.x - this.xBackOffSet, this.playButton.y - this.yBackOffSet, this.playButton.r, 0, 2*Math.PI);
-		ctx.closePath();
-		ctx.fill();
-		
-		ctx.fillRect(this.playTitle.x - this.xBackOffSet, this.playTitle.y - this.yBackOffSet, this.playTitle.width, this.playTitle.height);
-		
-		ctx.fillStyle = "#999999";
-		ctx.font = "bold 60px Verdana";
-		ctx.fillText("Project Snowball",115 - this.xBackOffSet ,200 - this.yBackOffSet );
-		ctx.fillStyle = "#000000";
-		ctx.fillText("Project Snowball",115 - this.xFrontOffSet,200 - this.yFrontOffSet);
-		ctx.font = "30px Verdana";
-		ctx.fillText("PLAY",360 - this.xFrontOffSet, 415 - this.yFrontOffSet);
-	};
-}
-
-function Pause(){
-	
-	this.setup = function(){
-		
-	}
-	
-	this.update = function(time){
-	
-	}
-	
-	this.draw = function(){
-	
-	}
-	
-}
-
-function GameOver(){
-	
-	this.setup = function(){
-		
-	}
-	
-	this.update = function(time){
-		
-	}
-	
-	this.draw = function(){
-		
-	}
-	
-}
-
-//********************Random Objects********************
-
+/*
+Class: PlayButton(a, b, c)
+Arguments for Constructor:
+	a: the x coordinate
+	b: the y coordinate
+	c: the radius of Play Button
+Instances:
+	x: the x coordinate
+	y: the y coordinate
+	r: the radius
+Methods: N/A
+*/
 function PlayButton(a,b,c){
 	this.x = a;
 	this.y = b;
 	this.r = c;
 }
 
+/*
+Class: PlayTitle(a, b, c, d)
+Arguments for Constructor:
+	a: the x coordinate
+	b: the y coordinate
+	c: the width of title
+	d: the height of title
+Instances:
+	x: the x coordinate
+	y: the y coordinate
+	width: the width of PlayTitle
+	height: the height of PlayTitle
+Methods: N/A
+*/
 function PlayTitle(a,b,c,d){
 	this.x = a;
 	this.y = b;
@@ -257,6 +460,27 @@ function PlayTitle(a,b,c,d){
 	this.height = d;
 }
 
+/*
+Class: Tether(x, y, a, px, py)
+Arguments for Constructor:
+	x: the x position of the player
+	y: the y position of the player
+	a: the angle of direction of player
+	px: the x position of a post
+	py: the y position of a post
+Instances:
+	postX: x position of a post
+	postY: y position of a post
+	tanX: the x position of the tangent intersection 
+	tanY: the y position of the tangent intersection
+	radius: the radius between the post and the player
+	pt: default is false. true if passed the tangent intersection
+	onRight: default is false. true if post is to the right of the player relative to the player's direction
+	coors: coordinates of the tangent intersection
+Methods:
+	passedTan()
+	
+*/
 function Tether(x,y,a,px,py){
 	this.postX = px;
 	this.postY = py;
@@ -274,7 +498,16 @@ function Tether(x,y,a,px,py){
 	ang = addAngles(ang, -a);
 	if(ang > 0)
 		this.onRight = true;
-		
+	
+	/*
+	Method: passedTan(x, y, a)
+	Arguments:
+		x: the x position of player
+		y: the y position of player
+		a: the angle of direction of player
+	Returns: 	true if player is passed the tangent intersection
+				false if player has not passed the tangent intersection
+	*/
 	this.passedTan = function(x,y,a){
 		if(this.pt == true)
 			return true;
@@ -303,20 +536,56 @@ function Tether(x,y,a,px,py){
 		this.radius = findDistance(this.tanX, this.tanY, px,py);
 }
 
-function Enemy(a,b,c,d,e){//x,y,r,speed,angle
+/*
+Class: Enemy(a, b, c, d, e)
+Arguments for Constructor:
+	a: starting x coordinate
+	b: starting y coordinate
+	c: radius of enemy
+	d: starting speed of enemy
+	e: starting angle of direction of enemy
+Instances:
+	x: x coordinate of enemy
+	y: y coordinate of enemy
+	r: radius of enemy
+	speed: speed of enemy
+	angle: angle of direction of enemy
+Methods:
+	run()
+*/
+function Enemy(a,b,c,d,e){
 	this.x = a;
 	this.y = b;
 	this.r = c;
 	this.speed = d;
 	this.angle = e;
 	
-	this.run = function(time){//time
+	/*
+	Method: run(time)
+	Arguments:
+		time: the update time interval
+	Returns: N/A
+	Operation: moves the enemy according to it's speed and the update time
+	*/
+	this.run = function(time){
 		this.x += Math.cos(this.angle) * this.speed * time * 0.001;
 		this.y += Math.sin(this.angle) * this.speed * time * 0.001;
 	}
 }
 
-function Post(a,b,c){//x,y,r
+/*
+Class: Post(a, b, c)
+Arguments for Constructor:
+	a: x coordinate of post
+	b: y coordinate of post
+	c: radius of post
+Instances:
+	x: the x coordinate of post
+	y: the y coordinate of post
+	r: radius of post
+Methods: N/A
+*/
+function Post(a,b,c){
 	this.x = a;
 	this.y = b;
 	this.r = c

@@ -53,7 +53,7 @@ function addAngles(a1,a2){
 function randomizePosts(){
 	var newPosts = [];
 	
-	while(newPosts.length < 35){
+	while(newPosts.length < 10){
 		var ang = (Math.random() * 2 * Math.PI) - Math.PI;
 		var dist = (Math.random() * 800) + 200;
 		var rad = (Math.random() * 40) + 10;
