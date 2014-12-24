@@ -50,6 +50,30 @@ function addAngles(a1,a2){
 	return a1;
 }
 
+function randomizePosts(){
+	var newPosts = [];
+	
+	while(newPosts.length < 35){
+		var ang = (Math.random() * 2 * Math.PI) - Math.PI;
+		var dist = (Math.random() * 900) + 100;
+		var rad = (Math.random() * 40) + 10;
+		
+		var newX = Math.cos(ang) * dist;
+		var newY = Math.sin(ang) * dist;
+		
+		var minDist = 3000;
+		for(var i = 0; i < newPosts.length; i++){
+			if(findDistance(newX,newY, newPosts[i].x, newPosts[i].y) < minDist)
+				minDist = findDistance(newX,newY, newPosts[i].x, newPosts[i].y);
+		}
+		
+		if(minDist > 300)
+			newPosts.push(new Post(newX, newY, rad));
+	}
+	
+	return newPosts;
+}
+
 function getRandomNumber(){
 	return 4;
 }

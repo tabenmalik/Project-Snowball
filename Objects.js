@@ -36,10 +36,7 @@ function PlayGameState(){
 	
 	this.setup = function(){
 		this.player = new Player(0,0,10,0);
-		this.posts.push(new Post(200,200,30));
-		this.posts.push(new Post(200,-200,30));
-		this.posts.push(new Post(-200,-200,30));
-		this.posts.push(new Post(-200,200,30));
+		this.posts = randomizePosts();
 		
 		this.enemies.push(new Enemy(-100,-100,10,50));//adds an enemy to the array
 	};
@@ -306,17 +303,16 @@ function Tether(x,y,a,px,py){
 		this.radius = findDistance(this.tanX, this.tanY, px,py);
 }
 
-function Enemy(a,b,c,d){//x,y,r,speed
+function Enemy(a,b,c,d,e){//x,y,r,speed,angle
 	this.x = a;
 	this.y = b;
 	this.r = c;
 	this.speed = d;
+	this.angle = e;
 	
-	this.run = function(time,px,py){//time, player's x and y
-		var ang = Math.atan2(py - this.y, px - this.x);
-		
-		this.x += Math.cos(ang) * this.speed * time * 0.001;
-		this.y += Math.sin(ang) * this.speed * time * 0.001;
+	this.run = function(time){//time
+		this.x += Math.cos(this.angle) * this.speed * time * 0.001;
+		this.y += Math.sin(this.angle) * this.speed * time * 0.001;
 	}
 }
 
