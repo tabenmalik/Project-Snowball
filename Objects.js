@@ -128,6 +128,7 @@ function PlayGameState(){
 			if(collide(this.posts[i], this.player)){
 				//CODE FOR WHEN PLAYER COLLIDES WITH POST
 				log("Collided with Post");
+				this.player.loseLife(3);
 			}
 		}
 		
@@ -149,7 +150,7 @@ function PlayGameState(){
 		ctx.fillRect(0,0,can.width, can.height);
 		
 		var dx = -this.player.x + (can.width * 0.5);
-		var dy = -this.player.y + (can.width * 0.5);
+		var dy = -this.player.y + (can.height * 0.5);
 		
 		ctx.fillStyle = "#FFFFFF";
 		ctx.beginPath();
@@ -163,6 +164,7 @@ function PlayGameState(){
 		ctx.closePath();
 		ctx.fill();
 		
+		ctx.fillStyle = "#000000";
 		for(var i = 0; i < this.posts.length; i++){
 			ctx.beginPath();
 			ctx.arc(this.posts[i].x + dx, this.posts[i].y + dy, this.posts[i].r, 0, 2 * Math.PI);
@@ -175,6 +177,19 @@ function PlayGameState(){
 			ctx.arc(this.enemies[i].x + dx, this.enemies[i].y + dy, this.enemies[i].r, 0, 2 * Math.PI);
 			ctx.closePath();
 			ctx.fill();
+		}
+		
+		//Drawing the life bar
+		for(var i = 0; i < this.player.life; i++)
+		{
+			ctx.beginPath();
+			ctx.lineWidth="1";
+			ctx.strokeStyle="black";
+			ctx.rect((i*20)+10,10,20,15);
+			ctx.stroke();
+			
+			ctx.fillStyle = "#49E20E";
+			ctx.fillRect((i*20)+10,10,20,15);
 		}
 	};
 }
@@ -403,6 +418,7 @@ function Player(a,b,c,d){
 	this.angle = d;
 	this.speed = 200;
 	this.tether = false;
+	this.life = 3;
 	
 	/*
 	Method: move()
@@ -444,7 +460,21 @@ function Player(a,b,c,d){
 			this.angle = addAngles(circAngle,(Math.PI / 2));
 		else
 			this.angle = addAngles(circAngle, -(Math.PI / 2));
-	}
+	};
+	
+	this.loseLife = function(deduct){
+		this.life -= deduct;
+		
+		if(this.life <= 0)
+			gamestate = endGame;
+	};
+	
+	this.gainLife = function(add){
+		this.life += add;
+		
+		if(this.life > 100)
+			this.life = 100;
+	};
 }
 
 /*

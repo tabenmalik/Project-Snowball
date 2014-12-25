@@ -15,7 +15,7 @@
 		<h1 id="title">Snowball</h1>
 	</div>
 	
-	<canvas id='canvas' width='800' height='800'></canvas>
+	<canvas id='canvas' width='800' height='600'></canvas>
 	
 	<div id="footer">
 		<div class="container">
@@ -60,7 +60,7 @@
 		endGame = new GameOver();
 		endGame.setup();
 		
-		gamestate = endGame;
+		gamestate = mainMenu;
 		can.onmousemove = function(){mouse.setMousePosition(event);};
 		window.requestAnimationFrame(tick);
 	}
