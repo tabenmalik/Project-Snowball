@@ -88,7 +88,7 @@ function PlayGameState(){
 	this.setup = function(){
 		this.player = new Player(0,0,10,0);
 		this.posts = randomizePosts();
-		this.control = control1;//pass in posts and the x and y of the player
+		this.control = control2;//pass in posts and the x and y of the player
 		this.boundry = new Boundry(1000);	
 		//this.enemies.push(new Enemy(-100,-100,10,50));//adds an enemy to the array
 	};
@@ -103,11 +103,11 @@ function PlayGameState(){
 	*/
 	this.update = function(time){
 		if(this.tether == false){
-			var temp = this.control(this.posts, this.player.x, this.player.y);
+			var temp = this.control(this.posts, this.player);
 			if(temp != false)
 				this.tether = new Tether(this.player.x, this.player.y, this.player.angle, temp.x, temp.y);
 		}
-		else if(this.control(this.posts, this.player.x, this.player.y) == false){
+		else if(this.control(this.posts, this.player) == false){
 			this.tether = false;
 		}
 		

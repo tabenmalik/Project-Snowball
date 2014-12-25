@@ -46,6 +46,12 @@
 	var mainMenu = 0;
 	var play = 0;
 	var endGame = 0;
+	var keys = {
+		w: false,
+		a: false,
+		s: false,
+		d: false,
+	};
 	
 	function main(){
 		mouse = new Mouse();
@@ -60,8 +66,10 @@
 		endGame = new GameOver();
 		endGame.setup();
 		
-		gamestate = endGame;
+		gamestate = mainMenu;
 		can.onmousemove = function(){mouse.setMousePosition(event);};
+		document.addEventListener('keydown', handleKeyDown);
+		document.addEventListener('keyup', handleKeyUp);
 		window.requestAnimationFrame(tick);
 	}
 	
