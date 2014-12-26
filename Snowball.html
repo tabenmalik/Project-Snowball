@@ -51,6 +51,13 @@
 	var play = 0;
 	var endGame = 0;
 	var images;
+	var keys = {
+		w: false,
+		a: false,
+		s: false,
+		d: false,
+	};
+	
 	function main(){
 		mouse = new Mouse();
 		mouse.setup();
@@ -66,6 +73,8 @@
 		
 		gamestate = mainMenu;
 		can.onmousemove = function(){mouse.setMousePosition(event);};
+		document.addEventListener('keydown', handleKeyDown);
+		document.addEventListener('keyup', handleKeyUp);
 		window.requestAnimationFrame(tick);
 	}
 	

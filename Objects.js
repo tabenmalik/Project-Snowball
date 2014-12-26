@@ -103,11 +103,11 @@ function PlayGameState(){
 	*/
 	this.update = function(time){
 		if(this.tether == false){
-			var temp = this.control(this.posts, this.player.x, this.player.y);
+			var temp = this.control(this.posts, this.player);
 			if(temp != false)
 				this.tether = new Tether(this.player.x, this.player.y, this.player.angle, temp.x, temp.y);
 		}
-		else if(this.control(this.posts, this.player.x, this.player.y) == false){
+		else if(this.control(this.posts, this.player) == false){
 			this.tether = false;
 		}
 		

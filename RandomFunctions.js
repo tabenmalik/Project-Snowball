@@ -80,12 +80,12 @@ function randomizePosts(){
 	return newPosts;
 }
 
-function control1(posts,x,y){
+function control1(posts,pl){
 	if(mouse.clicked == false)
 		return false;
 	
-	var x2 = x + mouse.x - (can.width / 2);
-	var y2 = y + mouse.y - (can.height/ 2);
+	var x2 = pl.x + mouse.x - (can.width / 2);
+	var y2 = pl.y + mouse.y - (can.height/ 2);
 	
 	var dist = 0;
 	var index = -1;
@@ -102,6 +102,95 @@ function control1(posts,x,y){
 	}
 	
 	return posts[index];
+}
+
+function control2(posts,pl){
+	var newPosts = posts;//shortenListByDistance(posts,pl,500);
+	var baseAng = 0;
+	
+	if( keys.w)
+		baseAng = -(Math.PI * 0.5);
+	else if( keys.a)
+		baseAng = Math.PI;
+	else if( keys.s)
+		baseAng = Math.PI * 0.5;
+	else if( keys.d)
+		baseAng = 0;
+	else
+		return false;
+		
+	var bestScore = 0;
+	var index = -1;
+	
+	for(var i = 0; i < newPosts.length; i++){
+		if(index == -1){
+			index = i;
+			bestScore = getDiffAngle(Math.atan2(posts[i].y - pl.y, posts[i].x - pl.x),baseAng);
+		}
+		else{
+			var currScore = getDiffAngle(Math.atan2(posts[i].y - pl.y, posts[i].x - pl.x),baseAng);
+			if( currScore < bestScore){
+				index = i;
+				bestScore = currScore;
+			}
+		}
+	}
+	
+	return newPosts[index];
+	
+}
+
+function getDiffAngle(ang, base){
+	var newAng = ang - base;
+	if(newAng > Math.PI)
+		newAng -= 2 * Math.PI;
+	else if(newAng < -Math.PI)
+		newAng += 2 * Math.PI;
+	
+	if(newAng < 0)
+		newAng *= -1;
+	
+	return newAng;
+}
+
+function shortenListByDistance(posts, pl, maxDist){//array of posts, player, maximum distance from player. Returns the same posts array, without ones past the max dist.
+	var newPosts = [];
+	
+	for(var i = 0; i < posts.length; i++){
+		if(findDistance(pl.x, pl.y, posts[i].x, posts[i].y) <= maxDist){
+			newPosts.push(posts[i]);
+		}
+	}
+	
+	return newPosts;
+}
+
+function handleKeyDown(evt){
+	if(evt.keyCode == 87)
+		keys.w = true;
+	else if(evt.keyCode == 65)
+		keys.a = true;
+	else if(evt.keyCode == 83)
+		keys.s = true;
+	else if(evt.keyCode == 68)
+		keys.d = true;
+	
+	if(evt.keyCode > 65 && evt.keyCode < 87)
+		evt.preventDefault();
+}
+
+function handleKeyUp(evt){
+	if(evt.keyCode == 87)
+		keys.w = false;
+	else if(evt.keyCode == 65)
+		keys.a = false;
+	else if(evt.keyCode == 83)
+		keys.s = false;
+	else if(evt.keyCode == 68)
+		keys.d = false;
+	
+	if(evt.keyCode > 65 && evt.keyCode < 87)
+		evt.preventDefault();
 }
 
 function getRandomNumber(){
