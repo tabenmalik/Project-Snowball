@@ -225,8 +225,8 @@ function Menu(){
 	Operation: creates a play button object and a play title object
 	*/
 	this.setup = function(){
-		this.playButton = new PlayButton(400,400,100);
-		this.playTitle = new PlayTitle(100,125,600,100);
+		this.playButton = new Button(400,400,100,"PLAY");
+		this.playTitle = new Title(100,125,600,100,"Project Snowball");
 		
 	};
 	
@@ -239,22 +239,10 @@ function Menu(){
 				if the play button is clicked then the gamestate changes to play
 	*/
 	this.update = function(time){
-		var x = (mouse.x - (can.width*0.5));
-		var y = (mouse.y - (can.height*0.5));
+		this.playTitle.update(time);
 		
-		this.xFrontOffSet = x * 0.125;
-		this.yFrontOffSet = y * 0.125;
-		
-		this.xBackOffSet = x * 0.0625;
-		this.yBackOffSet = y * 0.0625;
-		
-		var pb = {
-			x: this.playButton.x - this.xBackOffSet,
-			y: this.playButton.y - this.yBackOffSet,
-			r: this.playButton.r
-		};
-		
-		if(collide(mouse,pb) && mouse.clicked){
+		this.playButton.update(time);
+		if(collide(mouse,this.playButton) && mouse.clicked){
 			gamestate = play;
 		}
 	};
@@ -267,22 +255,25 @@ function Menu(){
 	*/
 	this.draw = function(){
 		ctx.clearRect(0,0,can.width,can.height);
-		
-		ctx.fillStyle = "#5555FF";
-		ctx.beginPath();
-		ctx.arc(this.playButton.x - this.xBackOffSet, this.playButton.y - this.yBackOffSet, this.playButton.r, 0, 2*Math.PI);
-		ctx.closePath();
-		ctx.fill();
-		
-		ctx.fillRect(this.playTitle.x - this.xBackOffSet, this.playTitle.y - this.yBackOffSet, this.playTitle.width, this.playTitle.height);
-		
-		ctx.fillStyle = "#999999";
-		ctx.font = "bold 60px Verdana";
-		ctx.fillText("Project Snowball",115 - this.xBackOffSet ,200 - this.yBackOffSet );
-		ctx.fillStyle = "#000000";
-		ctx.fillText("Project Snowball",115 - this.xFrontOffSet,200 - this.yFrontOffSet);
-		ctx.font = "30px Verdana";
-		ctx.fillText("PLAY",360 - this.xFrontOffSet, 415 - this.yFrontOffSet);
+		this.playTitle.draw();
+		this.playButton.draw();
+	};
+}
+
+/*
+Class: OptionsMenu()
+*/
+function OptionsMenu(){
+	this.setup = function(){
+	
+	};
+	
+	this.update = function(time){
+	
+	};
+	
+	this.draw = function(){
+	
 	};
 }
 
@@ -351,7 +342,7 @@ function GameOver(){
 	Operation: N/A
 	*/
 	this.setup = function(){
-		this.endTitle = new PlayTitle(100,125,600,100);
+		this.endTitle = new Title(100,125,600,100,"GAME OVER");
 	}
 	
 	/*
@@ -361,14 +352,7 @@ function GameOver(){
 	Operation: N/A
 	*/
 	this.update = function(time){
-		var x = (mouse.x - (can.width*0.5));
-		var y = (mouse.y - (can.height*0.5));
-		
-		this.xFrontOffSet = x * 0.125;
-		this.yFrontOffSet = y * 0.125;
-		
-		this.xBackOffSet = x * 0.0625;
-		this.yBackOffSet = y * 0.0625;
+		this.endTitle.update(time);
 	}
 	
 	/*
@@ -380,15 +364,7 @@ function GameOver(){
 	this.draw = function(){
 		ctx.clearRect(0,0,can.width,can.height);
 		
-		ctx.fillStyle = "#5555FF";
-		
-		ctx.fillRect(this.endTitle.x - this.xBackOffSet, this.endTitle.y - this.yBackOffSet, this.endTitle.width, this.endTitle.height);
-		
-		ctx.fillStyle = "#999999";
-		ctx.font = "bold 60px Verdana";
-		ctx.fillText("GAME OVER",195 - this.xBackOffSet ,200 - this.yBackOffSet );
-		ctx.fillStyle = "#000000";
-		ctx.fillText("GAME OVER",195 - this.xFrontOffSet,200 - this.yFrontOffSet);
+		this.endTitle.draw();
 	}
 	
 }
@@ -489,10 +465,47 @@ Instances:
 	r: the radius
 Methods: N/A
 */
-function PlayButton(a,b,c){
+function Button(a,b,c,d){
 	this.x = a;
 	this.y = b;
 	this.r = c;
+	ctx.font = "30px Verdana";
+	this.title = {
+		text: d,
+		x: this.x - this.r + (((this.r*2) - ctx.measureText(d).width)/2),
+		y: this.y + (30*.5),
+	};
+	this.backOffSet = {
+		x: 0,
+		y: 0,
+	};
+	this.frontOffSet = {
+		x: 0,
+		y: 0,
+	};
+	
+	this.update = function(time){
+		var x = (mouse.x - (can.width*0.5));
+		var y = (mouse.y - (can.height*0.5));
+		
+		this.frontOffSet.x = x * 0.125;
+		this.frontOffSet.y = y * 0.125;
+		
+		this.backOffSet.x = x * 0.0625;
+		this.backOffSet.y = y * 0.0625;
+	};
+	
+	this.draw = function(){
+		ctx.fillStyle = "#5555FF";
+		ctx.beginPath();
+		ctx.arc(this.x - this.backOffSet.x, this.y - this.backOffSet.y, this.r, 0, 2*Math.PI);
+		ctx.closePath();
+		ctx.fill();
+		
+		ctx.fillStyle = "#000000";
+		ctx.font = "30px Verdana";
+		ctx.fillText(this.title.text, this.title.x - this.frontOffSet.x , this.title.y - this.frontOffSet.y );
+	};
 }
 
 /*
@@ -509,11 +522,50 @@ Instances:
 	height: the height of PlayTitle
 Methods: N/A
 */
-function PlayTitle(a,b,c,d){
+function Title(a,b,c,d,e){
 	this.x = a;
 	this.y = b;
 	this.width = c;
 	this.height = d;
+	ctx.fillStyle = "#999999";
+	ctx.font = "bold 60px Verdana";
+	this.title = {
+		text: e,
+		x: ((this.width - ctx.measureText(e).width)/2) + this.x,
+		y: ((this.height + 60)/2) + this.y,
+	};
+	this.backOffSet = {
+		x:0,
+		y:0,
+	};
+	this.frontOffSet = {
+		x: 0,
+		y: 0,
+	};
+	
+	this.update = function(time){
+		var x = (mouse.x - (can.width*0.5));
+		var y = (mouse.y - (can.height*0.5));
+		
+		this.frontOffSet.x = x * 0.125;
+		this.frontOffSet.y = y * 0.125;
+		
+		this.backOffSet.x = x * 0.0625;
+		this.backOffSet.y = y * 0.0625;
+	};
+	
+	this.draw = function(){
+		
+		ctx.fillStyle = "#5555FF";
+		ctx.fillRect(this.x - this.backOffSet.x, this.y - this.backOffSet.y, this.width, this.height);
+		
+		ctx.fillStyle = "#999999";
+		ctx.font = "bold 60px Verdana";
+		ctx.fillText(this.title.text, this.title.x - this.backOffSet.x , this.title.y - this.backOffSet.y );
+		
+		ctx.fillStyle = "#000000";
+		ctx.fillText(this.title.text, this.title.x - this.frontOffSet.x , this.title.y - this.frontOffSet.y );
+	};
 }
 
 /*
