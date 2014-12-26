@@ -132,7 +132,7 @@ function PlayGameState(){
 		
 		for(var i = 0; i < this.projectiles.length; i++){
 			this.projectiles[i].run(time);
-			if(getDistance(this.projectiles[i].x, this.projectiles[i].y,0,0) > this.boundry.r + 200){
+			if(findDistance(this.projectiles[i].x, this.projectiles[i].y,0,0) > this.boundry.r + 200){
 				this.projectiles.splice(i,1);
 				i--;
 			}
@@ -212,12 +212,15 @@ function PlayGameState(){
 		ctx.closePath();
 		ctx.fill();
 		
+		//posts
 		ctx.fillStyle = "#000000";
 		for(var i = 0; i < this.posts.length; i++){
-			ctx.beginPath();
+			ctx.drawImage(images.Post, this.posts[i].x - this.posts[i].r + dx, this.posts[i].y - this.posts[i].r + dy, this.posts[i].r * 2, this.posts[i].r * 2);
+			
+			/*ctx.beginPath();
 			ctx.arc(this.posts[i].x + dx, this.posts[i].y + dy, this.posts[i].r, 0, 2 * Math.PI);
 			ctx.closePath();
-			ctx.fill();
+			ctx.fill();*/
 		}
 		
 		for(var i = 0; i < this.enemies.length; i++){

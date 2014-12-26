@@ -50,7 +50,6 @@
 	var mainMenu = 0;
 	var play = 0;
 	var endGame = 0;
-	var images;
 	var keys = {
 		w: false,
 		a: false,
@@ -58,8 +57,12 @@
 		d: false,
 		space: false,
 	};
+	var images = {
+		Post: new Image(),
+		};
 	
 	function main(){
+		images.Post.src = "images/Post.png";
 		mouse = new Mouse();
 		mouse.setup();
 		
