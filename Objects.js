@@ -88,7 +88,7 @@ function PlayGameState(){
 	this.setup = function(){
 		this.player = new Player(0,0,10,0);
 		this.posts = randomizePosts();
-		this.control = control2;//pass in posts and the x and y of the player
+		this.control = control1;//pass in posts and the x and y of the player
 		this.boundry = new Boundry(1000);	
 		//this.enemies.push(new Enemy(-100,-100,10,50));//adds an enemy to the array
 	};
