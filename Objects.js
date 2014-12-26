@@ -132,6 +132,10 @@ function PlayGameState(){
 		
 		for(var i = 0; i < this.projectiles.length; i++){
 			this.projectiles[i].run(time);
+			if(getDistance(this.projectiles[i].x, this.projectiles[i].y,0,0) > this.boundry.r + 200){
+				this.projectiles.splice(i,1);
+				i--;
+			}
 		}
 		
 		//code for shooting snowballs
@@ -172,14 +176,12 @@ function PlayGameState(){
 			if(findDistance(0,0, this.enemies[i].x, this.enemies[i].y) > this.boundry.r + 500){
 				this.enemies.splice(i,1);
 				i--;
-				continue;
 			}
 			//collision detection with player
 			else if(collide(this.enemies[i] , this.player) ){
 				this.enemies.splice(i,1);
 				i--;
 				this.player.loseLife(1);
-				continue;
 			}
 		}
 	};
@@ -225,6 +227,8 @@ function PlayGameState(){
 			ctx.fill();
 		}
 		
+		//projectiles (snowballs)
+		ctx.fillStyle = "#B5E3EB";
 		for(var i = 0; i < this.projectiles.length; i++){
 			ctx.beginPath();
 			ctx.arc(this.projectiles[i].x + dx, this.projectiles[i].y + dy, this.projectiles[i].r, 0, 2 * Math.PI);
