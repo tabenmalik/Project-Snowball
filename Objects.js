@@ -472,8 +472,8 @@ function Player(a,b,c,d){
 	this.speed = 200;
 	this.tether = false;
 	this.life = 3;
-	this.fireRate = 1000;
-	this.FIRERATE = 1000;
+	this.fireRate = 200;
+	this.FIRERATE = 200;
 	
 	/*
 	Method: move()
