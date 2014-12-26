@@ -76,6 +76,7 @@ function PlayGameState(){
 	this.posts = [];
 	this.tether = false;
 	this.enemies = [];
+	this.projectiles = [];
 	this.boundry;
 	this.control;
 	this.spawnEnemy;
@@ -105,6 +106,8 @@ function PlayGameState(){
 				for circular motion around a post
 	*/
 	this.update = function(time){
+		//code for movement of the player
+		
 		if(this.tether == false){
 			var temp = this.control(this.posts, this.player);
 			if(temp != false)
@@ -123,6 +126,26 @@ function PlayGameState(){
 		
 		for(var i = 0; i < this.enemies.length; i++){
 			this.enemies[i].run(time,this.player.x,this.player.y);
+		}
+		
+		//code for moving projectiles
+		
+		for(var i = 0; i < this.projectiles.length; i++){
+			this.projectiles[i].run(time);
+			if(findDistance(this.projectiles[i].x, this.projectiles[i].y,0,0) > this.boundry.r + 200){
+				this.projectiles.splice(i,1);
+				i--;
+			}
+		}
+		
+		//code for shooting snowballs
+		
+		this.player.fireRate -= time;
+		if(this.player.fireRate < 0)
+			this.player.fireRate = 0;
+		if(keys.space && this.player.fireRate == 0){
+			this.projectiles.push(new Projectile(this.player.x, this.player.y, 8, this.player.angle, 300) );
+			this.player.fireRate += this.player.FIRERATE;
 		}
 		
 		//spawning new enemies
@@ -145,7 +168,7 @@ function PlayGameState(){
 		
 		if(findDistance(0,0,this.player.x, this.player.y) + this.player.r > this.boundry.r && this.tether == false){
 			//CODE FOR RUNNING OUT OF BOUNDS
-			log("Out of Bounds");
+			this.player.loseLife(this.player.life);
 		}
 		
 		for(var i = 0; i < this.enemies.length; i++){
@@ -153,18 +176,14 @@ function PlayGameState(){
 			if(findDistance(0,0, this.enemies[i].x, this.enemies[i].y) > this.boundry.r + 500){
 				this.enemies.splice(i,1);
 				i--;
-				continue;
 			}
 			//collision detection with player
 			else if(collide(this.enemies[i] , this.player) ){
 				this.enemies.splice(i,1);
 				i--;
 				this.player.loseLife(1);
-				continue;
 			}
 		}
-		
-		//CHECK TO SEE IF THE PLAYER IS OUT OF LIFE
 	};
 	
 	/*
@@ -193,17 +212,29 @@ function PlayGameState(){
 		ctx.closePath();
 		ctx.fill();
 		
+		//posts
 		ctx.fillStyle = "#000000";
 		for(var i = 0; i < this.posts.length; i++){
-			ctx.beginPath();
+			ctx.drawImage(images.Post, this.posts[i].x - this.posts[i].r + dx, this.posts[i].y - this.posts[i].r + dy, this.posts[i].r * 2, this.posts[i].r * 2);
+			
+			/*ctx.beginPath();
 			ctx.arc(this.posts[i].x + dx, this.posts[i].y + dy, this.posts[i].r, 0, 2 * Math.PI);
 			ctx.closePath();
-			ctx.fill();
+			ctx.fill();*/
 		}
 		
 		for(var i = 0; i < this.enemies.length; i++){
 			ctx.beginPath();
 			ctx.arc(this.enemies[i].x + dx, this.enemies[i].y + dy, this.enemies[i].r, 0, 2 * Math.PI);
+			ctx.closePath();
+			ctx.fill();
+		}
+		
+		//projectiles (snowballs)
+		ctx.fillStyle = "#B5E3EB";
+		for(var i = 0; i < this.projectiles.length; i++){
+			ctx.beginPath();
+			ctx.arc(this.projectiles[i].x + dx, this.projectiles[i].y + dy, this.projectiles[i].r, 0, 2 * Math.PI);
 			ctx.closePath();
 			ctx.fill();
 		}
@@ -424,6 +455,8 @@ function Player(a,b,c,d){
 	this.speed = 200;
 	this.tether = false;
 	this.life = 3;
+	this.fireRate = 200;
+	this.FIRERATE = 200;
 	
 	/*
 	Method: move()
@@ -723,6 +756,38 @@ function Enemy(a,b,c,d,e){
 	this.run = function(time){
 		this.x += Math.cos(this.angle) * this.speed * time * 0.001;
 		this.y += Math.sin(this.angle) * this.speed * time * 0.001;
+	}
+}
+
+/*
+Class: Projectile()
+Arguments for Constructor:
+	a: x coordinate
+	b: y coordinate
+	c: radius
+	d: angle
+	e: speed
+Instances:
+	x / y coordinates
+	r radius
+	angle
+	speed
+Methods: 
+	run()
+		this function should be called every frame for every projectile.
+		it allows them to move.
+		different projectiles may move differently, thus having a different run() function
+*/
+function Projectile(a,b,c,d,e){
+	this.x = a;
+	this.y = b;
+	this.r = c;
+	this.angle = d;
+	this.speed = e;
+	
+	this.run = function(time){
+		this.x += Math.cos(this.angle) * time * 0.001 * this.speed;
+		this.y += Math.sin(this.angle) * time * 0.001 * this.speed;
 	}
 }
 
