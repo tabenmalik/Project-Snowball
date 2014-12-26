@@ -78,6 +78,8 @@ function PlayGameState(){
 	this.enemies = [];
 	this.boundry;
 	this.control;
+	this.spawnEnemy;
+	this.SPAWNENEMY;
 	
 	/*
 	Method: setup()
@@ -89,7 +91,8 @@ function PlayGameState(){
 		this.player = new Player(0,0,10,0);
 		this.posts = randomizePosts();
 		this.control = control1;//pass in posts and the x and y of the player
-		this.boundry = new Boundry(1000);	
+		this.boundry = new Boundry(1000);
+		this.spawnEnemy = this.SPAWNENEMY = 3000;
 		//this.enemies.push(new Enemy(-100,-100,10,50));//adds an enemy to the array
 	};
 	
@@ -103,11 +106,11 @@ function PlayGameState(){
 	*/
 	this.update = function(time){
 		if(this.tether == false){
-			var temp = this.control(this.posts, this.player.x, this.player.y);
+			var temp = this.control(this.posts, this.player);
 			if(temp != false)
 				this.tether = new Tether(this.player.x, this.player.y, this.player.angle, temp.x, temp.y);
 		}
-		else if(this.control(this.posts, this.player.x, this.player.y) == false){
+		else if(this.control(this.posts, this.player) == false){
 			this.tether = false;
 		}
 		
@@ -122,13 +125,21 @@ function PlayGameState(){
 			this.enemies[i].run(time,this.player.x,this.player.y);
 		}
 		
+		//spawning new enemies
+		
+		this.spawnEnemy -= time;
+		if(this.spawnEnemy <= 0){
+			this.spawnEnemy += this.SPAWNENEMY;
+			this.enemies.push(new Enemy(true));
+		}
+		
 		//collision detections
 		
 		for(var i = 0; i < this.posts.length; i++){
 			if(collide(this.posts[i], this.player)){
 				//CODE FOR WHEN PLAYER COLLIDES WITH POST
 				log("Collided with Post");
-				this.player.loseLife(3);
+				this.player.loseLife(this.player.life);
 			}
 		}
 		
@@ -136,6 +147,24 @@ function PlayGameState(){
 			//CODE FOR RUNNING OUT OF BOUNDS
 			log("Out of Bounds");
 		}
+		
+		for(var i = 0; i < this.enemies.length; i++){
+			//delete if significantly out of play Area
+			if(findDistance(0,0, this.enemies[i].x, this.enemies[i].y) > this.boundry.r + 500){
+				this.enemies.splice(i,1);
+				i--;
+				continue;
+			}
+			//collision detection with player
+			else if(collide(this.enemies[i] , this.player) ){
+				this.enemies.splice(i,1);
+				i--;
+				this.player.loseLife(1);
+				continue;
+			}
+		}
+		
+		//CHECK TO SEE IF THE PLAYER IS OUT OF LIFE
 	};
 	
 	/*
@@ -448,8 +477,8 @@ function Player(a,b,c,d){
 	this.gainLife = function(add){
 		this.life += add;
 		
-		if(this.life > 100)
-			this.life = 100;
+		if(this.life > 15)
+			this.life = 15;
 	};
 }
 
@@ -652,6 +681,11 @@ Arguments for Constructor:
 	c: radius of enemy
 	d: starting speed of enemy
 	e: starting angle of direction of enemy
+	
+	OR
+	
+	a: true
+		//this randomizes every single variable in the object for you. ;)
 Instances:
 	x: x coordinate of enemy
 	y: y coordinate of enemy
@@ -662,11 +696,22 @@ Methods:
 	run()
 */
 function Enemy(a,b,c,d,e){
-	this.x = a;
-	this.y = b;
-	this.r = c;
-	this.speed = d;
-	this.angle = e;
+	if(a == true){
+		this.angle = (Math.random() * 2 * Math.PI) - Math.PI;
+		var tempAng = addAngles(this.angle, (Math.random()*Math.PI * 0.5) - (Math.PI * 0.25) );
+		var tempAng = addAngles(tempAng, Math.PI);
+		this.x = Math.cos(tempAng) * 1010;
+		this.y = Math.sin(tempAng) * 1010;
+		this.speed = 50;
+		this.r = 8;
+	}
+	else{
+		this.x = a;
+		this.y = b;
+		this.r = c;
+		this.speed = d;
+		this.angle = e;
+	}
 	
 	/*
 	Method: run(time)
