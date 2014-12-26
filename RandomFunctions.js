@@ -174,8 +174,10 @@ function handleKeyDown(evt){
 		keys.s = true;
 	else if(evt.keyCode == 68)
 		keys.d = true;
+	else if(evt.keyCode == 32)
+		keys.space = true;
 	
-	if(evt.keyCode > 65 && evt.keyCode < 87)
+	if(evt.keyCode > 32 && evt.keyCode < 87)
 		evt.preventDefault();
 }
 
@@ -188,8 +190,10 @@ function handleKeyUp(evt){
 		keys.s = false;
 	else if(evt.keyCode == 68)
 		keys.d = false;
+	else if(evt.keyCode == 32)
+		keys.space = false;
 	
-	if(evt.keyCode > 65 && evt.keyCode < 87)
+	if(evt.keyCode > 32 && evt.keyCode < 87)
 		evt.preventDefault();
 }
 
