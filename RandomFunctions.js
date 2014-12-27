@@ -140,6 +140,7 @@ function control2(posts,pl){
 	
 }
 
+//doesn't work well
 function getDiffAngle(ang, base){
 	var newAng = ang - base;
 	if(newAng > Math.PI)
