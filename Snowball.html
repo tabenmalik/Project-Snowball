@@ -63,6 +63,7 @@
 		s: false,
 		d: false,
 		space: false,
+		p: false,
 	};
 	var images = {
 		Post: new Image(),
@@ -81,6 +82,9 @@
 		
 		endGame = new GameOver();
 		endGame.setup();
+		
+		pause = new Pause();
+		pause.setup();
 		
 		gamestate = mainMenu;
 		can.onmousemove = function(){mouse.setMousePosition(event);};

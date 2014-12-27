@@ -184,6 +184,10 @@ function PlayGameState(){
 				this.player.loseLife(1);
 			}
 		}
+		
+		//pause if the player is pressing "p"
+		if(keys.p)
+			gamestate = pause;
 	};
 	
 	/*
@@ -347,6 +351,8 @@ Methods:
 	draw()
 */
 function Pause(){
+	this.hasLetGo = false;
+	this.pauseTitle = new Title(100,400,600,100,"PAUSED");
 	
 	/*
 	Method: setup()
@@ -355,7 +361,7 @@ function Pause(){
 	Operation: N/A
 	*/
 	this.setup = function(){
-		
+		this.hasLetGo = false;
 	}
 	
 	/*
@@ -365,7 +371,15 @@ function Pause(){
 	Operation: N/A
 	*/
 	this.update = function(time){
-	
+		this.pauseTitle.update(time);
+		
+		if(keys.p == false)
+			this.hasLetGo = true;
+		else if(this.hasLetGo){
+			keys.p = false;
+			this.hasLetGo = false;
+			gamestate = play;
+		}
 	}
 	
 	/*
@@ -375,7 +389,8 @@ function Pause(){
 	Operation: N/A
 	*/
 	this.draw = function(){
-	
+		play.draw();
+		this.pauseTitle.draw();
 	}
 	
 }
