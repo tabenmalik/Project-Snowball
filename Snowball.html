@@ -55,6 +55,7 @@
 	var accumulate = 0;
 	var lastTickTime = 0;
 	var mainMenu = 0;
+	var optionMenu = 0;
 	var play = 0;
 	var endGame = 0;
 	var keys = {
@@ -75,6 +76,9 @@
 		
 		mainMenu = new Menu();
 		mainMenu.setup();
+		
+		optionMenu = new OptionsMenu();
+		optionMenu.setup();
 		
 		play = new PlayGameState();
 		play.setup();

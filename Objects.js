@@ -275,6 +275,8 @@ function Menu(){
 	this.xBackOffSet = 0;
 	this.yBackOffSet = 0;
 	this.playButton;
+	this.optionButton;
+	this.instructionButton;
 	this.playTitle;
 	
 	
@@ -285,7 +287,9 @@ function Menu(){
 	Operation: creates a play button object and a play title object
 	*/
 	this.setup = function(){
-		this.playButton = new Button(400,400,100,"PLAY");
+		this.playButton = new Button(400,400,70,"PLAY");
+		this.optionButton = new Button(600,500, 70, "Options");
+		this.instructionButton = new Button(200,500,70,"How To");
 		this.playTitle = new Title(100,125,600,100,"Project Snowball");
 		
 	};
@@ -305,6 +309,16 @@ function Menu(){
 		if(collide(mouse,this.playButton) && mouse.clicked){
 			gamestate = play;
 		}
+		
+		this.optionButton.update(time);
+		if(collide(mouse,this.optionButton) && mouse.clicked){
+			gamestate = optionMenu;
+		}
+		
+		this.instructionButton.update(time);
+		if(collide(mouse, this.instructionButton) && mouse.clicked){
+		
+		}
 	};
 	
 	/*
@@ -317,6 +331,8 @@ function Menu(){
 		ctx.clearRect(0,0,can.width,can.height);
 		this.playTitle.draw();
 		this.playButton.draw();
+		this.optionButton.draw();
+		this.instructionButton.draw();
 	};
 }
 
@@ -324,16 +340,28 @@ function Menu(){
 Class: OptionsMenu()
 */
 function OptionsMenu(){
-	this.setup = function(){
+	this.optionTitle;
+	this.backButton;
 	
+	this.setup = function(){
+		this.optionTitle = new Title(100,125,600,100,"Options");
+		this.backButton = new Button(100,500, 50, "Back");
 	};
 	
 	this.update = function(time){
-	
+		this.optionTitle.update(time);
+		
+		this.backButton.update(time);
+		if(collide(mouse,this.backButton) && mouse.clicked)
+		{
+			gamestate = mainMenu;
+		}
 	};
 	
 	this.draw = function(){
-	
+		ctx.clearRect(0,0,can.width,can.height);
+		this.optionTitle.draw();
+		this.backButton.draw();
 	};
 }
 
@@ -577,6 +605,7 @@ Arguments for Constructor:
 	b: the y coordinate
 	c: the width of title
 	d: the height of title
+	e: the text for the title
 Instances:
 	x: the x coordinate
 	y: the y coordinate
