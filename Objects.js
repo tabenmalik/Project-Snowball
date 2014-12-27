@@ -311,17 +311,20 @@ function Menu(){
 		
 		this.playButton.update(time);
 		if(collide(mouse,this.playButton) && mouse.clicked){
+			mouse.clicked = false;
 			gamestate = play;
 		}
 		
 		this.optionButton.update(time);
 		if(collide(mouse,this.optionButton) && mouse.clicked){
+			mouse.clicked = false;
 			gamestate = optionMenu;
 		}
 		
 		this.instructionButton.update(time);
 		if(collide(mouse, this.instructionButton) && mouse.clicked){
-		
+			mouse.clicked = false;
+			gamestate = instructionMenu;
 		}
 	};
 	
@@ -358,6 +361,7 @@ function OptionsMenu(){
 		this.backButton.update(time);
 		if(collide(mouse,this.backButton) && mouse.clicked)
 		{
+			mouse.clicked = false;
 			gamestate = mainMenu;
 		}
 	};
@@ -365,6 +369,36 @@ function OptionsMenu(){
 	this.draw = function(){
 		ctx.clearRect(0,0,can.width,can.height);
 		this.optionTitle.draw();
+		this.backButton.draw();
+	};
+}
+
+/*
+
+*/
+function HowToMenu(){
+	this.howToTitle;
+	this.backButton;
+	
+	this.setup = function(){
+		this.howToTitle = new Title(100,125,600,100,"Instructions");
+		this.backButton = new Button(100,500, 50, "Back");
+	};
+	
+	this.update = function(time){
+		this.howToTitle.update(time);
+		
+		this.backButton.update(time);
+		if(collide(mouse, this.backButton) && mouse.clicked)
+		{
+			mouse.clicked = false;
+			gamestate = mainMenu;
+		}
+	};
+	
+	this.draw = function(){
+		ctx.clearRect(0,0,can.width,can.height);
+		this.howToTitle.draw();
 		this.backButton.draw();
 	};
 }
