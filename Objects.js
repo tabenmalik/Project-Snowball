@@ -120,7 +120,10 @@ function PlayGameState(){
 		if(this.tether == false)
 			this.player.move(time);
 		else if(this.tether.passedTan(this.player.x, this.player.y, this.player.angle))
+		{
+			this.tether.update(time);
 			this.player.circle(time,this.tether.postX, this.tether.postY, this.tether.radius, this.tether.onRight);
+		}
 		else
 			this.player.move(time);
 		
@@ -232,6 +235,11 @@ function PlayGameState(){
 			ctx.arc(this.enemies[i].x + dx, this.enemies[i].y + dy, this.enemies[i].r, 0, 2 * Math.PI);
 			ctx.closePath();
 			ctx.fill();
+		}
+		
+		if(this.tether != false)
+		{
+			this.tether.draw();
 		}
 		
 		//projectiles (snowballs)
@@ -782,6 +790,23 @@ function Tether(x,y,a,px,py){
 	}
 	else
 		this.radius = findDistance(this.tanX, this.tanY, px,py);
+		
+	this.update = function(time){
+		
+	};
+	
+	this.draw = function(){
+		var dx = -play.player.x + (can.width * 0.5);
+		var dy = -play.player.y + (can.height * 0.5);
+		
+		ctx.strokeStyle = "#663300";
+		ctx.lineWidth = 3;
+		ctx.beginPath();
+		ctx.moveTo(play.player.x + dx, play.player.y + dy);
+		ctx.lineTo(this.postX + dx, this.postY + dy);
+		ctx.stroke();
+		
+	};
 }
 
 /*
