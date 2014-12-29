@@ -95,6 +95,7 @@ function PlayGameState(){
 		this.boundry = new Boundry(1000);
 		this.spawnEnemy = this.SPAWNENEMY = 3000;
 		//this.enemies.push(new Enemy(-100,-100,10,50));//adds an enemy to the array
+		
 	};
 	
 	/*
@@ -320,6 +321,8 @@ function Menu(){
 		this.playButton.update(time);
 		if(collide(mouse,this.playButton) && mouse.clicked){
 			mouse.clicked = false;
+			music[0].stop();
+			music[1].play();
 			gamestate = play;
 		}
 		
@@ -589,6 +592,7 @@ function Player(a,b,c,d){
 		this.life -= deduct;
 		
 		if(this.life <= 0)
+			music[1].stop();
 			gamestate = endGame;
 	};
 	

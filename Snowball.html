@@ -9,6 +9,7 @@
 	<script type="text/javascript" src="Objects.js"></script>
 	<script type="text/javascript" src="RandomFunctions.js"></script>
 	<script type="text/javascript" src="javascript/devFunctions.js"></script>
+	<script type="text/javascript" src="javascript/howler.min.js"></script>
 </head>
 <body>
 <div class="wrapper">
@@ -46,6 +47,24 @@
 	document.getElementById('canvas').onmouseup = function(){
 		mouse.clicked = false;
 	};
+	
+	var music = [
+		new Howl({
+			urls: ['music/Carefree.mp3'],
+			volume: 0.7,
+			loops: true,
+			onload: function(){musicLoads[0] = true;}
+		}),
+		
+		new Howl({
+			urls: ['music/Monkeys Spinning Monkeys.mp3'],
+			volume: 0.5,
+			loops: true,
+			onload: function(){musicLoads[1] = true;}
+		}),
+	];
+	
+	var musicLoads = [false,false,false,false,false,false];
 	
 	var can = document.getElementById('canvas');
 	var ctx = can.getContext("2d");
@@ -95,6 +114,7 @@
 		pause.setup();
 		
 		gamestate = mainMenu;
+		music[0].play();
 		can.onmousemove = function(){mouse.setMousePosition(event);};
 		document.addEventListener('keydown', handleKeyDown);
 		document.addEventListener('keyup', handleKeyUp);
