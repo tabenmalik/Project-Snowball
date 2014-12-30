@@ -189,6 +189,35 @@ function PlayGameState(){
 			}
 		}
 		
+		//collision between projectiles and enemies
+		for(var i = 0; i < this.projectiles.length; i++){
+			
+			for(var o = 0; o < this.enemies.length; o++){
+				
+				if(collide(this.projectiles[i], this.enemies[o])){
+					this.projectiles.splice(i,1);
+					this.enemies.splice(o,1);
+					i--;
+					break;
+				}
+				
+			}
+		}
+		
+		//collision between projectiles and posts
+		for(var i = 0; i < this.projectiles.length; i++){
+			
+			for(var o = 0; o < this.posts.length; o++){
+				
+				if(collide(this.projectiles[i], this.posts[o])){
+					this.projectiles.splice(i,1);
+					i--;
+					break;
+				}
+				
+			}
+		}
+		
 		//pause if the player is pressing "p"
 		if(keys.p)
 			gamestate = pause;
