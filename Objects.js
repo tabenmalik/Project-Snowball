@@ -320,6 +320,7 @@ function Menu(){
 		
 		this.playButton.update(time);
 		if(collide(mouse,this.playButton) && mouse.clicked){
+			sounds.play("buttonPress");
 			mouse.clicked = false;
 			music[0].stop();
 			music[1].play();
@@ -328,12 +329,14 @@ function Menu(){
 		
 		this.optionButton.update(time);
 		if(collide(mouse,this.optionButton) && mouse.clicked){
+			sounds.play("buttonPress");
 			mouse.clicked = false;
 			gamestate = optionMenu;
 		}
 		
 		this.instructionButton.update(time);
 		if(collide(mouse, this.instructionButton) && mouse.clicked){
+			sounds.play("buttonPress");
 			mouse.clicked = false;
 			gamestate = instructionMenu;
 		}
@@ -372,6 +375,7 @@ function OptionsMenu(){
 		this.backButton.update(time);
 		if(collide(mouse,this.backButton) && mouse.clicked)
 		{
+			sounds.play("buttonPress");
 			mouse.clicked = false;
 			gamestate = mainMenu;
 		}
@@ -402,6 +406,7 @@ function HowToMenu(){
 		this.backButton.update(time);
 		if(collide(mouse, this.backButton) && mouse.clicked)
 		{
+			sounds.play("buttonPress");
 			mouse.clicked = false;
 			gamestate = mainMenu;
 		}
