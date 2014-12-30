@@ -214,11 +214,12 @@ function PlayGameState(){
 		ctx.closePath();
 		ctx.fill();
 		
-		ctx.fillStyle = "#000000";
+		/*ctx.fillStyle = "#000000";
 		ctx.beginPath();
 		ctx.arc(this.player.x + dx, this.player.y + dy, this.player.r, 0, Math.PI * 2);
 		ctx.closePath();
-		ctx.fill();
+		ctx.fill();*/
+		this.player.draw(dx,dy);
 		
 		//posts
 		ctx.fillStyle = "#000000";
@@ -591,9 +592,10 @@ function Player(a,b,c,d){
 	this.loseLife = function(deduct){
 		this.life -= deduct;
 		
-		if(this.life <= 0)
+		if(this.life <= 0){
 			music[1].stop();
 			gamestate = endGame;
+		}
 	};
 	
 	this.gainLife = function(add){
@@ -602,6 +604,15 @@ function Player(a,b,c,d){
 		if(this.life > 15)
 			this.life = 15;
 	};
+	
+	this.draw = function(dx,dy){
+		ctx.save();
+		//ctx.clearRect(0,0,can.width, can.height);
+		ctx.translate( this.x + dx, this.y + dy);
+		ctx.rotate(this.angle);
+		ctx.drawImage(images.Sleigh, -this.r, -this.r, this.r * 2, this.r * 2);
+		ctx.restore();
+	}
 }
 
 /*
