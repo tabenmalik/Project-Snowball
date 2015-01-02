@@ -85,6 +85,7 @@
 	var instructionMenu = 0;
 	var play = 0;
 	var endGame = 0;
+	var store = 0;
 	var keys = {
 		w: false,
 		a: false,
@@ -121,6 +122,9 @@
 		
 		pause = new Pause();
 		pause.setup();
+		
+		store = new Store();
+		store.setup();
 		
 		gamestate = mainMenu;
 		music[0].play();

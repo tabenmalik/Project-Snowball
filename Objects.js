@@ -98,6 +98,15 @@ function PlayGameState(){
 		
 	};
 	
+	this.reset = function(){
+		this.posts = randomizePosts();
+		this.spawnEnemy = this.SPAWNENEMY = 3000;
+		this.player.x = 0;
+		this.player.y = 0;
+		this.player.angle = 0;
+		this.player.life = this.player.LIFE;
+	}
+	
 	/*
 	Method: update(time)
 	Arguments:
@@ -354,6 +363,7 @@ function Menu(){
 			mouse.clicked = false;
 			music[0].stop();
 			music[1].play();
+			play.reset();
 			gamestate = play;
 		}
 		
@@ -365,7 +375,7 @@ function Menu(){
 		}
 		
 		this.instructionButton.update(time);
-		if(collide(mouse, this.instructionButton) && mouse.clicked){
+		if(collide(mouse,this.instructionButton) && mouse.clicked){
 			sounds.play("buttonPress");
 			mouse.clicked = false;
 			gamestate = instructionMenu;
@@ -450,6 +460,40 @@ function HowToMenu(){
 }
 
 /*
+*/
+function Store(){
+	this.backButton;
+	this.speedUG;
+	
+	this.setup = function(){
+		this.backButton = new Button(50,550,50,"Back");
+		this.speedUG = new Button(100,100,50,"Speed - 10");
+	}
+	
+	this.update = function(time){
+		this.backButton.update(time);
+		this.speedUG.update(time);
+		
+		if(collide(mouse,this.speedUG) && mouse.clicked){//later, add another parameter to the if statement for currency
+			sounds.play("buttonPress");
+			play.player.speed += 25;
+			mouse.clicked = false;
+		}
+		else if(collide(mouse,this.backButton) && mouse.clicked){
+			sounds.play("buttonPress");
+			mouse.clicked = false;
+			gamestate = endGame;
+		}
+	}
+	
+	this.draw = function(){
+		ctx.clearRect(0,0,can.width,can.height);
+		this.backButton.draw();
+		this.speedUG.draw();
+	}
+}
+
+/*
 Class: Pause()
 Arguments for Constructor: N/A
 Instances: N/A
@@ -518,6 +562,8 @@ function GameOver(){
 	this.xBackOffSet = 0;
 	this.yBackOffSet = 0;
 	this.endTitle;
+	this.storeButton;
+	this.backButton;
 	/*
 	Method: setup()
 	Arguments: N/A
@@ -526,6 +572,8 @@ function GameOver(){
 	*/
 	this.setup = function(){
 		this.endTitle = new Title(100,125,600,100,"GAME OVER");
+		this.storeButton = new Button(700,500,40,"STORE");
+		this.backButton = new Button(100,500,40,"Back");
 	}
 	
 	/*
@@ -536,6 +584,20 @@ function GameOver(){
 	*/
 	this.update = function(time){
 		this.endTitle.update(time);
+		this.storeButton.update(time);
+		this.backButton.update(time);
+		
+		if(collide(mouse,this.storeButton) && mouse.clicked){
+			sounds.play("buttonPress");
+			mouse.clicked = false;
+			gamestate = store;
+		}
+		else if(collide(mouse, this.backButton) && mouse.clicked){
+			sounds.play("buttonPress");
+			mouse.clicked = false;
+			gamestate = mainMenu;
+			music[0].play();
+		}
 	}
 	
 	/*
@@ -548,6 +610,8 @@ function GameOver(){
 		ctx.clearRect(0,0,can.width,can.height);
 		
 		this.endTitle.draw();
+		this.storeButton.draw();
+		this.backButton.draw();
 	}
 	
 }
@@ -577,6 +641,7 @@ function Player(a,b,c,d){
 	this.angle = d;
 	this.speed = 200;
 	this.tether = false;
+	this.LIFE = 3;
 	this.life = 3;
 	this.fireRate = 200;
 	this.FIRERATE = 200;
@@ -661,7 +726,9 @@ Instances:
 	r: the radius
 Methods: N/A
 */
-function Button(a,b,c,d){
+function Button(a,b,c,d,e){
+	this.baseX = a;
+	this.baseY = b;
 	this.x = a;
 	this.y = b;
 	this.r = c;
@@ -671,9 +738,11 @@ function Button(a,b,c,d){
 		x: this.x - this.r + (((this.r*2) - ctx.measureText(d).width)/2),
 		y: this.y + (30*.5),
 	};
+	this.action = e;
 	this.backOffSet = {
 		x: 0,
 		y: 0,
+		r: c,
 	};
 	this.frontOffSet = {
 		x: 0,
@@ -689,12 +758,15 @@ function Button(a,b,c,d){
 		
 		this.backOffSet.x = x * 0.0625;
 		this.backOffSet.y = y * 0.0625;
+		
+		this.x = this.baseX - this.backOffSet.x;
+		this.y = this.baseY - this.backOffSet.y;
 	};
 	
 	this.draw = function(){
 		ctx.fillStyle = "#5555FF";
 		ctx.beginPath();
-		ctx.arc(this.x - this.backOffSet.x, this.y - this.backOffSet.y, this.r, 0, 2*Math.PI);
+		ctx.arc(this.x, this.y, this.r, 0, 2*Math.PI);
 		ctx.closePath();
 		ctx.fill();
 		
@@ -1038,4 +1110,10 @@ function Boundry(a){//radius
 	this.x = 0;
 	this.y = 0;
 	this.r = a;
+}
+
+function Circle(a,b,c){
+	this.x = a;
+	this.y = b;
+	this.r = c;
 }
