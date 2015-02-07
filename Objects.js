@@ -157,7 +157,7 @@ function PlayGameState(){
 		if(this.player.fireRate < 0)
 			this.player.fireRate = 0;
 		if(keys.space && this.player.fireRate == 0){
-			this.projectiles.push(new Projectile('s', this.player.x, this.player.y, this.player.angle) );
+			this.projectiles.push(new Projectile(this.player.x, this.player.y, this.player.angle) );
 			this.player.fireRate += this.player.FIRERATE;
 		}
 		
@@ -953,48 +953,18 @@ Methods:
 	run()
 */
 function Enemy(a,b,c,d,e){
-	this.x = 0;
-	this.y = 0;
 	this.r = 10;
-	this.angle = 0;
-	this.speed = 0;
-	this.run;
-	
-	if(a == 'n'){//normal enemies.
-		this.angle = (Math.random() * 2 * Math.PI) - Math.PI;
-		var tempAng = addAngles(this.angle, (Math.random()*Math.PI * 0.5) - (Math.PI * 0.25) );
-		var tempAng = addAngles(tempAng, Math.PI);
-		this.x = Math.cos(tempAng) * 1010;
-		this.y = Math.sin(tempAng) * 1010;
-		this.speed = 50;
-		this.r = 8;
+	this.angle = (Math.random() * 2 * Math.PI) - Math.PI;
+	var tempAng = addAngles(this.angle, (Math.random()*Math.PI * 0.5) - (Math.PI * 0.25) );
+	var tempAng = addAngles(tempAng, Math.PI);
+	this.x = Math.cos(tempAng) * 1010;
+	this.y = Math.sin(tempAng) * 1010;
+	this.speed = 50;
 		
-		this.run = function(time){
-			this.x += Math.cos(this.angle) * this.speed * time * 0.001;
-			this.y += Math.sin(this.angle) * this.speed * time * 0.001;
-		}
+	this.run = function(time){
+		this.x += Math.cos(this.angle) * this.speed * time * 0.001;
+		this.y += Math.sin(this.angle) * this.speed * time * 0.001;
 	}
-	else if(a == 'f'){//follower
-		var tempAng = (Math.random() * 2 * Math.PI) - Math.PI;
-		this.x = Math.cos(tempAng) * 1010;
-		this.y = Math.sin(tempAng) * 1010;
-		this.r = 12;
-		this.speed = 50;
-		
-		this.run = function(time,plx, ply){
-			this.angle = Math.atan2(ply - this.y, plx - this.x);
-			this.x += Math.cos(this.angle) * time * 0.001 * this.speed;
-			this.y += Math.sin(this.angle) * time * 0.001 * this.speed;
-		}
-	}
-	else{
-		this.x = a;
-		this.y = b;
-		this.r = c;
-		this.speed = d;
-		this.angle = e;
-	}
-	
 	/*
 	Method: run(time)
 	Arguments:
@@ -1002,6 +972,20 @@ function Enemy(a,b,c,d,e){
 	Returns: N/A
 	Operation: moves the enemy according to it's speed and the update time
 	*/
+}
+
+function Follower(){
+	var tempAng = (Math.random() * 2 * Math.PI) - Math.PI;
+	this.x = Math.cos(tempAng) * 1010;
+	this.y = Math.sin(tempAng) * 1010;
+	this.r = 12;
+	this.speed = 50;
+	
+	this.run = function(time,plx, ply){
+		this.angle = Math.atan2(ply - this.y, plx - this.x);
+		this.x += Math.cos(this.angle) * time * 0.001 * this.speed;
+		this.y += Math.sin(this.angle) * time * 0.001 * this.speed;
+	}
 }
 
 /*
@@ -1023,69 +1007,61 @@ Methods:
 		it allows them to move.
 		different projectiles may move differently, thus having a different run() function
 */
-function Projectile(a,b,c,d,e){
-	this.x = 0;
-	this.y = 0;
-	this.r = 5;
-	this.angle = 0;
-	this.speed = 0;
-	this.run;
+function Projectile(a,b,c){
+	this.x = a;
+	this.y = b;
+	this.r = 6;
+	this.angle = c;
+	this.speed = 300;
+		
+	this.run = function(time){
+		this.x += Math.cos(this.angle) * time * 0.001 * this.speed;
+		this.y += Math.sin(this.angle) * time * 0.001 * this.speed;
+	};
+}
+
+function Rocket(ix,iy,ia){
+	this.x = ix;
+	this.y = iy;
+	this.r = 6;
+	this.angle = ia;
+	this.speed = 250;
+	this.deltaAngle = Math.PI * 0.25;
 	
-	if(a == 's'){//snowball
-		this.x = b;
-		this.y = c;
-		this.r = 6;
-		this.angle = d;
-		this.speed = 300;
+	this.run = function(time,enemies){
+		var dist = 0;
+		var index = -1;
 		
-		this.run = function(time){
-			this.x += Math.cos(this.angle) * time * 0.001 * this.speed;
-			this.y += Math.sin(this.angle) * time * 0.001 * this.speed;
-		}
-	}
-	else if(a == 'r'){//rocket
-		this.x = b;
-		this.y = c;
-		this.r = 6;
-		this.angle = d;
-		this.speed = 250;
-		this.deltaAngle = Math.PI * 0.25;
-		
-		this.run = function(time,enemies){
-			var dist = 0;
-			var index = -1;
-			
-			for(var i = 0; i < enemies.length; i++){
-				if(index == -1){
-					dist = findDistance(this.x, this.y, enemies[i].x, enemies[i].y);
+		for(var i = 0; i < enemies.length; i++){
+			if(index == -1){
+				dist = findDistance(this.x, this.y, enemies[i].x, enemies[i].y);
+				index = i;
+			}
+			else{
+				var currDist = findDistance(this.x, this.y, enemies[i].x, enemies[i].y);
+				if(currDist < dist){
+					dist = currDist;
 					index = i;
 				}
-				else{
-					var currDist = findDistance(this.x, this.y, enemies[i].x, enemies[i].y);
-					if(currDist < dist){
-						dist = currDist;
-						index = i;
-					}
-				}
 			}
-			
-			if(enemies.length > 0){
-				var ang = Math.atan2(enemies[index].y - this.y, enemies[index].x - this.x);
-				ang = addAngles(ang, this.angle * -1);
-				
-				var da = this.deltaAngle * time * 0.001;
-				if(ang > da)
-					ang = da;
-				else if(ang < -da)
-					ang = -da;
-				
-				this.angle = addAngles(this.angle, ang);
-			}
-			
-			this.x += Math.cos(this.angle) * time * 0.001 * this.speed;
-			this.y += Math.sin(this.angle) * time * 0.001 * this.speed;
 		}
-	}
+		
+		if(enemies.length > 0){
+			var ang = Math.atan2(enemies[index].y - this.y, enemies[index].x - this.x);
+			ang = addAngles(ang, this.angle * -1);
+			
+			var da = this.deltaAngle * time * 0.001;
+			if(ang > da)
+				ang = da;
+			else if(ang < -da)
+				ang = -da;
+			
+			this.angle = addAngles(this.angle, ang);
+		}
+		
+		this.x += Math.cos(this.angle) * time * 0.001 * this.speed;
+		this.y += Math.sin(this.angle) * time * 0.001 * this.speed;
+	};
 }
 
 /*
