@@ -1,0 +1,25 @@
+To-Do
+
+Pre-Game
+-sound effects toggle in menu
+-finish How To section
+-music toggle in menu
+
+In-Game
+-make currency
+-make money drops
+-sound effects
+-progressive difficulty
+-options menu in pause screen
+-sprite for enemies
+-sprite for money
+-sprite for snowballs
+-sprite for missles
+
+After-Game
+-make store upgrades
+-more store options
+-add projectile speed
+-add firing rate
+-added weapons
+-add health to store
