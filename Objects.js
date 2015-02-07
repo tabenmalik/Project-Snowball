@@ -403,10 +403,12 @@ Class: OptionsMenu()
 function OptionsMenu(){
 	this.optionTitle;
 	this.backButton;
+	this.musicToggle;
 	
 	this.setup = function(){
-		this.optionTitle = new Title(100,125,600,100,"Options");
+		this.optionTitle = new Title(100,60,600,100,"Options");
 		this.backButton = new Button(100,500, 50, "Back");
+		this.musicToggle = new Button(200,230,50, "Music");
 	};
 	
 	this.update = function(time){
@@ -419,12 +421,29 @@ function OptionsMenu(){
 			mouse.clicked = false;
 			gamestate = mainMenu;
 		}
+		
+		this.musicToggle.update(time);
+		if(collide(mouse,this.musicToggle) && mouse.clicked)
+		{
+			mouse.clicked = false;
+			if(this.musicToggle.color == "#545454")
+			{
+				this.musicToggle.changeColor("#5555FF");
+				Howler.unmute();
+			}
+			else
+			{
+				this.musicToggle.changeColor("#545454");
+				Howler.mute();
+			}
+		}
 	};
 	
 	this.draw = function(){
 		ctx.clearRect(0,0,can.width,can.height);
 		this.optionTitle.draw();
 		this.backButton.draw();
+		this.musicToggle.draw();
 	};
 }
 
@@ -733,6 +752,7 @@ function Button(a,b,c,d,e){
 	this.y = b;
 	this.r = c;
 	ctx.font = "30px Verdana";
+	this.color = "#5555FF";
 	this.title = {
 		text: d,
 		x: this.x - this.r + (((this.r*2) - ctx.measureText(d).width)/2),
@@ -764,7 +784,7 @@ function Button(a,b,c,d,e){
 	};
 	
 	this.draw = function(){
-		ctx.fillStyle = "#5555FF";
+		ctx.fillStyle = this.color;
 		ctx.beginPath();
 		ctx.arc(this.x, this.y, this.r, 0, 2*Math.PI);
 		ctx.closePath();
@@ -773,6 +793,14 @@ function Button(a,b,c,d,e){
 		ctx.fillStyle = "#000000";
 		ctx.font = "30px Verdana";
 		ctx.fillText(this.title.text, this.title.x - this.frontOffSet.x , this.title.y - this.frontOffSet.y );
+	};
+	
+	this.changeColor = function(color){
+		this.color = color;
+	};
+	
+	this.changeText = function(text){
+		this.title.text = text;
 	};
 }
 
