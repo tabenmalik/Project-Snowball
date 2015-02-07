@@ -105,6 +105,10 @@ function PlayGameState(){
 		this.player.y = 0;
 		this.player.angle = 0;
 		this.player.life = this.player.LIFE;
+		this.tether = false;
+		this.enemies.splice(0,this.enemies.length);
+		this.projectiles.splice(0,this.projectiles.length);
+		
 	}
 	
 	/*
@@ -144,7 +148,10 @@ function PlayGameState(){
 		//code for moving projectiles
 		
 		for(var i = 0; i < this.projectiles.length; i++){
-			this.projectiles[i].run(time,this.enemies);
+			if(this.projectiles[i] == Rocket)
+				this.projectiles[i].run(time,this.enemies);
+			else
+				this.projectiles[i].run(time);
 			if(findDistance(this.projectiles[i].x, this.projectiles[i].y,0,0) > this.boundry.r + 200){
 				this.projectiles.splice(i,1);
 				i--;
@@ -271,10 +278,12 @@ function PlayGameState(){
 		}
 		
 		for(var i = 0; i < this.enemies.length; i++){
-			ctx.beginPath();
+			/*ctx.beginPath();
 			ctx.arc(this.enemies[i].x + dx, this.enemies[i].y + dy, this.enemies[i].r, 0, 2 * Math.PI);
 			ctx.closePath();
-			ctx.fill();
+			ctx.fill();*/
+			
+			this.enemies[i].draw(dx,dy);
 		}
 		
 		if(this.tether != false)
@@ -964,6 +973,14 @@ function Enemy(a,b,c,d,e){
 	this.run = function(time){
 		this.x += Math.cos(this.angle) * this.speed * time * 0.001;
 		this.y += Math.sin(this.angle) * this.speed * time * 0.001;
+	}
+	
+	this.draw = function(dx,dy){
+		ctx.save();
+		ctx.translate( this.x + dx, this.y + dy);
+		ctx.rotate(this.angle);
+		ctx.drawImage(images.Enemy, -this.r, -this.r, this.r * 2, this.r * 2);
+		ctx.restore();
 	}
 	/*
 	Method: run(time)
