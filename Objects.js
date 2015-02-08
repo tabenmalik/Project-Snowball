@@ -77,6 +77,7 @@ function PlayGameState(){
 	this.tether = false;
 	this.enemies = [];
 	this.projectiles = [];
+	this.monies = [];
 	this.boundry;
 	this.control;
 	this.spawnEnemy;
@@ -108,7 +109,7 @@ function PlayGameState(){
 		this.tether = false;
 		this.enemies.splice(0,this.enemies.length);
 		this.projectiles.splice(0,this.projectiles.length);
-		
+		this.monies.splice(0,this.monies.length);
 	}
 	
 	/*
@@ -186,6 +187,15 @@ function PlayGameState(){
 			}
 		}
 		
+		//player colliding with money
+		for(var i = 0; i < this.monies.length; i++){
+			if(collide(this.player, this.monies[i]) ){
+				money += this.monies[i].value;
+				this.monies.splice(i,1);
+				i--;
+			}
+		}
+		
 		if(findDistance(0,0,this.player.x, this.player.y) + this.player.r > this.boundry.r && this.tether == false){
 			//CODE FOR RUNNING OUT OF BOUNDS
 			this.player.loseLife(this.player.life);
@@ -211,6 +221,14 @@ function PlayGameState(){
 			for(var o = 0; o < this.enemies.length; o++){
 				
 				if(collide(this.projectiles[i], this.enemies[o])){
+					var moniesToAdd = scatterMoney();
+					for(j = 0; j < moniesToAdd.length; j++){
+						var AMoney = moniesToAdd[j];
+						AMoney.x += this.enemies[o].x;
+						AMoney.y += this.enemies[o].y;
+						this.monies.push(AMoney);
+					}
+					
 					this.projectiles.splice(i,1);
 					this.enemies.splice(o,1);
 					i--;
@@ -275,6 +293,10 @@ function PlayGameState(){
 			ctx.arc(this.posts[i].x + dx, this.posts[i].y + dy, this.posts[i].r, 0, 2 * Math.PI);
 			ctx.closePath();
 			ctx.fill();*/
+		}
+		
+		for(var i = 0; i < this.monies.length; i++){
+			this.monies[i].draw(dx,dy);
 		}
 		
 		for(var i = 0; i < this.enemies.length; i++){
@@ -408,6 +430,12 @@ function Menu(){
 
 /*
 Class: OptionsMenu()
+Arguments for Constructor: N/A
+Instances: N/A
+Methods:
+	setup()
+	update()
+	draw()
 */
 function OptionsMenu(){
 	this.optionTitle;
@@ -438,7 +466,13 @@ function OptionsMenu(){
 }
 
 /*
-
+Class: HowToMenu()
+Arguments for Constructor: N/A
+Instances: N/A
+Methods:
+	setup()
+	update()
+	draw()
 */
 function HowToMenu(){
 	this.howToTitle;
@@ -469,6 +503,13 @@ function HowToMenu(){
 }
 
 /*
+Class: Store()
+Arguments for Constructor: N/A
+Instances: N/A
+Methods:
+	setup()
+	update()
+	draw()
 */
 function Store(){
 	this.backButton;
@@ -1078,6 +1119,27 @@ function Rocket(ix,iy,ia){
 		
 		this.x += Math.cos(this.angle) * time * 0.001 * this.speed;
 		this.y += Math.sin(this.angle) * time * 0.001 * this.speed;
+	};
+}
+
+/*
+Class: Money()
+Arguments for constructor:
+	ix: x location
+	iy: y location
+	iv: value of money
+*/
+function Money(ix, iy, iv){
+	this.x = ix;
+	this.y = iy;
+	this.r = 10;
+	this.value = iv;
+	
+	this.draw = function(dx,dy){
+		ctx.save();
+		ctx.translate( this.x + dx, this.y + dy);
+		ctx.drawImage(images.Money, -this.r, -this.r, this.r * 2, this.r * 2);
+		ctx.restore();
 	};
 }
 
