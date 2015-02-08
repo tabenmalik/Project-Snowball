@@ -23,3 +23,6 @@ After-Game
 -add firing rate
 -added weapons
 -add health to store
+
+Other
+-Move gamestate objects into a new "Gamestates.js" file for organization
