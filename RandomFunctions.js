@@ -50,6 +50,20 @@ function addAngles(a1,a2){
 	return a1;
 }
 
+function scatterMoney(){
+	var ms = [];
+	var num = 5
+	var radius = 20;
+	
+	for(i = 0; i < num; i++){
+		var angle = Math.random() * Math.PI * 2;
+		angle -= Math.PI;
+		
+		ms.push(new Money(Math.cos(angle) * radius, Math.sin(angle) * radius, 5));
+	}
+	return ms;
+}
+
 function randomizePosts(){
 	var newPosts = [];
 	var failedTries = 0;

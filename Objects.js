@@ -77,6 +77,7 @@ function PlayGameState(){
 	this.tether = false;
 	this.enemies = [];
 	this.projectiles = [];
+	this.monies = [];
 	this.boundry;
 	this.control;
 	this.spawnEnemy;
@@ -105,6 +106,10 @@ function PlayGameState(){
 		this.player.y = 0;
 		this.player.angle = 0;
 		this.player.life = this.player.LIFE;
+		this.tether = false;
+		this.enemies.splice(0,this.enemies.length);
+		this.projectiles.splice(0,this.projectiles.length);
+		this.monies.splice(0,this.monies.length);
 	}
 	
 	/*
@@ -144,7 +149,10 @@ function PlayGameState(){
 		//code for moving projectiles
 		
 		for(var i = 0; i < this.projectiles.length; i++){
-			this.projectiles[i].run(time,this.enemies);
+			if(this.projectiles[i] == Rocket)
+				this.projectiles[i].run(time,this.enemies);
+			else
+				this.projectiles[i].run(time);
 			if(findDistance(this.projectiles[i].x, this.projectiles[i].y,0,0) > this.boundry.r + 200){
 				this.projectiles.splice(i,1);
 				i--;
@@ -157,7 +165,7 @@ function PlayGameState(){
 		if(this.player.fireRate < 0)
 			this.player.fireRate = 0;
 		if(keys.space && this.player.fireRate == 0){
-			this.projectiles.push(new Projectile('s', this.player.x, this.player.y, this.player.angle) );
+			this.projectiles.push(new Projectile(this.player.x, this.player.y, this.player.angle) );
 			this.player.fireRate += this.player.FIRERATE;
 		}
 		
@@ -176,6 +184,15 @@ function PlayGameState(){
 				//CODE FOR WHEN PLAYER COLLIDES WITH POST
 				log("Collided with Post");
 				this.player.loseLife(this.player.life);
+			}
+		}
+		
+		//player colliding with money
+		for(var i = 0; i < this.monies.length; i++){
+			if(collide(this.player, this.monies[i]) ){
+				money += this.monies[i].value;
+				this.monies.splice(i,1);
+				i--;
 			}
 		}
 		
@@ -204,6 +221,14 @@ function PlayGameState(){
 			for(var o = 0; o < this.enemies.length; o++){
 				
 				if(collide(this.projectiles[i], this.enemies[o])){
+					var moniesToAdd = scatterMoney();
+					for(j = 0; j < moniesToAdd.length; j++){
+						var AMoney = moniesToAdd[j];
+						AMoney.x += this.enemies[o].x;
+						AMoney.y += this.enemies[o].y;
+						this.monies.push(AMoney);
+					}
+					
 					this.projectiles.splice(i,1);
 					this.enemies.splice(o,1);
 					i--;
@@ -270,11 +295,17 @@ function PlayGameState(){
 			ctx.fill();*/
 		}
 		
+		for(var i = 0; i < this.monies.length; i++){
+			this.monies[i].draw(dx,dy);
+		}
+		
 		for(var i = 0; i < this.enemies.length; i++){
-			ctx.beginPath();
+			/*ctx.beginPath();
 			ctx.arc(this.enemies[i].x + dx, this.enemies[i].y + dy, this.enemies[i].r, 0, 2 * Math.PI);
 			ctx.closePath();
-			ctx.fill();
+			ctx.fill();*/
+			
+			this.enemies[i].draw(dx,dy);
 		}
 		
 		if(this.tether != false)
@@ -399,6 +430,12 @@ function Menu(){
 
 /*
 Class: OptionsMenu()
+Arguments for Constructor: N/A
+Instances: N/A
+Methods:
+	setup()
+	update()
+	draw()
 */
 function OptionsMenu(){
 	this.optionTitle;
@@ -429,7 +466,13 @@ function OptionsMenu(){
 }
 
 /*
-
+Class: HowToMenu()
+Arguments for Constructor: N/A
+Instances: N/A
+Methods:
+	setup()
+	update()
+	draw()
 */
 function HowToMenu(){
 	this.howToTitle;
@@ -460,6 +503,13 @@ function HowToMenu(){
 }
 
 /*
+Class: Store()
+Arguments for Constructor: N/A
+Instances: N/A
+Methods:
+	setup()
+	update()
+	draw()
 */
 function Store(){
 	this.backButton;
@@ -953,48 +1003,26 @@ Methods:
 	run()
 */
 function Enemy(a,b,c,d,e){
-	this.x = 0;
-	this.y = 0;
 	this.r = 10;
-	this.angle = 0;
-	this.speed = 0;
-	this.run;
-	
-	if(a == 'n'){//normal enemies.
-		this.angle = (Math.random() * 2 * Math.PI) - Math.PI;
-		var tempAng = addAngles(this.angle, (Math.random()*Math.PI * 0.5) - (Math.PI * 0.25) );
-		var tempAng = addAngles(tempAng, Math.PI);
-		this.x = Math.cos(tempAng) * 1010;
-		this.y = Math.sin(tempAng) * 1010;
-		this.speed = 50;
-		this.r = 8;
+	this.angle = (Math.random() * 2 * Math.PI) - Math.PI;
+	var tempAng = addAngles(this.angle, (Math.random()*Math.PI * 0.5) - (Math.PI * 0.25) );
+	var tempAng = addAngles(tempAng, Math.PI);
+	this.x = Math.cos(tempAng) * 1010;
+	this.y = Math.sin(tempAng) * 1010;
+	this.speed = 50;
 		
-		this.run = function(time){
-			this.x += Math.cos(this.angle) * this.speed * time * 0.001;
-			this.y += Math.sin(this.angle) * this.speed * time * 0.001;
-		}
-	}
-	else if(a == 'f'){//follower
-		var tempAng = (Math.random() * 2 * Math.PI) - Math.PI;
-		this.x = Math.cos(tempAng) * 1010;
-		this.y = Math.sin(tempAng) * 1010;
-		this.r = 12;
-		this.speed = 50;
-		
-		this.run = function(time,plx, ply){
-			this.angle = Math.atan2(ply - this.y, plx - this.x);
-			this.x += Math.cos(this.angle) * time * 0.001 * this.speed;
-			this.y += Math.sin(this.angle) * time * 0.001 * this.speed;
-		}
-	}
-	else{
-		this.x = a;
-		this.y = b;
-		this.r = c;
-		this.speed = d;
-		this.angle = e;
+	this.run = function(time){
+		this.x += Math.cos(this.angle) * this.speed * time * 0.001;
+		this.y += Math.sin(this.angle) * this.speed * time * 0.001;
 	}
 	
+	this.draw = function(dx,dy){
+		ctx.save();
+		ctx.translate( this.x + dx, this.y + dy);
+		ctx.rotate(this.angle);
+		ctx.drawImage(images.Enemy, -this.r, -this.r, this.r * 2, this.r * 2);
+		ctx.restore();
+	}
 	/*
 	Method: run(time)
 	Arguments:
@@ -1002,6 +1030,20 @@ function Enemy(a,b,c,d,e){
 	Returns: N/A
 	Operation: moves the enemy according to it's speed and the update time
 	*/
+}
+
+function Follower(){
+	var tempAng = (Math.random() * 2 * Math.PI) - Math.PI;
+	this.x = Math.cos(tempAng) * 1010;
+	this.y = Math.sin(tempAng) * 1010;
+	this.r = 12;
+	this.speed = 50;
+	
+	this.run = function(time,plx, ply){
+		this.angle = Math.atan2(ply - this.y, plx - this.x);
+		this.x += Math.cos(this.angle) * time * 0.001 * this.speed;
+		this.y += Math.sin(this.angle) * time * 0.001 * this.speed;
+	}
 }
 
 /*
@@ -1023,69 +1065,82 @@ Methods:
 		it allows them to move.
 		different projectiles may move differently, thus having a different run() function
 */
-function Projectile(a,b,c,d,e){
-	this.x = 0;
-	this.y = 0;
-	this.r = 5;
-	this.angle = 0;
-	this.speed = 0;
-	this.run;
+function Projectile(a,b,c){
+	this.x = a;
+	this.y = b;
+	this.r = 6;
+	this.angle = c;
+	this.speed = 300;
+		
+	this.run = function(time){
+		this.x += Math.cos(this.angle) * time * 0.001 * this.speed;
+		this.y += Math.sin(this.angle) * time * 0.001 * this.speed;
+	};
+}
+
+function Rocket(ix,iy,ia){
+	this.x = ix;
+	this.y = iy;
+	this.r = 6;
+	this.angle = ia;
+	this.speed = 250;
+	this.deltaAngle = Math.PI * 0.25;
 	
-	if(a == 's'){//snowball
-		this.x = b;
-		this.y = c;
-		this.r = 6;
-		this.angle = d;
-		this.speed = 300;
+	this.run = function(time,enemies){
+		var dist = 0;
+		var index = -1;
 		
-		this.run = function(time){
-			this.x += Math.cos(this.angle) * time * 0.001 * this.speed;
-			this.y += Math.sin(this.angle) * time * 0.001 * this.speed;
-		}
-	}
-	else if(a == 'r'){//rocket
-		this.x = b;
-		this.y = c;
-		this.r = 6;
-		this.angle = d;
-		this.speed = 250;
-		this.deltaAngle = Math.PI * 0.25;
-		
-		this.run = function(time,enemies){
-			var dist = 0;
-			var index = -1;
-			
-			for(var i = 0; i < enemies.length; i++){
-				if(index == -1){
-					dist = findDistance(this.x, this.y, enemies[i].x, enemies[i].y);
+		for(var i = 0; i < enemies.length; i++){
+			if(index == -1){
+				dist = findDistance(this.x, this.y, enemies[i].x, enemies[i].y);
+				index = i;
+			}
+			else{
+				var currDist = findDistance(this.x, this.y, enemies[i].x, enemies[i].y);
+				if(currDist < dist){
+					dist = currDist;
 					index = i;
 				}
-				else{
-					var currDist = findDistance(this.x, this.y, enemies[i].x, enemies[i].y);
-					if(currDist < dist){
-						dist = currDist;
-						index = i;
-					}
-				}
 			}
-			
-			if(enemies.length > 0){
-				var ang = Math.atan2(enemies[index].y - this.y, enemies[index].x - this.x);
-				ang = addAngles(ang, this.angle * -1);
-				
-				var da = this.deltaAngle * time * 0.001;
-				if(ang > da)
-					ang = da;
-				else if(ang < -da)
-					ang = -da;
-				
-				this.angle = addAngles(this.angle, ang);
-			}
-			
-			this.x += Math.cos(this.angle) * time * 0.001 * this.speed;
-			this.y += Math.sin(this.angle) * time * 0.001 * this.speed;
 		}
-	}
+		
+		if(enemies.length > 0){
+			var ang = Math.atan2(enemies[index].y - this.y, enemies[index].x - this.x);
+			ang = addAngles(ang, this.angle * -1);
+			
+			var da = this.deltaAngle * time * 0.001;
+			if(ang > da)
+				ang = da;
+			else if(ang < -da)
+				ang = -da;
+			
+			this.angle = addAngles(this.angle, ang);
+		}
+		
+		this.x += Math.cos(this.angle) * time * 0.001 * this.speed;
+		this.y += Math.sin(this.angle) * time * 0.001 * this.speed;
+	};
+}
+
+/*
+Class: Money()
+Arguments for constructor:
+	ix: x location
+	iy: y location
+	iv: value of money
+*/
+function Money(ix, iy, iv){
+	this.x = ix;
+	this.y = iy;
+	this.r = 10;
+	this.value = iv;
+	
+	this.draw = function(dx,dy){
+		ctx.save();
+		ctx.translate( this.x + dx, this.y + dy);
+		ctx.drawImage(images.Money, -this.r, -this.r, this.r * 2, this.r * 2);
+		ctx.restore();
+	};
 }
 
 /*

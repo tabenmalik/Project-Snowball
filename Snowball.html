@@ -86,6 +86,7 @@
 	var play = 0;
 	var endGame = 0;
 	var store = 0;
+	var money = 0;
 	var keys = {
 		w: false,
 		a: false,
@@ -97,11 +98,15 @@
 	var images = {
 		Post: new Image(),
 		Sleigh: new Image(),
-		};
+		Enemy: new Image(),
+		Money: new Image(),
+	};
 	
 	function main(){
 		images.Post.src = "images/Post.png";
 		images.Sleigh.src = "images/Sleigh.png";
+		images.Enemy.src = "images/Enemy.png";
+		images.Money.src = "images/Money.png";
 		mouse = new Mouse();
 		mouse.setup();
 		
