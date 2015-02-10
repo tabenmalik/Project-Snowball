@@ -441,11 +441,13 @@ function OptionsMenu(){
 	this.optionTitle;
 	this.backButton;
 	this.musicToggle;
+	this.soundToggle;
 	
 	this.setup = function(){
 		this.optionTitle = new Title(100,60,600,100,"Options");
 		this.backButton = new Button(100,500, 50, "Back");
 		this.musicToggle = new Button(200,230,50, "Music");
+		this.soundToggle = new Button(200,360,50, "Sound");
 	};
 	
 	this.update = function(time){
@@ -466,12 +468,28 @@ function OptionsMenu(){
 			if(this.musicToggle.color == "#545454")
 			{
 				this.musicToggle.changeColor("#5555FF");
-				Howler.unmute();
+				playMusic = false;
 			}
 			else
 			{
 				this.musicToggle.changeColor("#545454");
-				Howler.mute();
+				playMusic = true;
+			}
+		}
+		
+		this.soundToggle.update(time);
+		if(collide(mouse, this.soundToggle) && mouse.clicked)
+		{
+			mouse.clicked = false;
+			if(this.soundToggle.color == "#545454")
+			{
+				this.soundToggle.changeColor("#5555FF");
+				playSound = false;
+			}
+			else
+			{
+				this.soundToggle.changeColor("#545454");
+				playSound = true;
 			}
 		}
 	};
@@ -481,6 +499,7 @@ function OptionsMenu(){
 		this.optionTitle.draw();
 		this.backButton.draw();
 		this.musicToggle.draw();
+		this.soundToggle.draw();
 	};
 }
 
