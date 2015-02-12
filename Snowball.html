@@ -108,7 +108,7 @@
 		store.setup();
 		
 		gamestate = mainMenu;
-		music[0].play();
+		gameMusic.playMusic(0);
 		can.onmousemove = function(){mouse.setMousePosition(event);};
 		document.addEventListener('keydown', handleKeyDown);
 		document.addEventListener('keyup', handleKeyUp);

@@ -392,8 +392,7 @@ function Menu(){
 		if(collide(mouse,this.playButton) && mouse.clicked){
 			sounds.play("buttonPress");
 			mouse.clicked = false;
-			music[0].stop();
-			music[1].play();
+			gameMusic.changeMusic(1);
 			play.reset();
 			gamestate = play;
 		}
@@ -465,15 +464,15 @@ function OptionsMenu(){
 		if(collide(mouse,this.musicToggle) && mouse.clicked)
 		{
 			mouse.clicked = false;
-			if(this.musicToggle.color == "#545454")
+			if(gameMusic.isPlayMusic == true)
 			{
 				this.musicToggle.changeColor("#5555FF");
-				playMusic = false;
+				gameMusic.muteMusic();
 			}
 			else
 			{
 				this.musicToggle.changeColor("#545454");
-				playMusic = true;
+				gameMusic.unmuteMusic();
 			}
 		}
 		
@@ -684,7 +683,7 @@ function GameOver(){
 			sounds.play("buttonPress");
 			mouse.clicked = false;
 			gamestate = mainMenu;
-			music[0].play();
+			gameMusic.changeMusic(0);
 		}
 	}
 	
@@ -780,7 +779,7 @@ function Player(a,b,c,d){
 		this.life -= deduct;
 		
 		if(this.life <= 0){
-			music[1].stop();
+			gameMusic.stopMusic();
 			gamestate = endGame;
 		}
 	};
