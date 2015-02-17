@@ -29,18 +29,18 @@ function Music(){
 		}
 	};
 	
+	this.stopMusic = function(){
+		this.music[this.currentSong].stop();
+	};
+	
 	this.changeMusic = function(musicNum){
 		this.stopMusic();
 		this.playMusic(musicNum);
 	};
 	
-	this.stopMusic = function(){
-		this.music[this.currentSong].stop();
-	};
-	
 	this.muteMusic = function(){
 		this.isPlayMusic = false;
-		this.music[this.currentSong].stop();
+		this.stopMusic();
 	};
 	
 	this.unmuteMusic = function(){
@@ -71,11 +71,11 @@ function Sound(){
 		}
 	};
 	
-	this.muteSounds = function(
+	this.muteSounds = function(){
 		this.isPlaySound = false;
 	};
 	
-	this.unmuteSounds = functions(){
+	this.unmuteSounds = function(){
 		this.isPlaySound = true;
 	};
 }
