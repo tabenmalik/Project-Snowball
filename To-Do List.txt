@@ -1,9 +1,7 @@
 To-Do
 
 Pre-Game
--sound effects toggle in menu
 -finish How To section
--music toggle in menu
 
 In-Game
 -make currency
@@ -27,4 +25,3 @@ After-Game
 -add health to store
 
 Other
--Move gamestate objects into a new "Gamestates.js" file for organization
