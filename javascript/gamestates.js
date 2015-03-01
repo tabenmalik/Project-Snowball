@@ -407,12 +407,12 @@ function OptionsMenu(){
 			mouse.clicked = false;
 			if(gameMusic.isPlayMusic == true)
 			{
-				this.musicToggle.changeColor("#5555FF");
+				this.musicToggle.changeColor("#545454");
 				gameMusic.muteMusic();
 			}
 			else
 			{
-				this.musicToggle.changeColor("#545454");
+				this.musicToggle.changeColor("#5555FF");
 				gameMusic.unmuteMusic();
 			}
 		}
@@ -421,14 +421,14 @@ function OptionsMenu(){
 		if(collide(mouse, this.soundToggle) && mouse.clicked)
 		{
 			mouse.clicked = false;
-			if(this.soundToggle.color == "#545454")
+			if(gameSound.isPlaySound == true)
 			{
-				this.soundToggle.changeColor("#5555FF");
+				this.soundToggle.changeColor("#545454");
 				gameSound.muteSounds();
 			}
 			else
 			{
-				this.soundToggle.changeColor("#545454");
+				this.soundToggle.changeColor("#5555FF");
 				gameSound.unmuteSounds();
 			}
 		}
