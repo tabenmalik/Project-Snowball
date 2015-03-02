@@ -454,10 +454,14 @@ Methods:
 function HowToMenu(){
 	this.howToTitle;
 	this.backButton;
+	this.nextButton;
+	this.screen;
 	
 	this.setup = function(){
 		this.howToTitle = new Title(100,125,600,100,"Instructions");
+		this.nextButton = new Button(700,500,50,"Next");
 		this.backButton = new Button(100,500, 50, "Back");
+		this.screen = 0;
 	};
 	
 	this.update = function(time){
@@ -466,9 +470,34 @@ function HowToMenu(){
 		this.backButton.update(time);
 		if(collide(mouse, this.backButton) && mouse.clicked)
 		{
-			gameSound.playSound("buttonPress");
 			mouse.clicked = false;
-			gamestate = mainMenu;
+			gameSound.playSound("buttonPress");
+			
+			if(this.screen == 0)
+			{
+				gamestate = mainMenu;
+			}
+			else
+			{
+				this.screen = this.screen-1;
+			}
+		}
+		
+		this.nextButton.update(time);
+		if(collide(mouse, this.nextButton) && mouse.clicked)
+		{
+			mouse.clicked = false;
+			gameSound.playSound("buttonPress");
+			
+			if(this.screen == 1)
+			{
+				this.screen = 0;
+				gamestate = mainMenu;
+			}
+			else
+			{
+				this.screen = this.screen+1;
+			}
 		}
 	};
 	
@@ -476,6 +505,21 @@ function HowToMenu(){
 		ctx.clearRect(0,0,can.width,can.height);
 		this.howToTitle.draw();
 		this.backButton.draw();
+		this.nextButton.draw();
+		
+		if(this.screen == 0)
+		{
+			ctx.fillStyle = "#000000";
+			ctx.font = "30px Verdana";
+			ctx.fillText("Figure it out.", 200 , 300 );
+		}
+		
+		if(this.screen == 1)
+		{
+			ctx.fillStyle = "#000000";
+			ctx.font = "30px Verdana";
+			ctx.fillText("Seriously. Just figure it out.", 200 , 300 );
+		}
 	};
 }
 
