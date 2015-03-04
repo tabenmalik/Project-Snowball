@@ -1,7 +1,6 @@
 To-Do
 
 Pre-Game
--finish How To section
 
 In-Game
 -make currency

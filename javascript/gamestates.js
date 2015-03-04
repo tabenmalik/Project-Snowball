@@ -15,7 +15,6 @@ Methods:
 	
 */
 function PlayGameState(){
-	this.player;
 	this.posts = [];
 	this.tether = false;
 	this.enemies = [];
@@ -33,7 +32,6 @@ function PlayGameState(){
 	Operation: Creates player object, map, and enemies etc. for game play
 	*/
 	this.setup = function(){
-		this.player = new Player(0,0,10,0);
 		this.posts = randomizePosts();
 		this.control = control1;//pass in posts and the x and y of the player
 		this.boundry = new Boundry(1000);
@@ -45,10 +43,8 @@ function PlayGameState(){
 	this.reset = function(){
 		this.posts = randomizePosts();
 		this.spawnEnemy = this.SPAWNENEMY = 3000;
-		this.player.x = 0;
-		this.player.y = 0;
-		this.player.angle = 0;
-		this.player.life = this.player.LIFE;
+		player.setPosition(0,0,0);
+		player.life = player.LIFE;
 		this.tether = false;
 		this.enemies.splice(0,this.enemies.length);
 		this.projectiles.splice(0,this.projectiles.length);
@@ -67,26 +63,26 @@ function PlayGameState(){
 		//code for movement of the player
 		
 		if(this.tether == false){
-			var temp = this.control(this.posts, this.player);
+			var temp = this.control(this.posts, player);
 			if(temp != false)
-				this.tether = new Tether(this.player.x, this.player.y, this.player.angle, temp.x, temp.y);
+				this.tether = new Tether(player.x, player.y, player.angle, temp.x, temp.y);
 		}
-		else if(this.control(this.posts, this.player) == false){
+		else if(this.control(this.posts, player) == false){
 			this.tether = false;
 		}
 		
 		if(this.tether == false)
-			this.player.move(time);
-		else if(this.tether.passedTan(this.player.x, this.player.y, this.player.angle))
+			player.move(time);
+		else if(this.tether.passedTan(player.x, player.y, player.angle))
 		{
 			this.tether.update(time);
-			this.player.circle(time,this.tether.postX, this.tether.postY, this.tether.radius, this.tether.onRight);
+			player.circle(time,this.tether.postX, this.tether.postY, this.tether.radius, this.tether.onRight);
 		}
 		else
-			this.player.move(time);
+			player.move(time);
 		
 		for(var i = 0; i < this.enemies.length; i++){
-			this.enemies[i].run(time,this.player.x,this.player.y);
+			this.enemies[i].run(time,player.x,player.y);
 		}
 		
 		//code for moving projectiles
@@ -104,12 +100,12 @@ function PlayGameState(){
 		
 		//code for shooting snowballs
 		
-		this.player.fireRate -= time;
-		if(this.player.fireRate < 0)
-			this.player.fireRate = 0;
-		if(keys.space && this.player.fireRate == 0){
-			this.projectiles.push(new Projectile(this.player.x, this.player.y, this.player.angle) );
-			this.player.fireRate += this.player.FIRERATE;
+		player.fireRate -= time;
+		if(player.fireRate < 0)
+			player.fireRate = 0;
+		if(keys.space && player.fireRate == 0){
+			this.projectiles.push(new Projectile(player.x, player.y, player.angle) );
+			player.fireRate += player.FIRERATE;
 		}
 		
 		//spawning new enemies
@@ -123,25 +119,25 @@ function PlayGameState(){
 		//collision detections
 		
 		for(var i = 0; i < this.posts.length; i++){
-			if(collide(this.posts[i], this.player)){
+			if(collide(this.posts[i], player)){
 				//CODE FOR WHEN PLAYER COLLIDES WITH POST
 				log("Collided with Post");
-				this.player.loseLife(this.player.life);
+				player.loseLife(player.life);
 			}
 		}
 		
 		//player colliding with money
 		for(var i = 0; i < this.monies.length; i++){
-			if(collide(this.player, this.monies[i]) ){
+			if(collide(player, this.monies[i]) ){
 				money += this.monies[i].value;
 				this.monies.splice(i,1);
 				i--;
 			}
 		}
 		
-		if(findDistance(0,0,this.player.x, this.player.y) + this.player.r > this.boundry.r && this.tether == false){
+		if(findDistance(0,0,player.x, player.y) + player.r > this.boundry.r && this.tether == false){
 			//CODE FOR RUNNING OUT OF BOUNDS
-			this.player.loseLife(this.player.life);
+			player.loseLife(player.life);
 		}
 		
 		for(var i = 0; i < this.enemies.length; i++){
@@ -151,10 +147,10 @@ function PlayGameState(){
 				i--;
 			}
 			//collision detection with player
-			else if(collide(this.enemies[i] , this.player) ){
+			else if(collide(this.enemies[i] , player) ){
 				this.enemies.splice(i,1);
 				i--;
-				this.player.loseLife(1);
+				player.loseLife(1);
 			}
 		}
 		
@@ -211,8 +207,8 @@ function PlayGameState(){
 		ctx.fillStyle = "#000000";
 		ctx.fillRect(0,0,can.width, can.height);
 		
-		var dx = -this.player.x + (can.width * 0.5);
-		var dy = -this.player.y + (can.height * 0.5);
+		var dx = -player.x + (can.width * 0.5);
+		var dy = -player.y + (can.height * 0.5);
 		
 		ctx.fillStyle = "#FFFFFF";
 		ctx.beginPath();
@@ -222,10 +218,10 @@ function PlayGameState(){
 		
 		/*ctx.fillStyle = "#000000";
 		ctx.beginPath();
-		ctx.arc(this.player.x + dx, this.player.y + dy, this.player.r, 0, Math.PI * 2);
+		ctx.arc(player.x + dx, player.y + dy, player.r, 0, Math.PI * 2);
 		ctx.closePath();
 		ctx.fill();*/
-		this.player.draw(dx,dy);
+		player.draw(dx,dy);
 		
 		//posts
 		ctx.fillStyle = "#000000";
@@ -266,7 +262,7 @@ function PlayGameState(){
 		}
 		
 		//Drawing the life bar
-		for(var i = 0; i < this.player.life; i++)
+		for(var i = 0; i < player.life; i++)
 		{
 			ctx.beginPath();
 			ctx.lineWidth="1";

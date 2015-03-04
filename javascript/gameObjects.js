@@ -23,6 +23,7 @@ function Player(a,b,c,d){
 	this.life = 3;
 	this.fireRate = 200;
 	this.FIRERATE = 200;
+	this.money = 0;
 	
 	/*
 	Method: move()
@@ -66,6 +67,29 @@ function Player(a,b,c,d){
 			this.angle = addAngles(circAngle, -(Math.PI / 2));
 	};
 	
+	this.setPosition = function(x,y,angle){
+		this.x = x;
+		this.y = y;
+		this.angle = angle;
+	};
+	
+	this.addMoney = function(amount){
+		this.money += amount
+	};
+	
+	this.checkMoney = function(){
+		return this.money;
+	};
+	
+	this.subMoney = function(amount){
+		this.money -= amount;
+		
+		if(this.money < 0)
+		{
+			this.money = 0;
+		}
+	};
+	
 	this.loseLife = function(deduct){
 		this.life -= deduct;
 		
@@ -90,6 +114,7 @@ function Player(a,b,c,d){
 		ctx.drawImage(images.Sleigh, -this.r, -this.r, this.r * 2, this.r * 2);
 		ctx.restore();
 	}
+	
 }
 
 /* Class: Tether(xPosition, yPosition, angle, postXPosition, postYPosition)
