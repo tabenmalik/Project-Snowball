@@ -1,3 +1,5 @@
+
+
 /* Class: PlayGameState()
 	contains every object and information for the playing state
 Constructor: N/A
@@ -331,22 +333,22 @@ function Menu(){
 			gameSound.playSound("buttonPress");
 			mouse.clicked = false;
 			gameMusic.changeMusic(1);
-			play.reset();
-			gamestate = play;
+			gamestate.gamestates.play.reset();
+			gamestate.changeGameState("play");
 		}
 		
 		this.optionButton.update(time);
 		if(collide(mouse,this.optionButton) && mouse.clicked){
 			gameSound.playSound("buttonPress");
 			mouse.clicked = false;
-			gamestate = optionMenu;
+			gamestate.changeGameState("optionMenu");
 		}
 		
 		this.instructionButton.update(time);
 		if(collide(mouse,this.instructionButton) && mouse.clicked){
 			gameSound.playSound("buttonPress");
 			mouse.clicked = false;
-			gamestate = instructionMenu;
+			gamestate.changeGameState("instructionMenu");
 		}
 	};
 	
@@ -394,7 +396,7 @@ function OptionsMenu(){
 		{
 			gameSound.playSound("buttonPress");
 			mouse.clicked = false;
-			gamestate = mainMenu;
+			gamestate.changeGameState("mainMenu");
 		}
 		
 		this.musicToggle.update(time);
@@ -471,7 +473,7 @@ function HowToMenu(){
 			
 			if(this.screen == 0)
 			{
-				gamestate = mainMenu;
+				gamestate.changeGameState("mainMenu");
 			}
 			else
 			{
@@ -488,7 +490,7 @@ function HowToMenu(){
 			if(this.screen == 1)
 			{
 				this.screen = 0;
-				gamestate = mainMenu;
+				gamestate.changeGameState("mainMenu");
 			}
 			else
 			{
@@ -548,7 +550,7 @@ function Store(){
 		else if(collide(mouse,this.backButton) && mouse.clicked){
 			gameSound.playSound("buttonPress");
 			mouse.clicked = false;
-			gamestate = endGame;
+			gamestate.changeGameState("endGame");
 		}
 	}
 	
@@ -595,7 +597,7 @@ function Pause(){
 		else if(this.hasLetGo){
 			keys.p = false;
 			this.hasLetGo = false;
-			gamestate = play;
+			gamestate.changeGameState("play");
 		}
 	}
 	
@@ -654,12 +656,12 @@ function GameOver(){
 		if(collide(mouse,this.storeButton) && mouse.clicked){
 			gameSound.playSound("buttonPress");
 			mouse.clicked = false;
-			gamestate = store;
+			gamestate.changeGameState("store");
 		}
 		else if(collide(mouse, this.backButton) && mouse.clicked){
 			gameSound.playSound("buttonPress");
 			mouse.clicked = false;
-			gamestate = mainMenu;
+			gamestate.changeGameState("mainMenu");
 			gameMusic.changeMusic(0);
 		}
 	}
@@ -678,4 +680,45 @@ function GameOver(){
 		this.backButton.draw();
 	}
 	
+}
+
+function Gamestates(){
+	this.gamestates = {
+		mainMenu: 0,
+		optionMenu: 0,
+		instructionMenu: 0,
+		play: 0,
+		pause: 0,
+		store: 0,
+		endGame: 0,
+	};
+
+	this.currentState = "mainMenu";
+
+	this.setup = function(){
+		this.gamestates["mainMenu"] = new Menu();
+		this.gamestates["optionMenu"] = new OptionsMenu();
+		this.gamestates["instructionMenu"] = new HowToMenu();
+		this.gamestates["play"] = new PlayGameState();
+		this.gamestates["pause"] = new Pause();
+		this.gamestates["store"] = new Store();
+		this.gamestates["endGame"] = new GameOver();
+
+		for(var key in this.gamestates)
+		{
+			this.gamestates[key].setup();
+		}		
+	};
+
+	this.changeGameState = function(nextState){
+		this.currentState = nextState;
+	};
+
+	this.update = function(time){
+		this.gamestates[this.currentState].update(time);
+	};
+
+	this.draw = function(){
+		this.gamestates[this.currentState].draw();
+	};
 }

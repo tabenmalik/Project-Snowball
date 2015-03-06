@@ -95,7 +95,7 @@ function Player(a,b,c,d){
 		
 		if(this.life <= 0){
 			gameMusic.stopMusic();
-			gamestate = endGame;
+			gamestate.changeGameState("endGame");
 		}
 	};
 	
@@ -196,13 +196,13 @@ function Tether(x,y,a,px,py){
 	};
 	
 	this.draw = function(){
-		var dx = -play.player.x + (can.width * 0.5);
-		var dy = -play.player.y + (can.height * 0.5);
+		var dx = -player.x + (can.width * 0.5);
+		var dy = -player.y + (can.height * 0.5);
 		
 		ctx.strokeStyle = "#663300";
 		ctx.lineWidth = 3;
 		ctx.beginPath();
-		ctx.moveTo(play.player.x + dx, play.player.y + dy);
+		ctx.moveTo(player.x + dx, player.y + dy);
 		ctx.lineTo(this.postX + dx, this.postY + dy);
 		ctx.stroke();
 		
