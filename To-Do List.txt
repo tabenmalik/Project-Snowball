@@ -3,11 +3,9 @@ To-Do
 Pre-Game
 
 In-Game
--make currency
 -sound effects
 -progressive difficulty
 -options menu in pause screen
--sprite for enemies
 -sprite for snowballs
 -sprite for missles
 -sprite for reindeer

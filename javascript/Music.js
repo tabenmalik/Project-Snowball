@@ -6,13 +6,13 @@ function Music(){
 		new Howl({
 			urls: ['music/Carefree.mp3'],
 			volume: 0.7,
-			loop: true,
+			loop: false,
 		}),
 		
 		new Howl({
 			urls: ['music/Monkeys Spinning Monkeys.mp3'],
 			volume: 0.5,
-			loop: true,
+			loop: false,
 		}),
 	];
 	
@@ -20,6 +20,7 @@ function Music(){
 		this.currentSong = musicNum;
 		if(this.isPlayMusic)
 		{
+			this.music[musicNum].loop = true;
 			this.music[musicNum].play();
 			return true;
 		}
@@ -31,6 +32,7 @@ function Music(){
 	
 	this.stopMusic = function(){
 		this.music[this.currentSong].stop();
+		this.music[musicNum].loop = false;
 	};
 	
 	this.changeMusic = function(musicNum){
