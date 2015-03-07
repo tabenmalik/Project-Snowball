@@ -81,6 +81,13 @@ function Player(a,b,c,d){
 		return this.money;
 	};
 	
+	this.hasEnoughMoney = function(num){
+		if( this.money >= num)
+			return true;
+		//else (not needed)
+		return false;
+	};
+	
 	this.subMoney = function(amount){
 		this.money -= amount;
 		

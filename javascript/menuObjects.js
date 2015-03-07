@@ -129,3 +129,41 @@ function Title(a,b,c,d,e){
 		ctx.fillText(this.title.text, this.title.x - this.frontOffSet.x , this.title.y - this.frontOffSet.y );
 	};
 }
+
+/* Class: store item
+*/
+function StoreItem(levs){
+	
+	this.currentLevel = 0;
+	this.levels = [
+		{
+			name: "Thing",
+			cost: 10,
+			onBuy: //function
+		},
+		{
+			name: "Better Thing",
+			cost: 20,
+			onBuy: //function
+		},
+	];
+	this.w = 300;
+	this.h = 20;
+	
+	this.draw = function(x,y){
+		ctx.fillStyle = "#5555FF";
+		ctx.fillRect(x,y,this.w,this.h);
+		
+		ctx.fillStyle = "#000000";
+		ctx.font = "14px Verdana";
+		ctx.fillText(this.levels[this.currentLevel].name, x + 3, y + this.h - 3);
+	};
+	
+	this.buy = function(){
+		if( player.hasEnoughMoney(this.level[this.currentLevel].cost) && this.currentLevel < this.level.length - 1 ){
+			//do stuff
+			this.currentLevel++;
+		}
+		
+	};
+}
