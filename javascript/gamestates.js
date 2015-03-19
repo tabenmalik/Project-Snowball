@@ -131,7 +131,7 @@ function PlayGameState(){
 		//player colliding with money
 		for(var i = 0; i < this.monies.length; i++){
 			if(collide(player, this.monies[i]) ){
-				money += this.monies[i].value;
+				player.money += this.monies[i].value;
 				this.monies.splice(i,1);
 				i--;
 			}
@@ -531,20 +531,47 @@ Methods:
 */
 function Store(){
 	this.backButton;
+	
 	this.speedUG;
 	
 	this.setup = function(){
 		this.backButton = new Button(50,550,50,"Back");
-		this.speedUG = new Button(100,100,50,"Speed - 10");
+		
+		this.speedUG = new StoreItem(200, 100, [
+			{
+				name: "Speed Upgrade 1",
+				cost: 20,
+				onBuy: function(pl){
+					pl.speed += 50;
+				},
+			},
+			{
+				name: "Speed Upgrade 2",
+				cost: 70,
+				onBuy: function(pl){
+					pl.speed += 50;
+				},
+			},
+			{
+				name: "Speed Upgrade 3",
+				cost: 150,
+				onBuy: function (pl){
+					pl.speed += 80;
+				}
+			},
+			{
+				name: "",
+				cost: 0,
+				onBuy: function(pl){},
+			}]);
 	}
 	
 	this.update = function(time){
 		this.backButton.update(time);
-		this.speedUG.update(time);
 		
-		if(collide(mouse,this.speedUG) && mouse.clicked){//later, add another parameter to the if statement for currency
+		if(squareCollide(mouse,this.speedUG) && mouse.clicked){
 			gameSound.playSound("buttonPress");
-			play.player.speed += 25;
+			this.speedUG.buy(player); //remember to pass in which player is buying the upgrade
 			mouse.clicked = false;
 		}
 		else if(collide(mouse,this.backButton) && mouse.clicked){

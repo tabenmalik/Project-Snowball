@@ -131,37 +131,56 @@ function Title(a,b,c,d,e){
 }
 
 /* Class: store item
-*/
-function StoreItem(levs){
-	
-	this.currentLevel = 0;
-	this.levels = [
+
+Here is an example of a parameter that you could pass in:
+
+	[
 		{
-			name: "Thing",
+			name: "Extra Speed",
 			cost: 10,
-			onBuy: //function
+			onBuy: function(pl){
+				pl.speed += 50;
+			},
 		},
+		
 		{
 			name: "Better Thing",
 			cost: 20,
-			onBuy: //function
+			onBuy: function(pl){
+				pl.speed += 50;
+			},
 		},
 	];
+	
+*/
+function StoreItem(x, y, levs){
+	
+	this.currentLevel = 0;
+	this.levels = levs;
+	
+	this.x = x;
+	this.y = y;
 	this.w = 300;
 	this.h = 20;
 	
-	this.draw = function(x,y){
+	this.draw = function(){
 		ctx.fillStyle = "#5555FF";
-		ctx.fillRect(x,y,this.w,this.h);
+		ctx.fillRect(this.x,this.y,this.w,this.h);
 		
 		ctx.fillStyle = "#000000";
 		ctx.font = "14px Verdana";
-		ctx.fillText(this.levels[this.currentLevel].name, x + 3, y + this.h - 3);
+		ctx.fillText(this.levels[this.currentLevel].name + " - " + this.levels[this.currentLevel].cost, this.x + 3, this.y + this.h - 3);
 	};
 	
-	this.buy = function(){
-		if( player.hasEnoughMoney(this.level[this.currentLevel].cost) && this.currentLevel < this.level.length - 1 ){
-			//do stuff
+	
+	//pass in the player you want to buy an object for.
+	this.buy = function(pl){
+		
+		if( pl.hasEnoughMoney(this.levels[this.currentLevel].cost) && this.currentLevel < this.levels.length - 1 ){
+			
+			this.levels[this.currentLevel].onBuy(pl);
+			pl.subMoney(this.levels[this.currentLevel].cost);
+			
 			this.currentLevel++;
 		}
 		

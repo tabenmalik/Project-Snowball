@@ -6,6 +6,19 @@ function collide(thing1,thing2){
 		return false;
 }
 
+function squareCollide(thing1, thing2){
+	if(thing1.x + thing1.w < thing2.x)
+		return false;
+	else if(thing1.x > thing2.x + thing2.w)
+		return false;
+	else if(thing1.y + thing1.h < thing2.y)
+		return false;
+	else if(thing1.y > thing2.y + thing2.h)
+		return false;
+	
+	return true;
+}
+
 function findIntersect(x,y,angle,x2,y2,angle2){
 	
 	var intx = 0;
