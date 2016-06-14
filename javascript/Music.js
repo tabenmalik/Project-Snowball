@@ -43,7 +43,7 @@ function Music(){
 	
 	this.changeMusic = function(musicNum){
 		this.stopMusic();
-		this.playMusic(this.currentSong);
+		this.playMusic(musicNum);
 	};
 	
 	this.muteMusic = function(){
@@ -89,5 +89,4 @@ function Sound(){
 }
 
 var gameMusic = new Music();
-gameMusic.playMusic(0);
 var gameSound = new Sound();

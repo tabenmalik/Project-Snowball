@@ -1,5 +1,9 @@
 To-Do
 
+BUG FIXES
+-double music glitch
+-play game music doesn't work
+
 Pre-Game
 
 In-Game
