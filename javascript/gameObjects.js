@@ -23,6 +23,7 @@ function Player(a,b,c,d){
 	this.life = 3;
 	this.fireRate = 200;
 	this.FIRERATE = 200;
+	this.gifts = 0;
 	this.money = 0;
 	
 	/*
@@ -398,6 +399,30 @@ function Rocket(ix,iy,ia){
 		this.x += Math.cos(this.angle) * time * 0.001 * this.speed;
 		this.y += Math.sin(this.angle) * time * 0.001 * this.speed;
 	};
+}
+
+/* Class: House(ix, iy)
+Arguments:
+	ix: initial x
+	iy: initial y
+
+*/
+function House(ix, iy){
+	this.x = ix;
+	this.y = iy;
+	this.r = 50;
+	this.gifts = 0;
+	
+	this.update = function(dt){
+		
+	}
+	
+	this.draw = function(dx,dy){
+		ctx.save();
+		ctx.translate( this.x + dx, this.y + dy);
+		ctx.drawImage(images.House, -this.r, -this.r, this.r * 2, this.r * 2);
+		ctx.restore();
+	}
 }
 
 /* Class: Money(ix,iy,iv)

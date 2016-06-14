@@ -22,6 +22,7 @@ function PlayGameState(){
 	this.enemies = [];
 	this.projectiles = [];
 	this.monies = [];
+	this.house;
 	this.boundry;
 	this.control;
 	this.spawnEnemy;
@@ -39,6 +40,7 @@ function PlayGameState(){
 		this.boundry = new Boundry(1000);
 		this.spawnEnemy = this.SPAWNENEMY = 3000;
 		//this.enemies.push(new Enemy(-100,-100,10,50));//adds an enemy to the array
+		this.house = new House(0,0);
 		
 	};
 	
@@ -51,6 +53,7 @@ function PlayGameState(){
 		this.enemies.splice(0,this.enemies.length);
 		this.projectiles.splice(0,this.projectiles.length);
 		this.monies.splice(0,this.monies.length);
+		this.house = new House(0,0);
 	}
 	
 	/*
@@ -126,6 +129,12 @@ function PlayGameState(){
 				log("Collided with Post");
 				player.loseLife(player.life);
 			}
+		}
+		
+		//detecting if player ran over house
+		if(collide(this.house, player)){
+			this.house.gifts = player.gifts;
+			player.gifts = 0;
 		}
 		
 		//player colliding with money
@@ -223,6 +232,7 @@ function PlayGameState(){
 		ctx.arc(player.x + dx, player.y + dy, player.r, 0, Math.PI * 2);
 		ctx.closePath();
 		ctx.fill();*/
+		this.house.draw(dx,dy);
 		player.draw(dx,dy);
 		
 		//posts
