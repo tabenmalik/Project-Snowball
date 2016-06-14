@@ -1,3 +1,9 @@
+/*
+	Function: log()
+	Arguments:
+		message: a string to print with a timestamp
+	Operation: 	Prints a given message to the console with a timestamp
+	*/
 function log(message)
 {
 	var d = new Date();
@@ -11,6 +17,7 @@ function log(message)
 *  Javascript string pad
 *  http://www.webtoolkit.info/javascript-pad.html
 *
+*	Used for padding strings
 **/
 
 var STR_PAD_LEFT = 1;
