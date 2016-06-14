@@ -1,8 +1,8 @@
 To-Do
-
-BUG FIXES
--double music glitch
--play game music doesn't work
+-Want to change game to wave base game with store at end of waves
+-more powers/weapons
+-control rope length
+-add texture to website
 
 Pre-Game
 
@@ -10,7 +10,6 @@ In-Game
 -sound effects
 -progressive difficulty
 -options menu in pause screen
--sprite for snowballs
 -sprite for missles
 -sprite for reindeer
 -reindeer pickup items

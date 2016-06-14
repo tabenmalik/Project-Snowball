@@ -1,8 +1,3 @@
-/*
-Note from Bodie: This file was giving me some errors, and freezing the game, usually saying "musicNum is not defined".
-I changed some musicNum varibale to this.currentSong, because I thought that was what you originally wanted.
-if you want to see exactly what I changed, use GIT lo log the changes of this file.
-*/
 
 function Music(){
 	this.isPlayMusic = true;
