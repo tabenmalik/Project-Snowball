@@ -67,6 +67,7 @@ function PlayGameState(){
 	this.update = function(time){
 		//code for movement of the player
 		
+		//Checking to see if the player is trying to tether to a post.
 		if(this.tether == false){
 			var temp = this.control(this.posts, player);
 			if(temp != false)
@@ -76,6 +77,7 @@ function PlayGameState(){
 			this.tether = false;
 		}
 		
+		
 		if(this.tether == false)
 			player.move(time);
 		else if(this.tether.passedTan(player.x, player.y, player.angle))
@@ -84,7 +86,10 @@ function PlayGameState(){
 			player.circle(time,this.tether.postX, this.tether.postY, this.tether.radius, this.tether.onRight);
 		}
 		else
+		{
+			this.tether.update(time);
 			player.move(time);
+		}
 		
 		for(var i = 0; i < this.enemies.length; i++){
 			this.enemies[i].run(time,player.x,player.y);

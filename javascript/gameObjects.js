@@ -19,6 +19,7 @@ function Player(a,b,c,d){
 	this.angle = d;
 	this.speed = 200;
 	this.tether = false;
+	this.dtether = 100.0;
 	this.LIFE = 3;
 	this.life = 3;
 	this.fireRate = 200;
@@ -145,6 +146,8 @@ Methods:
 	passedTan()
 	
 */
+const minTetherLength = 10.0;
+
 function Tether(x,y,a,px,py){
 	this.postX = px;
 	this.postY = py;
@@ -200,7 +203,13 @@ function Tether(x,y,a,px,py){
 		this.radius = findDistance(this.tanX, this.tanY, px,py);
 		
 	this.update = function(time){
-		
+		var t = time / 1000.0;
+		if(keys.w == true){
+			this.changeLength( t * player.dtether );
+		}
+		else if(keys.s == true){
+			this.changeLength( -1 * t * player.dtether);
+		}
 	};
 	
 	this.draw = function(){
@@ -214,6 +223,12 @@ function Tether(x,y,a,px,py){
 		ctx.lineTo(this.postX + dx, this.postY + dy);
 		ctx.stroke();
 		
+	};
+	
+	this.changeLength = function(d){
+		this.radius += d;
+		if(this.radius < minTetherLength)
+			this.radius = minTetherLength;
 	};
 }
 
