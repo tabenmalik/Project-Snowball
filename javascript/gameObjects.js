@@ -203,6 +203,7 @@ function Tether(x,y,a,px,py){
 		this.radius = findDistance(this.tanX, this.tanY, px,py);
 		
 	this.update = function(time){
+        /*
 		var t = time / 1000.0;
 		if(keys.w == true){
 			this.changeLength( t * player.dtether );
@@ -210,6 +211,7 @@ function Tether(x,y,a,px,py){
 		else if(keys.s == true){
 			this.changeLength( -1 * t * player.dtether);
 		}
+        */
 	};
 	
 	this.draw = function(){
@@ -229,6 +231,8 @@ function Tether(x,y,a,px,py){
 		this.radius += d;
 		if(this.radius < minTetherLength)
 			this.radius = minTetherLength;
+        
+        //this function is bad. It does not change the length before it passses the tangent point.
 	};
 }
 

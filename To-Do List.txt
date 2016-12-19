@@ -1,25 +1,13 @@
 To-Do
--Want to change game to wave base game with store at end of waves
--more powers/weapons
--control rope length
--add texture to website
 
-Pre-Game
+Sound effects
+make game linear
+trail effect
+score record
+remove store
+remove coal
+scenery
 
-In-Game
--sound effects
--progressive difficulty
--options menu in pause screen
--sprite for missles
--sprite for reindeer
--reindeer pickup items
-
-After-Game
--make store upgrades
--more store options
--add projectile speed
--add firing rate
--added weapons
--add health to store
-
-Other
+Pole types:
+	Disappearing poles
+	Moving poles
