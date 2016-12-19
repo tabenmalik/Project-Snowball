@@ -84,7 +84,7 @@ function randomizePosts(){
 	while(newPosts.length < 20){
 		var ang = (Math.random() * 2 * Math.PI) - Math.PI;
 		var dist = (Math.random() * 800) + 200;
-		var rad = (Math.random() * 25) + 5;
+		var rad = (Math.random() * 20) + 10;
 		
 		var newX = Math.cos(ang) * dist;
 		var newY = Math.sin(ang) * dist;

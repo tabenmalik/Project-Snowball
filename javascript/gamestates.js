@@ -1,5 +1,3 @@
-//test
-
 /* Class: PlayGameState()
 	contains every object and information for the playing state
 Constructor: N/A
@@ -18,15 +16,11 @@ Methods:
 */
 function PlayGameState(){
 	this.posts = [];
+    this.postArchive = [];
 	this.tether = false;
-	this.enemies = [];
-	this.projectiles = [];
-	this.monies = [];
-	this.house;
-	this.boundry;
+	this.walls;
 	this.control;
-	this.spawnEnemy;
-	this.SPAWNENEMY;
+    this.distToNextPost = 200;
 	
 	/*
 	Method: setup()
@@ -35,25 +29,18 @@ function PlayGameState(){
 	Operation: Creates player object, map, and enemies etc. for game play
 	*/
 	this.setup = function(){
-		this.posts = randomizePosts();
+		//this.posts = randomizePosts();
 		this.control = control1;//pass in posts and the x and y of the player
-		this.boundry = new Boundry(1000);
-		this.spawnEnemy = this.SPAWNENEMY = 3000;
-		//this.enemies.push(new Enemy(-100,-100,10,50));//adds an enemy to the array
-		this.house = new House(0,0);
+		this.walls = new Walls(400);
 		
 	};
 	
 	this.reset = function(){
-		this.posts = randomizePosts();
-		this.spawnEnemy = this.SPAWNENEMY = 3000;
-		player.setPosition(0,0,0);
+		//this.posts = randomizePosts();
+        this.posts.splice(0, this.posts.length);
+		player.setPosition(0,0, -Math.PI / 2.0);
 		player.life = player.LIFE;
 		this.tether = false;
-		this.enemies.splice(0,this.enemies.length);
-		this.projectiles.splice(0,this.projectiles.length);
-		this.monies.splice(0,this.monies.length);
-		this.house = new House(0,0);
 	}
 	
 	/*
@@ -65,6 +52,23 @@ function PlayGameState(){
 				for circular motion around a post
 	*/
 	this.update = function(time){
+        //Generating Posts
+        if(this.posts.length == 0){
+            var randx = Math.random() * (this.walls.right - this.walls.left) + this.walls.left;
+            var randr = (Math.random() * 20.0) + 10.0;
+            
+            this.posts.push(new Post(randx, player.y - (can.height / 2.0) - randr, randr));
+            this.distToNextPost = (Math.random() * 200) + 50;
+        } else {
+            if (this.posts[this.posts.length - 1].y - (player.y - (can.height / 2.0)) >= this.distToNextPost){
+                var randx = Math.random() * (this.walls.right - this.walls.left) + this.walls.left;
+                var randr = (Math.random() * 20.0) + 10.0;
+                
+                this.posts.push(new Post(randx, player.y - (can.height / 2.0) - randr, randr));
+                this.distToNextPost = (Math.random() * 200) + 50;
+            }
+        }
+        
 		//code for movement of the player
 		
 		//Checking to see if the player is trying to tether to a post.
@@ -91,43 +95,8 @@ function PlayGameState(){
 			player.move(time);
 		}
 		
-		for(var i = 0; i < this.enemies.length; i++){
-			this.enemies[i].run(time,player.x,player.y);
-		}
-		
-		//code for moving projectiles
-		
-		for(var i = 0; i < this.projectiles.length; i++){
-			if(this.projectiles[i] == Rocket)
-				this.projectiles[i].run(time,this.enemies);
-			else
-				this.projectiles[i].run(time);
-			if(findDistance(this.projectiles[i].x, this.projectiles[i].y,0,0) > this.boundry.r + 200){
-				this.projectiles.splice(i,1);
-				i--;
-			}
-		}
-		
-		//code for shooting snowballs
-		
-		player.fireRate -= time;
-		if(player.fireRate < 0)
-			player.fireRate = 0;
-		if(keys.space && player.fireRate == 0){
-			this.projectiles.push(new Projectile(player.x, player.y, player.angle) );
-			player.fireRate += player.FIRERATE;
-		}
-		
-		//spawning new enemies
-		
-		this.spawnEnemy -= time;
-		if(this.spawnEnemy <= 0){
-			this.spawnEnemy += this.SPAWNENEMY;
-			this.enemies.push(new Enemy('n'));
-		}
 		
 		//collision detections
-		
 		for(var i = 0; i < this.posts.length; i++){
 			if(collide(this.posts[i], player)){
 				//CODE FOR WHEN PLAYER COLLIDES WITH POST
@@ -136,80 +105,17 @@ function PlayGameState(){
 			}
 		}
 		
-		//detecting if player ran over house
-		if(collide(this.house, player)){
-			this.house.gifts = player.gifts;
-			player.gifts = 0;
-		}
-		
-		//player colliding with money
-		for(var i = 0; i < this.monies.length; i++){
-			if(collide(player, this.monies[i]) ){
-				player.money += this.monies[i].value;
-				this.monies.splice(i,1);
-				i--;
-			}
-		}
-		
-		if(findDistance(0,0,player.x, player.y) + player.r > this.boundry.r && this.tether == false){
+        
+		if( (player.x < this.walls.left || player.x > this.walls.right)&& this.tether == false){
 			//CODE FOR RUNNING OUT OF BOUNDS
 			player.loseLife(player.life);
 		}
 		
-		for(var i = 0; i < this.enemies.length; i++){
-			//delete if significantly out of play Area
-			if(findDistance(0,0, this.enemies[i].x, this.enemies[i].y) > this.boundry.r + 500){
-				this.enemies.splice(i,1);
-				i--;
-			}
-			//collision detection with player
-			else if(collide(this.enemies[i] , player) ){
-				this.enemies.splice(i,1);
-				i--;
-				player.loseLife(1);
-			}
-		}
-		
-		//collision between projectiles and enemies
-		for(var i = 0; i < this.projectiles.length; i++){
-			
-			for(var o = 0; o < this.enemies.length; o++){
-				
-				if(collide(this.projectiles[i], this.enemies[o])){
-					var moniesToAdd = scatterMoney();
-					for(j = 0; j < moniesToAdd.length; j++){
-						var AMoney = moniesToAdd[j];
-						AMoney.x += this.enemies[o].x;
-						AMoney.y += this.enemies[o].y;
-						this.monies.push(AMoney);
-					}
-					
-					this.projectiles.splice(i,1);
-					this.enemies.splice(o,1);
-					i--;
-					break;
-				}
-				
-			}
-		}
-		
-		//collision between projectiles and posts
-		for(var i = 0; i < this.projectiles.length; i++){
-			
-			for(var o = 0; o < this.posts.length; o++){
-				
-				if(collide(this.projectiles[i], this.posts[o])){
-					this.projectiles.splice(i,1);
-					i--;
-					break;
-				}
-				
-			}
-		}
-		
 		//pause if the player is pressing "p"
+        /*
 		if(keys.p)
 			gamestate = pause;
+        */
 	};
 	
 	/*
@@ -226,61 +132,23 @@ function PlayGameState(){
 		var dx = -player.x + (can.width * 0.5);
 		var dy = -player.y + (can.height * 0.5);
 		
-		ctx.fillStyle = "#FFFFFF";
-		ctx.beginPath();
-		ctx.arc( dx, dy, 1000, 0, Math.PI * 2);
-		ctx.closePath();
-		ctx.fill();
+		//DRAW MAP
+        this.walls.draw(dx,dy);
 		
-		/*ctx.fillStyle = "#000000";
-		ctx.beginPath();
-		ctx.arc(player.x + dx, player.y + dy, player.r, 0, Math.PI * 2);
-		ctx.closePath();
-		ctx.fill();*/
-		this.house.draw(dx,dy);
 		player.draw(dx,dy);
 		
 		//posts
 		ctx.fillStyle = "#000000";
 		for(var i = 0; i < this.posts.length; i++){
 			ctx.drawImage(images.Post, this.posts[i].x - this.posts[i].r + dx, this.posts[i].y - this.posts[i].r + dy, this.posts[i].r * 2, this.posts[i].r * 2);
-			
-			/*ctx.beginPath();
-			ctx.arc(this.posts[i].x + dx, this.posts[i].y + dy, this.posts[i].r, 0, 2 * Math.PI);
-			ctx.closePath();
-			ctx.fill();*/
 		}
 		
-		for(var i = 0; i < this.monies.length; i++){
-			this.monies[i].draw(dx,dy);
-		}
-		
-		for(var i = 0; i < this.enemies.length; i++){
-			/*ctx.beginPath();
-			ctx.arc(this.enemies[i].x + dx, this.enemies[i].y + dy, this.enemies[i].r, 0, 2 * Math.PI);
-			ctx.closePath();
-			ctx.fill();*/
-			
-			this.enemies[i].draw(dx,dy);
-		}
-		
-		if(this.tether != false)
-		{
+		if(this.tether != false){
 			this.tether.draw();
 		}
 		
-		//projectiles (snowballs)
-		ctx.fillStyle = "#B5E3EB";
-		for(var i = 0; i < this.projectiles.length; i++){
-			ctx.beginPath();
-			ctx.arc(this.projectiles[i].x + dx, this.projectiles[i].y + dy, this.projectiles[i].r, 0, 2 * Math.PI);
-			ctx.closePath();
-			ctx.fill();
-		}
-		
 		//Drawing the life bar
-		for(var i = 0; i < player.life; i++)
-		{
+		for(var i = 0; i < player.life; i++){
 			ctx.beginPath();
 			ctx.lineWidth="1";
 			ctx.strokeStyle="black";
@@ -334,7 +202,9 @@ function Menu(){
 	
 	/*
 	Method: update()
-	Arguments:
+	Arguments:function (){
+            
+    }
 		time: the update time interval
 	Returns: N/A
 	Operation: 	updates the title and play button offsets of the menu

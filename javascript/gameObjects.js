@@ -17,13 +17,11 @@ function Player(a,b,c,d){
 	this.y = b;
 	this.r = c;
 	this.angle = d;
-	this.speed = 200;
+	this.speed = 400;
 	this.tether = false;
 	this.dtether = 100.0;
 	this.LIFE = 3;
 	this.life = 3;
-	this.fireRate = 200;
-	this.FIRERATE = 200;
 	this.gifts = 0;
 	this.money = 0;
 	
@@ -507,4 +505,17 @@ function Boundry(a){//radius
 	this.x = 0;
 	this.y = 0;
 	this.r = a;
+}
+
+function Walls(dist){
+    this.left = dist / -2.0;
+    this.right = dist / 2.0;
+    
+    this.draw = function(dx, dy){
+        
+        ctx.fillStyle = "#FFFFFF";
+        
+        ctx.fillRect( dx + this.left,0, this.right - this.left ,can.height);
+        
+    }
 }
