@@ -117,8 +117,15 @@ function control1(posts,pl){
 	var dist = 0;
 	var index = -1;
 	
-	for(var i = 0; i < posts.length; i++){
-		if(index == -1){
+    var debugnum = 0;
+    
+	for(var i = posts.length - 1; i >= 0; i--){
+		if( posts[i].y - (can.height / 2.0) > pl.y ){
+            break;
+        }
+        
+        debugnum++;
+        if(index == -1){
 			index = i;
 			dist = findDistance(x2, y2, posts[i].x, posts[i].y);
 		}

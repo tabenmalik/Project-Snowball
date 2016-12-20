@@ -176,7 +176,7 @@ function PlayGameState(){
         
         
         this.posts.push(new Post(randx, player.y - (can.height / 2.0) - randr, randr));
-        this.distToNextPost = (Math.random() * 200) + 50;
+        this.distToNextPost = (Math.random() * 170) + 80;
     }
     
     this.newCenteredPost = function(){
@@ -184,7 +184,7 @@ function PlayGameState(){
         var randr = (Math.random() * 20.0) + 10.0;
         
         this.posts.push(new Post(0,player.y - (can.height / 2.0) - randr, randr));
-        this.distToNextPost = (Math.random() * 200) + 50;
+        this.distToNextPost = (Math.random() * 170) + 80;
     }
 }
 
