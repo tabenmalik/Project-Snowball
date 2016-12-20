@@ -101,7 +101,7 @@ function PlayGameState(){
 			if(collide(this.posts[i], player)){
 				//CODE FOR WHEN PLAYER COLLIDES WITH POST
 				log("Collided with Post");
-				player.loseLife(player.life);
+				player.loseLife();
 			}
 		}
 		
@@ -145,18 +145,6 @@ function PlayGameState(){
 		
 		if(this.tether != false){
 			this.tether.draw();
-		}
-		
-		//Drawing the life bar
-		for(var i = 0; i < player.life; i++){
-			ctx.beginPath();
-			ctx.lineWidth="1";
-			ctx.strokeStyle="black";
-			ctx.rect((i*20)+10,10,20,15);
-			ctx.stroke();
-			
-			ctx.fillStyle = "#49E20E";
-			ctx.fillRect((i*20)+10,10,20,15);
 		}
 	};
 }
