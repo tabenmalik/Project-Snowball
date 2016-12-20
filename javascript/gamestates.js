@@ -433,126 +433,6 @@ function HowToMenu(){
 	};
 }
 
-/* Class: Store()
-Arguments for Constructor: N/A
-Instances: N/A
-Methods:
-	setup()
-	update()
-	draw()
-*/
-function Store(){
-	this.backButton;
-	
-	this.speedUG;
-	
-	this.setup = function(){
-		this.backButton = new Button(50,550,50,"Back");
-		
-		this.speedUG = new StoreItem(200, 100, [
-			{
-				name: "Speed Upgrade 1",
-				cost: 20,
-				onBuy: function(pl){
-					pl.speed += 50;
-				},
-			},
-			{
-				name: "Speed Upgrade 2",
-				cost: 70,
-				onBuy: function(pl){
-					pl.speed += 50;
-				},
-			},
-			{
-				name: "Speed Upgrade 3",
-				cost: 150,
-				onBuy: function (pl){
-					pl.speed += 80;
-				}
-			},
-			{
-				name: "",
-				cost: 0,
-				onBuy: function(pl){},
-			}]);
-	}
-	
-	this.update = function(time){
-		this.backButton.update(time);
-		
-		if(squareCollide(mouse,this.speedUG) && mouse.clicked){
-			gameSound.playSound("buttonPress");
-			this.speedUG.buy(player); //remember to pass in which player is buying the upgrade
-			mouse.clicked = false;
-		}
-		else if(collide(mouse,this.backButton) && mouse.clicked){
-			gameSound.playSound("buttonPress");
-			mouse.clicked = false;
-			gamestate.changeGameState("endGame");
-		}
-	}
-	
-	this.draw = function(){
-		ctx.clearRect(0,0,can.width,can.height);
-		this.backButton.draw();
-		this.speedUG.draw();
-	}
-}
-
-/* Class: Pause()
-Arguments for Constructor: N/A
-Instances: N/A
-Methods:
-	setup()
-	update()
-	draw()
-*/
-function Pause(){
-	this.hasLetGo = false;
-	this.pauseTitle = new Title(100,400,600,100,"PAUSED");
-	
-	/*
-	Method: setup()
-	Arguments: N/A
-	Returns: N/A
-	Operation: N/A
-	*/
-	this.setup = function(){
-		this.hasLetGo = false;
-	}
-	
-	/*
-	Method: update()
-	Arguments: N/A
-	Returns: N/A
-	Operation: N/A
-	*/
-	this.update = function(time){
-		this.pauseTitle.update(time);
-		
-		if(keys.p == false)
-			this.hasLetGo = true;
-		else if(this.hasLetGo){
-			keys.p = false;
-			this.hasLetGo = false;
-			gamestate.changeGameState("play");
-		}
-	}
-	
-	/*
-	Method: draw()
-	Arguments: N/A
-	Returns: N/A
-	Operation: N/A
-	*/
-	this.draw = function(){
-		play.draw();
-		this.pauseTitle.draw();
-	}
-	
-}
-
 /* Class: GameOver()
 Arguments for Constructor: N/A
 Instances: N/A
@@ -567,7 +447,6 @@ function GameOver(){
 	this.xBackOffSet = 0;
 	this.yBackOffSet = 0;
 	this.endTitle;
-	this.storeButton;
 	this.backButton;
 	/*
 	Method: setup()
@@ -577,7 +456,6 @@ function GameOver(){
 	*/
 	this.setup = function(){
 		this.endTitle = new Title(100,125,600,100,"GAME OVER");
-		this.storeButton = new Button(700,500,40,"STORE");
 		this.backButton = new Button(100,500,40,"Back");
 	}
 	
@@ -589,15 +467,9 @@ function GameOver(){
 	*/
 	this.update = function(time){
 		this.endTitle.update(time);
-		this.storeButton.update(time);
 		this.backButton.update(time);
 		
-		if(collide(mouse,this.storeButton) && mouse.clicked){
-			gameSound.playSound("buttonPress");
-			mouse.clicked = false;
-			gamestate.changeGameState("store");
-		}
-		else if(collide(mouse, this.backButton) && mouse.clicked){
+		if(collide(mouse, this.backButton) && mouse.clicked){
 			gameSound.playSound("buttonPress");
 			mouse.clicked = false;
 			gamestate.changeGameState("mainMenu");
@@ -615,7 +487,6 @@ function GameOver(){
 		ctx.clearRect(0,0,can.width,can.height);
 		
 		this.endTitle.draw();
-		this.storeButton.draw();
 		this.backButton.draw();
 	}
 	
@@ -627,8 +498,6 @@ function Gamestates(){
 		optionMenu: 0,
 		instructionMenu: 0,
 		play: 0,
-		pause: 0,
-		store: 0,
 		endGame: 0,
 	};
 
@@ -639,12 +508,9 @@ function Gamestates(){
 		this.gamestates["optionMenu"] = new OptionsMenu();
 		this.gamestates["instructionMenu"] = new HowToMenu();
 		this.gamestates["play"] = new PlayGameState();
-		this.gamestates["pause"] = new Pause();
-		this.gamestates["store"] = new Store();
 		this.gamestates["endGame"] = new GameOver();
 
-		for(var key in this.gamestates)
-		{
+		for(var key in this.gamestates) {
 			this.gamestates[key].setup();
 		}		
 	};
