@@ -20,8 +20,6 @@ function Player(a,b,c,d){
 	this.speed = 400;
 	this.tether = false;
 	this.dtether = 100.0;
-	this.LIFE = 3;
-	this.life = 3;
 	this.gifts = 0;
 	this.money = 0;
 	
@@ -97,20 +95,9 @@ function Player(a,b,c,d){
 		}
 	};
 	
-	this.loseLife = function(deduct){
-		this.life -= deduct;
-		
-		if(this.life <= 0){
-			gameMusic.stopMusic();
-			gamestate.changeGameState("endGame");
-		}
-	};
-	
-	this.gainLife = function(add){
-		this.life += add;
-		
-		if(this.life > 15)
-			this.life = 15;
+	this.loseLife = function() {
+		gameMusic.stopMusic();
+		gamestate.changeGameState("endGame");
 	};
 	
 	this.draw = function(dx,dy){
