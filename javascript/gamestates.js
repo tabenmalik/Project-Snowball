@@ -21,6 +21,10 @@ function PlayGameState(){
 	this.walls;
 	this.control;
     this.distToNextPost = 200;
+    
+    //Trail
+    this.trailS = [];
+    this.trailA = [];
 	
 	/*
 	Method: setup()
@@ -69,8 +73,9 @@ function PlayGameState(){
 		//Checking to see if the player is trying to tether to a post.
 		if(this.tether == false){
 			var temp = this.control(this.posts, player);
-			if(temp != false)
+			if(temp != false){
 				this.tether = new Tether(player.x, player.y, player.angle, temp.x, temp.y);
+            }
 		}
 		else if(this.control(this.posts, player) == false){
 			this.tether = false;
@@ -141,6 +146,11 @@ function PlayGameState(){
 		if(this.tether != false){
 			this.tether.draw();
 		}
+        
+        //TESTING AREA
+        for(var i = 0; i < this.trailA.length; i++){
+            this.trailA.draw();
+        }
 	};
     
     //Makes a new post at the top of the screen, and sets the distance to the next post.
@@ -150,7 +160,7 @@ function PlayGameState(){
         var randx = 0;
         
         if(openCenter){
-            var gap = 50;
+            var gap = 100;
             var variation = this.walls.right - this.walls.left - gap;
             randx = Math.random() * variation;
             if(randx < variation / 2.0)

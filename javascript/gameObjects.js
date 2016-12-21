@@ -506,3 +506,23 @@ function Walls(dist){
         
     }
 }
+
+function StraightTrail(){
+    
+}
+
+function ArcTrail(a, b, c, d, e){
+    this.x = a;
+    this.y = b;
+    this.r = c;
+    this.startAngle = d;
+    this.endAngle = e;
+    
+    this.draw = function(dx, dy){
+        ctx.strokeStyle = "#D0D0D0";
+        ctx.lineWidth = 10;
+        ctx.beginPath();
+        ctx.arc(this.x - dx, this.y - dy, this.r, this.startAngle, this.endAngle);
+        ctx.stroke();
+    }
+}
