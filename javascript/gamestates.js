@@ -32,7 +32,8 @@ function PlayGameState(){
 		//this.posts = randomizePosts();
 		this.control = control1;//pass in posts and the x and y of the player
 		this.walls = new Walls(400);
-		
+		this.posts.splice(0, this.posts.length);
+        
 	};
 	
 	this.reset = function(){
@@ -41,6 +42,7 @@ function PlayGameState(){
 		player.setPosition(0,0, -Math.PI / 2.0);
 		player.life = player.LIFE;
 		this.tether = false;
+        this.newRandomPost(true);
 	}
 	
 	/*
@@ -53,20 +55,13 @@ function PlayGameState(){
 	*/
 	this.update = function(time){
         //Generating Posts
-        if(this.posts.length == 0){
-            var randx = Math.random() * (this.walls.right - this.walls.left) + this.walls.left;
-            var randr = (Math.random() * 20.0) + 10.0;
-            
-            this.posts.push(new Post(randx, player.y - (can.height / 2.0) - randr, randr));
-            this.distToNextPost = (Math.random() * 200) + 50;
-        } else {
-            if (this.posts[this.posts.length - 1].y - (player.y - (can.height / 2.0)) >= this.distToNextPost){
-                var randx = Math.random() * (this.walls.right - this.walls.left) + this.walls.left;
-                var randr = (Math.random() * 20.0) + 10.0;
-                
-                this.posts.push(new Post(randx, player.y - (can.height / 2.0) - randr, randr));
-                this.distToNextPost = (Math.random() * 200) + 50;
-            }
+        if (this.posts[this.posts.length - 1].y - (player.y - (can.height / 2.0)) >= this.distToNextPost){
+            if(this.posts.length < 5)
+                this.newRandomPost(true);
+            else if(this.posts.length == 5)
+                this.newCenteredPost();
+            else    
+                this.newRandomPost();
         }
         
 		//code for movement of the player
@@ -141,6 +136,38 @@ function PlayGameState(){
 			this.tether.draw();
 		}
 	};
+    
+    //Makes a new post at the top of the screen, and sets the distance to the next post.
+    this.newRandomPost = function( openCenter = false ){
+        
+        var randr = (Math.random() * 20.0) + 10.0;
+        var randx = 0;
+        
+        if(openCenter){
+            var gap = 50;
+            var variation = this.walls.right - this.walls.left - gap;
+            randx = Math.random() * variation;
+            if(randx < variation / 2.0)
+                randx += this.walls.left;
+            else
+                randx += this.walls.left + gap;
+        }
+        else
+            randx = Math.random() * (this.walls.right - this.walls.left) + this.walls.left;
+        
+        
+        
+        this.posts.push(new Post(randx, player.y - (can.height / 2.0) - randr, randr));
+        this.distToNextPost = (Math.random() * 170) + 80;
+    }
+    
+    this.newCenteredPost = function(){
+        
+        var randr = (Math.random() * 20.0) + 10.0;
+        
+        this.posts.push(new Post(0,player.y - (can.height / 2.0) - randr, randr));
+        this.distToNextPost = (Math.random() * 170) + 80;
+    }
 }
 
 /* Class: Menu()
