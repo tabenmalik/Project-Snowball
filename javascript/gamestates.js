@@ -47,6 +47,7 @@ function PlayGameState(){
 		player.life = player.LIFE;
 		this.tether = false;
         this.newRandomPost(true);
+        player.score = 0;
 	}
 	
 	/*
@@ -94,7 +95,9 @@ function PlayGameState(){
 			this.tether.update(time);
 			player.move(time);
 		}
-		
+	    
+        //Sets the score of the player
+        player.setScore();	
 		
 		//collision detections
 		for(var i = 0; i < this.posts.length; i++){
@@ -108,14 +111,8 @@ function PlayGameState(){
         
 		if( (player.x < this.walls.left || player.x > this.walls.right)&& this.tether == false){
 			//CODE FOR RUNNING OUT OF BOUNDS
-			player.loseLife(player.life);
+			player.loseLife();
 		}
-		
-		//pause if the player is pressing "p"
-        /*
-		if(keys.p)
-			gamestate = pause;
-        */
 	};
 	
 	/*
@@ -134,7 +131,8 @@ function PlayGameState(){
 		
 		//DRAW MAP
         this.walls.draw(dx,dy);
-		
+	    
+        //Draws player	
 		player.draw(dx,dy);
 		
 		//posts
@@ -143,14 +141,21 @@ function PlayGameState(){
 			ctx.drawImage(images.Post, this.posts[i].x - this.posts[i].r + dx, this.posts[i].y - this.posts[i].r + dy, this.posts[i].r * 2, this.posts[i].r * 2);
 		}
 		
+        //draws tether
 		if(this.tether != false){
 			this.tether.draw();
 		}
+        
+        //Draws player's score
+        player.drawScore();
+        
         
         //TESTING AREA
         for(var i = 0; i < this.trailA.length; i++){
             this.trailA.draw();
         }
+
+        
 	};
     
     //Makes a new post at the top of the screen, and sets the distance to the next post.
@@ -453,7 +458,7 @@ function GameOver(){
 	Operation: N/A
 	*/
 	this.setup = function(){
-		this.endTitle = new Title(100,125,600,100,"GAME OVER");
+		this.endTitle = new Title(100,125,600,100,"Play Again?");
 		this.backButton = new Button(100,500,40,"Back");
 	}
 	
