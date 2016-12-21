@@ -108,14 +108,8 @@ function PlayGameState(){
         
 		if( (player.x < this.walls.left || player.x > this.walls.right)&& this.tether == false){
 			//CODE FOR RUNNING OUT OF BOUNDS
-			player.loseLife(player.life);
+			player.loseLife();
 		}
-		
-		//pause if the player is pressing "p"
-        /*
-		if(keys.p)
-			gamestate = pause;
-        */
 	};
 	
 	/*
@@ -416,7 +410,7 @@ function GameOver(){
 	Operation: N/A
 	*/
 	this.setup = function(){
-		this.endTitle = new Title(100,125,600,100,"GAME OVER");
+		this.endTitle = new Title(100,125,600,100,"Play Again?");
 		this.backButton = new Button(100,500,40,"Back");
 	}
 	
