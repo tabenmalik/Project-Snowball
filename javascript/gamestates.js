@@ -43,6 +43,7 @@ function PlayGameState(){
 		player.life = player.LIFE;
 		this.tether = false;
         this.newRandomPost(true);
+        player.score = 0;
 	}
 	
 	/*
@@ -89,7 +90,9 @@ function PlayGameState(){
 			this.tether.update(time);
 			player.move(time);
 		}
-		
+	    
+        //Sets the score of the player
+        player.setScore();	
 		
 		//collision detections
 		for(var i = 0; i < this.posts.length; i++){
@@ -123,7 +126,8 @@ function PlayGameState(){
 		
 		//DRAW MAP
         this.walls.draw(dx,dy);
-		
+	    
+        //Draws player	
 		player.draw(dx,dy);
 		
 		//posts
@@ -132,9 +136,13 @@ function PlayGameState(){
 			ctx.drawImage(images.Post, this.posts[i].x - this.posts[i].r + dx, this.posts[i].y - this.posts[i].r + dy, this.posts[i].r * 2, this.posts[i].r * 2);
 		}
 		
+        //draws tether
 		if(this.tether != false){
 			this.tether.draw();
 		}
+
+        //Draws player's score
+        player.drawScore();
 	};
     
     //Makes a new post at the top of the screen, and sets the distance to the next post.

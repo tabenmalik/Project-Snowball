@@ -16,13 +16,34 @@ function Player(a,b,c,d){
 	this.x = a;
 	this.y = b;
 	this.r = c;
+	this.score = 0;
+    this.highScore = 0;
 	this.angle = d;
 	this.speed = 400;
 	this.tether = false;
 	this.dtether = 100.0;
 	this.gifts = 0;
 	this.money = 0;
-	
+    
+    this.setHighScore = function() {
+        if (this.score > this.highScore) {
+            this.highScore = this.score;
+        }
+    }
+
+    this.setScore = function() {
+        var newScore = -1 * Math.ceil((this.y / 50));
+        if (newScore > this.score) {
+            this.score = newScore;
+        }
+    }
+
+    this.drawScore = function() {
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 30px Verdana";
+        ctx.fillText(this.score + "", 50, 50);
+    }
+
 	/*
 	Method: move()
 	Arguments:
@@ -69,31 +90,7 @@ function Player(a,b,c,d){
 		this.x = x;
 		this.y = y;
 		this.angle = angle;
-	};
-	
-	this.addMoney = function(amount){
-		this.money += amount
-	};
-	
-	this.checkMoney = function(){
-		return this.money;
-	};
-	
-	this.hasEnoughMoney = function(num){
-		if( this.money >= num)
-			return true;
-		//else (not needed)
-		return false;
-	};
-	
-	this.subMoney = function(amount){
-		this.money -= amount;
-		
-		if(this.money < 0)
-		{
-			this.money = 0;
-		}
-	};
+	};	
 	
 	this.loseLife = function() {
 		gameMusic.stopMusic();
