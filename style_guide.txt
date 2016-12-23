@@ -33,3 +33,9 @@ Created 2016-12-22
    Use K&R brace style, where there is no line break before the opening
    brace.
    Empty blocks may be precise (ex. function doNothing() {})
+
+6. Comments.
+   Comments must be at the top of every class, method, and function.
+   Every global variable and instance variable declaration must also be 
+   accompanied with a comment.
+   Comment large or complex blocks of code.
