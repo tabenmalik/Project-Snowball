@@ -1,0 +1,35 @@
+Project Snowball
+Style Guide
+Created 2016-12-22
+
+1. This is a simplified version of Google's Java Style Guide.
+   When in doubt, check the online version at
+   https://google.github.io/styleguide/javaguide.html
+
+2. Column Limit of 80 characters.
+   Lines longer than 80 characters must be line-wrapped.
+   Line-wrapping should happen before operators, including the
+   dot operator.
+   Other precautions can be made to reduce the length of the line,
+   such as removing function and method calls inside of complex 
+   statements.
+
+3. Whitespace.
+   The only whitespace in the source file should be spaces and newline.
+   Indentation level should be 2 spaces.
+   All other whitespace characters, such as using them in print statements,
+   should be created with letter escape characters (\t, \r etc.)
+
+4. Source file structure.
+   Source file consists of, in order;
+   1. License or copyright information, if present
+   2. Package statement
+   3. Import statements
+   4. Exactly one top-level class
+
+5. Braces.
+   Braces are used with if, else, for, do and while statements, even
+   when the body is empty or contains only a single statement.
+   Use K&R brace style, where there is no line break before the opening
+   brace.
+   Empty blocks may be precise (ex. function doNothing() {})
