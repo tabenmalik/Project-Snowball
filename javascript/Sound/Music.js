@@ -11,10 +11,6 @@ function Music(){
   /* Plays song in song array at this index */
   this.currentSong = 0;
   
-  /* TODO - remove this instance variable? */
-  /* Boolean array of songs that are loaded */
-  //this.musicLoads = [false,false,false,false,false,false];
-  
   /* Array of songs to play that can be played. */
   this.music = [
       new Howl({
@@ -30,12 +26,26 @@ function Music(){
       }),
   ];
   
+  /* Increases the volume of the current playing song,
+   * if there is a song playing.
+   */
   /* TODO - complete function */
   this.incVolume = function(){};
   
+  /* Decreases the volume of the current playing song,
+   * if there is a song playing.
+   */
   /* TODO - complete function */
   this.decVolume = function(){};
   
+  /* Changes the volume of the current playing song to
+   * the given volume, if there is a song that is playing
+   */
+  /* TODO - complete function */
+  this.changeVolume = function(){};
+  
+  /* Adds a song to the array of songs that can be played.
+   * Returns a md (music descriptor) used to 
   /* TODO - complete function */
   this.addSong = function(){};
   
@@ -70,14 +80,18 @@ function Music(){
 
   /* TODO - add comment */
   this.muteMusic = function(){
-    this.isPlayMusic = false;
+    this.muted = true;
     this.stopMusic();
   };
 
   /* TODO - add comment */
   this.unmuteMusic = function(){
-    this.isPlayMusic = true;
+    this.muted = false;
     this.playMusic(this.currentSong);
+  };
+  
+  this.isMuted = function() {
+    return this.muted;
   };
 }
 

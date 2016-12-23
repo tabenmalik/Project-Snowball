@@ -318,7 +318,7 @@ function OptionsMenu(){
 		if(collide(mouse,this.musicToggle) && mouse.clicked)
 		{
 			mouse.clicked = false;
-			if(gameMusic.isPlayMusic == true)
+			if(!gameMusic.isMuted())
 			{
 				this.musicToggle.changeColor("#545454");
 				gameMusic.muteMusic();
