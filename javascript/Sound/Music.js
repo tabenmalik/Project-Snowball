@@ -1,95 +1,142 @@
-/* Class: Music()
- * Parameters N/A
- * 
- * A class for handling several files of music. 
+/* A class for handling several files of music. 
+ * Only one track can play at a time.
  */
-/* TODO - make adding music generic */
 function Music(){
   /* True if no music should be played */
   this.muted = false;
   
   /* Plays song in song array at this index */
-  this.currentSong = 0;
+  this.currentSong = -1;
   
-  /* Array of songs to play that can be played. */
-  this.music = [
-      new Howl({
-          urls: ['music/Carefree.mp3'],
-          volume: 0.7,
-          loop: false,
-      }),
-
-      new Howl({
-          urls: ['music/Monkeys Spinning Monkeys.mp3'],
-          volume: 0.5,
-          loop: false,
-      }),
-  ];
-  
+  /* An array of songs that can be played */  
+  this.music = new Array();
+ 
   /* Increases the volume of the current playing song,
    * if there is a song playing.
    */
-  /* TODO - complete function */
-  this.incVolume = function(){};
+  this.incVolume = function() {
+    if (this.currentSong == -1) {
+      log("Music:incVolume. There is no current song.");
+      return;
+    }
+
+    var currVol = this.music[currentSong].volume();
+    var newVol = currVol + 0.1;
+    this.music[currentSong].volume(newVol);
+  };
   
   /* Decreases the volume of the current playing song,
    * if there is a song playing.
    */
-  /* TODO - complete function */
-  this.decVolume = function(){};
+  this.decVolume = function() {
+    if (this.currentSong != -1) {
+      var currVol = this.music[currentSong].volume();
+      var newVol = currVol - 0.1;
+      this.music[currentSong].volume(newVol);
+    }
+  };
   
   /* Changes the volume of the current playing song to
    * the given volume, if there is a song that is playing
    */
-  /* TODO - complete function */
-  this.changeVolume = function(){};
+  this.changeVolume = function(newVol) {
+    if (this.currentSong != -1) {
+      this.music[currentSong].volume(newVol);
+    }
+  };
   
   /* Adds a song to the array of songs that can be played.
-   * Returns a md (music descriptor) used to 
-  /* TODO - complete function */
-  this.addSong = function(){};
-  
-  /* TODO - complete function */
-  this.removeSong = function(){};
+   * Returns a md (music descriptor) used to
+   */
+  this.addSong = function(src = "", initVol = 0, initLoop = false) {
+    /* Check arguments */
+    if (!src || initVol > 1.0 || initVol < 0) {
+      log("Music:addSong. Improper arguments.\n"
+              + "src = " + src + " "
+              + "initVol = " + initVol + " "
+              + "initLoop = " + initLoop);
 
-  /* TODO - add comment */
-  this.playMusic = function(musicNum) {
-    var playingMusic = false;
-    this.currentSong = musicNum;
-    
-    if(!this.muted) {
-      this.music[musicNum].loop = true;
-      this.music[musicNum].play();
-      playingMusic = true;
+      return -1;
+    }
+  
+    var song = new Howl({
+            src: [src],
+            volume: initVol,
+            loop: initLoop });
+
+    this.music.push(song);
+    return this.music.length - 1;
+  };
+  
+  /* Removes the song associated with the give md 
+   */
+  this.removeSong = function(md) {
+    /* Checking arguments */
+    if (md < 0 || md >= this.music.length) {
+      log("Music:removeSong. Improper arguments."
+              + "md = " + md);
+      return;
+    }
+
+    this.music.splice(md, 1);
+  };
+
+  /* Switches songs to the song given by MD.
+   * If no MD is supplied than the current song is played.
+   * If muteMusic has been called, playMusic will switch songs
+   * but will remain to be muted.
+   */
+  this.playMusic = function(md = this.currentSong) {
+    /* Checking arguments */
+    if (md < 0 || md >= this.music.length) {
+      log("Music:playMusic. Improper arguments."
+              + "md = " + md);
+      return;
     }
     
-    return playingMusic;
+    
+    if (md != this.currentSong) {
+      this.stopMusic();
+      this.currentSong = md;
+    }
+
+    if (!this.muted && !this.music[this.currentSong].playing()) {
+      this.music[this.currentSong].play();
+    }
   };
 
-  /* TODO - add comment */
-  this.stopMusic = function(){
+  /* Stops playing the current song. This is not equivalent to
+   * muting the music. If playMusic is called again the music 
+   * will continue playing.
+   */
+  this.stopMusic = function() {
+    /* Checking state */
+    if (this.currentSong == -1) {
+      log("Music:stopMusic. There is no current song");
+      return;
+    }
+    
     this.music[this.currentSong].stop();
-    this.music[this.currentSong].loop = false;
   };
 
-  /* TODO - add comment */
-  this.changeMusic = function(musicNum){
-    this.stopMusic();
-    this.playMusic(musicNum);
-  };
-
-  /* TODO - add comment */
+  /* Mutes the current playing song. If playMusic is called
+   * to switch songs, the music will remain to be muted.
+   * unmuteMusic must be called to unmute the music.
+   */
   this.muteMusic = function(){
     this.muted = true;
     this.stopMusic();
   };
 
-  /* TODO - add comment */
+  /* Unmutes the current playing song.
+   */
   this.unmuteMusic = function(){
     this.muted = false;
     this.playMusic(this.currentSong);
   };
-  
+ 
+  /* Returns true if the music is currently muted.
+   */ 
   this.isMuted = function() {
     return this.muted;
   };

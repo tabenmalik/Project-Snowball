@@ -13,7 +13,7 @@ function Sound(){
   
   /* TODO - add comment */
   this.sounds = new Howl({
-      urls: ['music/soundEffects.mp3'],
+      src: ['music/soundEffects.mp3'],
       sprite: {
           buttonPress: [0,260]
       }

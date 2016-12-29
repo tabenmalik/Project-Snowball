@@ -22,6 +22,9 @@ function PlayGameState(){
 	this.control;
     this.distToNextPost = 200;
     
+    this.songSrc = 'music/Monkeys Spinning Monkeys.mp3';
+    this.md;
+
     //Trail
     this.trailS = [];
     this.trailA = [];
@@ -37,7 +40,7 @@ function PlayGameState(){
 		this.control = control1;//pass in posts and the x and y of the player
 		this.walls = new Walls(400);
 		this.posts.splice(0, this.posts.length);
-        
+    this.md = gameMusic.addSong(this.songSrc, 0.5, true);
 	};
 	
 	this.reset = function(){
@@ -214,6 +217,8 @@ function Menu(){
 	this.optionButton;
 	this.instructionButton;
 	this.playTitle;
+  this.songSrc = 'music/Carefree.mp3';
+  this.md;
 	
 	
 	/*
@@ -227,7 +232,7 @@ function Menu(){
 		this.optionButton = new Button(600,500, 70, "Options");
 		this.instructionButton = new Button(200,500,70,"How To");
 		this.playTitle = new Title(100,125,600,100,"Project Snowball");
-		
+	  this.md = gameMusic.addSong(this.songSrc, 0.5, true);
 	};
 	
 	/*
@@ -247,7 +252,6 @@ function Menu(){
 		if(collide(mouse,this.playButton) && mouse.clicked){
 			gameSound.playSound("buttonPress");
 			mouse.clicked = false;
-			gameMusic.changeMusic(1);
 			gamestate.gamestates.play.reset();
 			gamestate.changeGameState("play");
 		}
@@ -476,7 +480,6 @@ function GameOver(){
 			gameSound.playSound("buttonPress");
 			mouse.clicked = false;
 			gamestate.changeGameState("mainMenu");
-			gameMusic.changeMusic(0);
 		}
 	}
 	
@@ -520,6 +523,10 @@ function Gamestates(){
 
 	this.changeGameState = function(nextState){
 		this.currentState = nextState;
+
+    if ('md' in this.gamestates[this.currentState]) {
+      gameMusic.playMusic(this.gamestates[this.currentState].md);
+    }
 	};
 
 	this.update = function(time){

@@ -14,7 +14,7 @@
 	<script type="text/javascript" src="javascript/randomObjects.js"></script>
 	<script type="text/javascript" src="javascript/RandomFunctions.js"></script>
 	<script type="text/javascript" src="javascript/devFunctions.js"></script>
-	<script type="text/javascript" src="javascript/howler.min.js"></script>
+	<script type="text/javascript" src="javascript/howler.js/dist/howler.min.js"></script>
 	<script type="text/javascript" src="javascript/Sound/Music.js"></script>
 	<script type="text/javascript" src="javascript/Sound/Sound.js"></script>
 </head>
@@ -64,7 +64,8 @@
 	var UPDATEINTERVAL = (1000/60);
 	var accumulate = 0;
 	var lastTickTime = 0;
-
+  var gameMusic = new Music();
+ 
 	var player = new Player(0,0,10,0);
 	var keys = {
 		w: false,
@@ -93,7 +94,7 @@
 		mouse.setup();
 		
 		gamestate.setup();
-		gameMusic.playMusic(0);
+    gamestate.changeGameState("mainMenu");
 		can.onmousemove = function(){mouse.setMousePosition(event);};
 		document.addEventListener('keydown', handleKeyDown);
 		document.addEventListener('keyup', handleKeyUp);
