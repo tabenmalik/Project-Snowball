@@ -141,7 +141,7 @@ function PlayGameState(){
 		//posts
 		ctx.fillStyle = "#000000";
 		for(var i = 0; i < this.posts.length; i++){
-			ctx.drawImage(images.Post, this.posts[i].x - this.posts[i].r + dx, this.posts[i].y - this.posts[i].r + dy, this.posts[i].r * 2, this.posts[i].r * 2);
+			this.posts[i].draw(dx, dy);
 		}
 		
         //draws tether
