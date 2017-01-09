@@ -242,23 +242,6 @@ function House(ix, iy){
 	}
 }
 
-/* Class: Post(a, b, c)
-Arguments for Constructor:
-	a: x coordinate of post
-	b: y coordinate of post
-	c: radius of post
-Instances:
-	x: the x coordinate of post
-	y: the y coordinate of post
-	r: radius of post
-Methods: N/A
-*/
-function Post(a,b,c){
-	this.x = a;
-	this.y = b;
-	this.r = c
-}
-
 function Walls(dist){
     this.left = dist / -2.0;
     this.right = dist / 2.0;
