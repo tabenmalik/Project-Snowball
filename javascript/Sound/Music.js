@@ -1,15 +1,14 @@
-/* Class: Music()
- * Parameters N/A
- * 
+/* 
  * A class for handling several files of music. 
  */
 /* TODO - make adding music generic */
 function Music(){
-  /* True if no music should be played */
-  this.muted = false;
   
-  /* Plays song in song array at this index */
-  this.currentSong = 0;
+  /* True if no music should be played */
+  this.muted = false;  
+  this.allMusic;
+  this.playingMusic;
+  this.MAX_VOL = 1;
   
   /* Array of songs to play that can be played. */
   this.music = [
@@ -26,31 +25,99 @@ function Music(){
       }),
   ];
   
-  /* Increases the volume of the current playing song,
-   * if there is a song playing.
+  /* If md is set, increases the volume of the song associated to the md by .1.
+   * Otherwise, it increases the volume of all songs by .1.
+   * This method increases the volume whether a song is playing or not.
    */
-  /* TODO - complete function */
-  this.incVolume = function(){};
+  this.incVolume = function(md = -1) {
+    /* Checking arguments */
+    if (md < -1 || md >= allMusic.length) {
+      log ("Music:incVolume improper argument. md is " + md);
+      return;
+    }
+    
+    var volInc = .1;
+    
+    if (md == -1) {
+      /* Increases the volume of every song */
+      for (int song = 0; song < allMusic.length; ++song) {
+        if (allMusic[song].volume < this.MAX_VOL) {
+          allMusic[song].volume += volInc;
+        }
+      }
+    } else {
+      /* Increases the volume of only the given song */
+      allMusic[md].volume += volInc;
+    }
+  };
   
-  /* Decreases the volume of the current playing song,
-   * if there is a song playing.
+  /* If md is set, decreases the volume of the song associated to the md by .1.
+   * Otherwise, it decreases the volume of all songs by .1.
+   * This method decreases the volume whether a song is playing or not.
    */
-  /* TODO - complete function */
-  this.decVolume = function(){};
+  this.decVolume = function(md = -1) {
+    /* Checking arguments */
+    if (md < -1 || md >= this.allMusic.length) {
+      log ("Music:decVolume improper argument. md is " + md);
+      return;
+    }
+    
+    var volInc = .1;
+    
+    if (md == -1) {
+      /* Decrease the volume of every song */
+      for (int song = 0; song < this.allMusic.length; ++song) {
+        if (this.allMusic[song].volume < this.MAX_VOL) {
+          this.allMusic[song].volume -= volInc;
+        }
+      }
+    } else {
+      /* Decrease the volume of only the given song */
+      this.allMusic[md].volume -= volInc;
+    }
+  };
   
-  /* Changes the volume of the current playing song to
-   * the given volume, if there is a song that is playing
+  /* If md is set, changes the volume of the song associated to the md
+   * to the given volume.
+   * Otherwise, it changes the volume of all songs.
+   * This method changes the volume whether a song is playing or not.
    */
-  /* TODO - complete function */
-  this.changeVolume = function(){};
+  this.changeVolume = function(vol = -1, md = -1) {
+    /* Checking arguments */
+    if (vol < 0 || vol > 1) {
+      log("Music:changeVolume invalid argument. vol is " + vol);
+      return;
+    }
+    
+    if (md < -1 || md >= this.allMusic.length) {
+      log("Music:changeVolume invalid argument. md is " + md);
+      return;
+    }
+    
+    if (md == -1) {
+      /* Changes the volume of every song */
+      for (int song = 0; song < this.allMusic.length; ++song) {
+        this.allMusic[song].volume = vol;
+      }
+    } else {
+      /* Changes the volume of only the given song */
+      this.allMusic[md].volume = vol;
+    }
+  };
   
   /* Adds a song to the array of songs that can be played.
    * Returns a md (music descriptor) used to 
   /* TODO - complete function */
-  this.addSong = function(){};
+  this.addSong = function(path = "") {
+    var song = new Howl({url: path, volume: 1, loop: false});
+    allMusic.push(song);
+    return allMusic.length - 1;
+  };
   
   /* TODO - complete function */
-  this.removeSong = function(){};
+  this.removeSong = function(md = -1){
+    
+  };
 
   /* TODO - add comment */
   this.playMusic = function(musicNum) {
@@ -68,8 +135,10 @@ function Music(){
 
   /* TODO - add comment */
   this.stopMusic = function(){
-    this.music[this.currentSong].stop();
-    this.music[this.currentSong].loop = false;
+    if (this.currentSong != this.NO_CURRENT_SONG) {
+      this.music[this.currentSong].stop();
+      this.music[this.currentSong].loop = false;
+    }
   };
 
   /* TODO - add comment */
