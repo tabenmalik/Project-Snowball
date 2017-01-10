@@ -55,10 +55,6 @@ function Posts() {
   };
   
   
-  
-  
-  
-  
   this.update = function() {
     
   };
@@ -69,4 +65,10 @@ function Posts() {
     }
   };
 
+}
+
+
+function new_linear_post() {
+  
+  //returns Post
 }
