@@ -11,10 +11,10 @@ POST_IMAGE.src = "images/Post.png";
 function Post(x, y, r) {
   /* Checking arguments */
   if (isNaN(x) || isNaN(y) || isNaN(r)) {
-    log("Post:setup. Improper arguments.\n"
-            + "x = " + x + "\n"
-            + "y = " + y + "\n"
-            + "r = " + r + "\n");
+    log("Post:setup. Improper arguments.\n" +
+            "x = " + x + "\n" +
+            "y = " + y + "\n" +
+            "r = " + r + "\n");
     x = 0;
     y = 0;
     r = 0;
@@ -28,10 +28,10 @@ function Post(x, y, r) {
   this.setup = function(x, y, r) {
     /* Checking arguments */
     if (isNaN(x) || isNaN(y) || isNaN(r)) {
-      log("Post:setup. Improper arguments.\n"
-              + "x = " + x + "\n"
-              + "y = " + y + "\n"
-              + "r = " + r + "\n");
+      log("Post:setup. Improper arguments.\n" +
+              "x = " + x + "\n" +
+              "y = " + y + "\n" +
+              "r = " + r + "\n");
       x = 0;
       y = 0;
       r = 0;
@@ -50,9 +50,7 @@ function Post(x, y, r) {
   };
 
   /* TODO - add comment */
-  this.update = function() {
-
-  };
+  this.update = function() {};
   
   /* TODO - add comment */
   this.draw = function(dx, dy) {
