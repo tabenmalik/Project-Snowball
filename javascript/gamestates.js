@@ -15,15 +15,14 @@ Methods:
 	
 */
 function PlayGameState(){
-	this.posts = [];
-    this.postArchive = [];
+	this.posts;
 	this.tether = false;
 	this.walls;
 	this.control;
-    this.distToNextPost = 200;
-    
-    this.songSrc = 'music/Monkeys Spinning Monkeys.mp3';
-    this.md;
+  this.distToNextPost = 200;
+  
+  this.songSrc = 'music/Monkeys Spinning Monkeys.mp3';
+  this.md;
 
     //Trail
     this.trailS = [];
@@ -36,7 +35,8 @@ function PlayGameState(){
 	Operation: Creates player object, map, and enemies etc. for game play
 	*/
 	this.setup = function(){
-		//this.posts = randomizePosts();
+    this.posts = new LinearPosts();
+    
 		this.control = control1;//pass in posts and the x and y of the player
 		this.walls = new Walls(400);
 		this.posts.splice(0, this.posts.length);
@@ -44,13 +44,11 @@ function PlayGameState(){
 	};
 	
 	this.reset = function(){
-		//this.posts = randomizePosts();
-        this.posts.splice(0, this.posts.length);
-		player.setPosition(0,0, -Math.PI / 2.0);
+		posts.reset();
+    player.setPosition(0,0, -Math.PI / 2.0);
 		player.life = player.LIFE;
 		this.tether = false;
-        this.newRandomPost(true);
-        player.score = 0;
+    player.score = 0;
 	}
 	
 	/*
@@ -62,16 +60,9 @@ function PlayGameState(){
 				for circular motion around a post
 	*/
 	this.update = function(time){
-        //Generating Posts
-        if (this.posts[this.posts.length - 1].y - (player.y - (can.height / 2.0)) >= this.distToNextPost){
-            if(this.posts.length < 5)
-                this.newRandomPost(true);
-            else if(this.posts.length == 5)
-                this.newCenteredPost();
-            else    
-                this.newRandomPost();
-        }
         
+    /* Update Posts */
+    
 		//code for movement of the player
 		
 		//Checking to see if the player is trying to tether to a post.
@@ -160,38 +151,6 @@ function PlayGameState(){
 
         
 	};
-    
-    //Makes a new post at the top of the screen, and sets the distance to the next post.
-    this.newRandomPost = function( openCenter = false ){
-        
-        var randr = (Math.random() * 20.0) + 10.0;
-        var randx = 0;
-        
-        if(openCenter){
-            var gap = 100;
-            var variation = this.walls.right - this.walls.left - gap;
-            randx = Math.random() * variation;
-            if(randx < variation / 2.0)
-                randx += this.walls.left;
-            else
-                randx += this.walls.left + gap;
-        }
-        else
-            randx = Math.random() * (this.walls.right - this.walls.left) + this.walls.left;
-        
-        
-        
-        this.posts.push(new Post(randx, player.y - (can.height / 2.0) - randr, randr));
-        this.distToNextPost = (Math.random() * 170) + 80;
-    }
-    
-    this.newCenteredPost = function(){
-        
-        var randr = (Math.random() * 20.0) + 10.0;
-        
-        this.posts.push(new Post(0,player.y - (can.height / 2.0) - randr, randr));
-        this.distToNextPost = (Math.random() * 170) + 80;
-    }
 }
 
 /* Class: Menu()
