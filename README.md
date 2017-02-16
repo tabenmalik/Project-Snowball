@@ -1,5 +1,4 @@
 Project-Snowball
 ================
 
-Winter project. Malik duo awesomeness.
-Merry Christmas...bitches.
+Winter project. Malik duo awesomeness
