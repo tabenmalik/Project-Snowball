@@ -7,25 +7,25 @@ function newSnowball() {
   var update_interval = 1000/60;
   var accumulate = 0;
   var last_tick_time = 0;
+
+  var menu = newTitle({x:100, y:125}, {width:600, height:100}, "Snowball");
   
   var __tick__ = function(time){
     var delta_time = time - last_tick_time;
     
     ctx.beginPath();
+    menu.draw(ctx);
     
     accumulate += delta_time;
     
     while (accumulate >= update_interval) {
-      ctx.clearRect(0, 0, can.width, can.height);
-      ctx.fillStyle= "#000000";
-      ctx.font = "30px Verdana";
-      ctx.fillText(time.toString(), 100, 100);
+      menu.update();
       accumulate -= update_interval;
     }
     
     last_tick_time = time;
     window.requestAnimationFrame(__tick__);
-  } 
+  }
   
   var __start__ = function(){
     window.requestAnimationFrame(__tick__);
