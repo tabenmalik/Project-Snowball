@@ -8,21 +8,18 @@ function newSnowball() {
   var accumulate = 0;
   var last_tick_time = 0;
 
-  var menu = newTitle({x:100, y:125, width:600, height:100, text:"Snowball"});
-  var button1 = newButton({x:400, y:400, radius: 70, text: "PLAY", color: "#5555ff"});
+  var menu = newMenu();
   
   var __tick__ = function(time){
     var delta_time = time - last_tick_time;
     
     ctx.beginPath();
     menu.draw(ctx);
-    button1.draw(ctx);
     
     accumulate += delta_time;
     
     while (accumulate >= update_interval) {
       menu.update();
-      button1.update();
       accumulate -= update_interval;
     }
     
