@@ -22,11 +22,13 @@ var newMouse = function() {
   }
   
   var __getX__ = function() {
-    return x;
+    var can = document.getElementById('canvas');
+    return x - (can.width * 0.5);
   }
   
   var __getY__ = function() {
-    return y;
+    var can = document.getElementById('canvas');
+    return y - (can.height * 0.5);
   }
   
   document.getElementById('canvas').onmousedown = function() {
@@ -35,6 +37,7 @@ var newMouse = function() {
   
   document.getElementById('canvas').onmouseup = function() {
     clicked = false;
+    return false;
   };
   
   document.getElementById('canvas').onmousemove = function() {

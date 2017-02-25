@@ -21,7 +21,7 @@ function newSnowball() {
     accumulate += delta_time;
     
     while (accumulate >= update_interval) {
-      menu.update(time, mouse);
+      menu.update({ctx:ctx, can:can, time:time, mouse:mouse});
       accumulate -= update_interval;
     }
     

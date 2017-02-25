@@ -11,11 +11,11 @@ var newMenu = function() {
     instruction_button.draw(ctx);
   }
   
-  var __update__ = function(time, mouse) {
-    title.update(time, mouse);
-    play_button.update(time, mouse);
-    option_button.update(time, mouse);
-    instruction_button.update(time, mouse);
+  var __update__ = function(args) {
+    title.update(args);
+    play_button.update(args);
+    option_button.update(args);
+    instruction_button.update(args);
   }
   
   return {

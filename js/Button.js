@@ -21,12 +21,16 @@ function newButton(args) {
     text = new_text;
   }
   
-  var __update__ = function(time, mouse) {
-    var mouse_x = mouse.getX();
-    var mouse_y = mouse.getY();
+  var __update__ = function(args) {    
+    var mouse_x = args['mouse'].getX();
+    var mouse_y = args['mouse'].getY();
     
     x_offset = mouse_x * 0.0625;
     y_offset = mouse_y * 0.0625;
+    
+    args['ctx'].font = "30px Verdana";
+    text_x = x - radius + (((radius * 2) - args['ctx'].measureText(text).width) / 2);
+    text_y = y + (30 * 0.5);
     
     text_x_offset = mouse_x * 0.125;
     text_y_offset = mouse_y * 0.125;
@@ -41,8 +45,6 @@ function newButton(args) {
     
     ctx.fillStyle = "#000000";
     ctx.font = "30px Verdana";
-    text_x = x - radius + (((radius * 2) - ctx.measureText(text).width) / 2);
-    text_y = y + (30 * 0.5);
     ctx.fillText(text, text_x - text_x_offset, text_y - text_y_offset);
   }
   
