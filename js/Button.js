@@ -21,8 +21,15 @@ function newButton(args) {
     text = new_text;
   }
   
-  var __update__ = function(time) {
+  var __update__ = function(time, mouse) {
+    var mouse_x = mouse.getX();
+    var mouse_y = mouse.getY();
     
+    x_offset = mouse_x * 0.0625;
+    y_offset = mouse_y * 0.0625;
+    
+    text_x_offset = mouse_x * 0.125;
+    text_y_offset = mouse_y * 0.125;
   }
  
   var __draw__ = function(ctx) {

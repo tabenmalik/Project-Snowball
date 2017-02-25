@@ -8,18 +8,20 @@ function newSnowball() {
   var accumulate = 0;
   var last_tick_time = 0;
 
+  var mouse = newMouse();
   var menu = newMenu();
   
   var __tick__ = function(time){
     var delta_time = time - last_tick_time;
     
+    ctx.clearRect(0,0,can.width,can.height);
     ctx.beginPath();
     menu.draw(ctx);
     
     accumulate += delta_time;
     
     while (accumulate >= update_interval) {
-      menu.update();
+      menu.update(time, mouse);
       accumulate -= update_interval;
     }
     

@@ -27,7 +27,7 @@ function newTitle(args) {
     ctx.fillText(text, title_x, title_y);
   }
 
-  var __update__ = function() {
+  var __update__ = function(time, mouse) {
 
   }
 
