@@ -1,14 +1,14 @@
-function newTitle(position, size, string) {
+function newTitle(args) {
   // position
-  var x = position["x"];
-  var y = position["y"];
+  var x = args["x"];
+  var y = args["y"];
 
   // size
-  var width = size["width"];
-  var height = size["height"];
+  var width = args["width"];
+  var height = args["height"];
   
   // text
-  var text = string;
+  var text = args["text"];
 
   var __draw__ = function(ctx) {
     // draws purple background rectangle
