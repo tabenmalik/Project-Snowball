@@ -17,22 +17,22 @@ var newKeyboard = function() {
   
   document.onkeydown = function(event) {
     switch(event.keyCode) {
-      case: 87
+      case 87:
         w = true;
         break;
-      case: 65
+      case 65:
         a = true;
         break;
-      case: 83
+      case 83:
         s = true;
         break;
-      case: 68
+      case 68:
         d = true;
         break;
-      case: 32
+      case 32:
         space = true;
         break;
-      case: 80
+      case 80:
         p = true;
         break;
       default:
@@ -43,22 +43,22 @@ var newKeyboard = function() {
   
   document.onkeyup = function(event) {
     switch(event.keyCode) {
-      case: 87
+      case 87:
         w = false;
         break;
-      case: 65
+      case 65:
         a = false;
         break;
-      case: 83
+      case 83:
         s = false;
         break;
-      case: 68
+      case 68:
         d = false;
         break;
-      case: 32
+      case 32:
         space = false;
         break;
-      case: 80
+      case 80:
         p = false;
         break;
       default:
