@@ -1,3 +1,4 @@
+// args - {x:x, y:y, width:width, height:height, text:text}
 function newTitle(args) {
   
   /////////////////////

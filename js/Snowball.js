@@ -11,18 +11,21 @@ function newSnowball() {
   var mouse = newMouse();
   var keyboard = newKeyboard();
   var menu = newMenu();
+  var options_menu = newOptionsMenu();
   
   var __tick__ = function(time){
     var delta_time = time - last_tick_time;
     
     ctx.clearRect(0,0,can.width,can.height);
     ctx.beginPath();
-    menu.draw(ctx);
+    // menu.draw(ctx);
+    options_menu.draw(ctx);
     
     accumulate += delta_time;
     
     while (accumulate >= update_interval) {
-      menu.update({ctx:ctx, can:can, time:time, mouse:mouse, keyboard:keyboard});
+      // menu.update({ctx:ctx, can:can, time:time, mouse:mouse, keyboard:keyboard});
+      options_menu.update({ctx:ctx, can:can, time:time, mouse:mouse, keyboard:keyboard});
       accumulate -= update_interval;
     }
     

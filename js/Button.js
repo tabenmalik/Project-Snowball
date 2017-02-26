@@ -1,3 +1,4 @@
+// args - {x:x, y:y, radius:radius, color:color, text:text}
 function newButton(args) {
   
   //////////////////////
