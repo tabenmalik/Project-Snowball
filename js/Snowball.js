@@ -9,6 +9,7 @@ function newSnowball() {
   var last_tick_time = 0;
 
   var mouse = newMouse();
+  var keyboard = newKeyboard();
   var menu = newMenu();
   
   var __tick__ = function(time){
@@ -21,7 +22,7 @@ function newSnowball() {
     accumulate += delta_time;
     
     while (accumulate >= update_interval) {
-      menu.update({ctx:ctx, can:can, time:time, mouse:mouse});
+      menu.update({ctx:ctx, can:can, time:time, mouse:mouse, keyboard:keyboard});
       accumulate -= update_interval;
     }
     
