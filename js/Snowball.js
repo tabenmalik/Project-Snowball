@@ -10,7 +10,7 @@ function newSnowball() {
 
   var mouse = newMouse();
   var keyboard = newKeyboard();
-  var menu = newMenu();
+  //var menu = newMenu();
   var options_menu = newOptionsMenu();
   
   var __tick__ = function(time){
